@@ -1,0 +1,50 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0" version="26.0.16">
+  <diagram name="Страница — 1" id="ZBmFBjmfS9Ap_BRVUe9U">
+    <mxGraphModel dx="922" dy="639" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ezgCT590yHJuoOgTGS-a-3" value="Y" style="ellipse;fillColor=strokeColor;html=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="40" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-5" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ezgCT590yHJuoOgTGS-a-3" target="ezgCT590yHJuoOgTGS-a-6">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="270" y="90" as="sourcePoint" />
+            <mxPoint x="430" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-8" value="Аккаунт создан" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ezgCT590yHJuoOgTGS-a-5">
+          <mxGeometry x="-0.0046" relative="1" as="geometry">
+            <mxPoint y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-6" value="Активен" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="65" y="140" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-7" value="&lt;div&gt;Заблокирован&lt;/div&gt;" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="65" y="300" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-9" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="ezgCT590yHJuoOgTGS-a-6" target="ezgCT590yHJuoOgTGS-a-7">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="300" y="170" as="sourcePoint" />
+            <mxPoint x="300" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-10" value="&lt;div&gt;Администратор&lt;/div&gt;&lt;div&gt;заблокировал&lt;/div&gt;&lt;div&gt;пользователя&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ezgCT590yHJuoOgTGS-a-9">
+          <mxGeometry x="-0.0046" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-11" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;" vertex="1" parent="1">
+          <mxGeometry x="120" y="390" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ezgCT590yHJuoOgTGS-a-12" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="ezgCT590yHJuoOgTGS-a-7" target="ezgCT590yHJuoOgTGS-a-11">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="145" y="190" as="sourcePoint" />
+            <mxPoint x="145" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,82 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:135.0) Gecko/20100101 Firefox/135.0" version="26.0.16">
+  <diagram name="Страница — 1" id="zjYz7mGfGgpHmXZXnbDh">
+    <mxGraphModel dx="699" dy="485" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-1" value="Y" style="ellipse;fillColor=strokeColor;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="40" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-2" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cmN4YQXkbbCIsLLJNBir-1" target="cmN4YQXkbbCIsLLJNBir-4">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="310" y="90" as="sourcePoint" />
+            <mxPoint x="470" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-3" value="&lt;div&gt;Рецепт создан&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="cmN4YQXkbbCIsLLJNBir-2">
+          <mxGeometry x="-0.0046" relative="1" as="geometry">
+            <mxPoint y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-4" value="На модерации" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="105" y="140" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-5" value="Опубликован" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="105" y="300" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-6" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="cmN4YQXkbbCIsLLJNBir-4" target="cmN4YQXkbbCIsLLJNBir-5">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="340" y="170" as="sourcePoint" />
+            <mxPoint x="340" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-7" value="&lt;div&gt;Администратор&lt;/div&gt;одобрил рецепт" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="cmN4YQXkbbCIsLLJNBir-6">
+          <mxGeometry x="-0.0046" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-8" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;" vertex="1" parent="1">
+          <mxGeometry x="335" y="360" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-9" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="cmN4YQXkbbCIsLLJNBir-10" target="cmN4YQXkbbCIsLLJNBir-8">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="185" y="190" as="sourcePoint" />
+            <mxPoint x="185" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-10" value="&lt;div&gt;Удалён&lt;/div&gt;" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=10;dashed=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="280" y="220" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-11" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="cmN4YQXkbbCIsLLJNBir-4" target="cmN4YQXkbbCIsLLJNBir-10">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="185" y="190" as="sourcePoint" />
+            <mxPoint x="185" y="310" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="350" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-12" value="&lt;div&gt;Администратор&lt;/div&gt;&lt;div&gt;отклонил рецепт&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="cmN4YQXkbbCIsLLJNBir-11">
+          <mxGeometry x="-0.0046" relative="1" as="geometry">
+            <mxPoint x="13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-13" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="cmN4YQXkbbCIsLLJNBir-5" target="cmN4YQXkbbCIsLLJNBir-4">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="-20" y="345" as="sourcePoint" />
+            <mxPoint x="-20" y="465" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="60" y="320" />
+              <mxPoint x="60" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cmN4YQXkbbCIsLLJNBir-14" value="&lt;div&gt;Автор&lt;/div&gt;&lt;div&gt;отредактировал&lt;/div&gt;&lt;div&gt;рецепт&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="cmN4YQXkbbCIsLLJNBir-13">
+          <mxGeometry x="-0.0046" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
