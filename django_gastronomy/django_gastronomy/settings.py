@@ -51,7 +51,7 @@ ROOT_URLCONF = 'django_gastronomy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,7 +107,13 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'  # URL для доступа к статическим файлам
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Путь к папке со статическими файлами
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Путь для сборки статических файлов в продакшене
+
+# Media files
+MEDIA_URL = '/media/'  # URL для доступа к медиафайлам
+MEDIA_ROOT = BASE_DIR / 'media'  # Путь к папке для хранения медиафайлов
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
