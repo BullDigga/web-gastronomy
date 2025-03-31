@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Gastronomy</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
+    <header>
+        <div class="logo">
+            <a href="/" class="logo-link">
+                🦐 Web Gastronomy
+            </a>
+        </div>
 
+        <div class="search-bar">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Поиск рецептов..." class="search-input">
+            </div>
+        </div>
+
+        <div class="actor-content">
+            <!-- Django-контент header'а, зависящий от актора -->
+            {% block header-content %}
+            {% endblock %}
+        </div>
+    </header>
+
+    <main>
+        <!-- Блок для дочерних шаблонов -->
+        {% block content %}
+        {% endblock %}
+    </main>
 </body>
 </html>
