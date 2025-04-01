@@ -22,7 +22,7 @@ from . import views  # Импортируем модуль views
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Маршрут для админки
-    path('', views.home, name='home'),  # Корневой маршрут
+    path('', views.recipes_list_browse, name='recipes_list_browse'),
 ]
 
 if settings.DEBUG:

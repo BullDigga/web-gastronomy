@@ -1,7 +1,6 @@
-# recipes/models.py
+from django.conf import settings  # Импортируем settings
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from users.models import User
 
 class Recipe(models.Model):
     STATUS_CHOICES = [
@@ -19,7 +18,7 @@ class Recipe(models.Model):
     )
 
     author = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,  # Используем AUTH_USER_MODEL
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='автор'

@@ -1,10 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block header-content %}
+    {% if not user.is_authenticated %}
+        <div class="auth-buttons">
+            <a href="#" class="auth-button register">Регистрация</a>
+            <a href="#" class="auth-button login">Вход</a>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block title %}Список рецептов{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/recipes_list_browse.css' %}">
+    <script src="{% static 'js/recipes_list_browse.js' %}"></script>
+
+    <div class="recipes-container">
+        <h1 class="header">Рецепты</h1>
+        {% for recipe in recipes %}
+            <div class="recipe-card">
+                <div class="recipe-info">
+                    <div class="info-row">
+                        <span class="label">Название:</span>
+                        <span class="value">
+                            <a class="recipe-link" href="#">{{ recipe.title }}</a>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Описание:</span>
+                        <span class="value">{{ recipe.description|truncatewords:10 }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Автор:</span>
+                        <span class="value">
+                            <a class="author-link" href="#">{{ recipe.author.username }}</a>
+                        </span>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="view-recipe">Посмотреть рецепт</button>
+                    <button class="add-to-favorites">
+                        Добавить в избранное
+                        <span class="tooltip">Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное</span>
+                    </button>
+                </div>
+            </div>
+        {% empty %}
+            <p>Нет опубликованных рецептов.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

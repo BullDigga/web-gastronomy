@@ -1,0 +1,151 @@
+/* Стиль контейнера с кнопками */
+.auth-buttons {
+    display: flex;
+    gap: 10px; /* Отступ между кнопками */
+}
+
+/* Стиль кнопок */
+.auth-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #66A932;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #528C29; /* Темнее при наведении */
+}
+
+.auth-button.register {
+    background-color: #66A932; /* Цвет для кнопки "Регистрация" */
+}
+
+.auth-button.login {
+    background-color: #66A932; /* Цвет для кнопки "Вход" */
+}
+
+/* Общий стиль страницы */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Стиль большого контейнера с рецептами */
+.recipes-container {
+    background-color: #F6F6F6; /* Фон контейнера */
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    text-align: left;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.recipe-card {
+    background-color: #ECE4B7;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative; /* Точка отсчёта для подсказки */
+    overflow: visible; /* Разрешаем содержимому выходить за границы карточки */
+}
+
+.recipe-info {
+    flex: 2;
+    margin-right: 20px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.label {
+    font-weight: bold;
+    text-align: right;
+    width: 100px;
+    margin-right: 10px;
+}
+
+.value {
+    background-color: #F6FF7A;
+    padding: 5px 10px;
+    border-radius: 4px;
+    flex: 1;
+}
+
+.buttons {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.view-recipe {
+    background-color: #87C756;
+    color: white;
+}
+
+/* Стиль кнопки "Добавить в избранное" */
+.add-to-favorites {
+    position: relative; /* Нужно для позиционирования подсказки */
+    background-color: #B5B8B1;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Стиль подсказки */
+.tooltip {
+    display: none; /* Скрываем по умолчанию */
+    position: absolute;
+    top: 100%; /* Размещаем под кнопкой */
+    left: 0; /* Выравниваем по левому краю кнопки */
+    margin-top: 5px; /* Отступ сверху */
+    padding: 5px; /* Внутренний отступ текста */
+    font-size: 12px;
+    color: #444444; /* Цвет текста */
+    background-color: transparent; /* Убираем фон */
+    white-space: normal; /* Разрешаем перенос текста */
+    word-wrap: break-word; /* Переносим длинные слова */
+    max-width: 300px; /* Увеличиваем ширину подсказки */
+    text-align: center; /* Выравниваем текст по центру */
+    z-index: 10; /* Чтобы подсказка была поверх других элементов */
+}
+
+/* Показываем подсказку при наведении */
+.add-to-favorites:hover .tooltip {
+    display: block;
+}
+
+/* Фиксируем подсказку после клика */
+.tooltip.show {
+    display: block !important;
+}

@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #DFBDBD;
+    padding: 10px 20px;
+}
+
+header .logo {
+    font-size: 18px;
+    color: #000000;
+}
+
+header .logo .logo-link {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: inherit; /* Наследуем цвет текста от родителя */
+    display: flex; /* Используем Flexbox для выравнивания */
+    align-items: center; /* Выравниваем текст по вертикали */
+    gap: 8px; /* Расстояние между эмодзи и текстом */
+    transition: color 0.3s ease; /* Плавное изменение цвета */
+}
+
+header .search-bar {
+    flex-grow: 1;
+    text-align: center;
+    position: relative; /* Для позиционирования иконки */
+    padding-right: 512px;
+}
+
+header .search-bar .search-container {
+    position: relative; /* Контейнер для иконки и поля ввода */
+    display: inline-block;
+    width: 300px; /* Фиксированная ширина поля ввода */
+}
+
+header .search-bar .search-icon {
+    position: absolute; /* Позиционируем иконку внутри контейнера */
+    left: 10px; /* Отступ слева */
+    top: 50%; /* Центрируем по вертикали */
+    transform: translateY(-50%); /* Корректируем центрирование */
+    pointer-events: none; /* Иконка не должна мешать кликам */
+    color: #aaa; /* Цвет иконки */
+    font-size: 18px; /* Размер иконки */
+}
+
+header .search-bar .search-input {
+    width: 100%; /* Поле ввода занимает всю ширину контейнера */
+    height: 35px; /* Высота поля */
+    padding-left: 40px; /* Отступ слева для иконки */
+    padding-right: 10px; /* Отступ справа */
+    background-color: #F6FF7A; /* Цвет фона */
+    border: none; /* Убираем границу */
+    border-radius: 5px; /* Скругленные углы */
+    font-size: 16px; /* Размер текста */
+    outline: none; /* Убираем стандартное выделение при фокусе */
+    transition: background-color 0.3s ease; /* Плавное изменение цвета фона */
+}
+
+header .search-bar .search-input:focus {
+    background-color: #E5FF5A; /* Цвет фона при фокусе */
+}
+
+header .actor-indicator {
+    font-size: 14px;
+    color: #333;
+    text-align: right;
+}
