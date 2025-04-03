@@ -21,8 +21,9 @@ from django.conf.urls.static import static
 from . import views  # Импортируем модуль views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Маршрут для админки
+    path('admin/', admin.site.urls),
     path('', views.recipes_list_browse, name='recipes_list_browse'),
+    path('register/', views.registration_view, name='registration'),
 ]
 
 if settings.DEBUG:

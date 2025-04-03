@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/registration.css' %}">
+    <script src="{% static 'js/registration.js' %}"></script>
+
+    <div class="registration-container">
+        <h1>Регистрация</h1>
+        <form method="POST" class="registration-form" id="registration-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Псевдоним:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" required>
+                    <span class="emoji" id="username-emoji"></span>
+                </div>
+                <small class="error-message" id="username-error"></small>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" name="email" required>
+                    <span class="emoji" id="email-emoji"></span>
+                </div>
+                <small class="error-message" id="email-error"></small>
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" required>
+                    <span class="emoji" id="password-emoji"></span>
+                </div>
+                <small class="error-message" id="password-error"></small>
+            </div>
+            <button type="submit" class="register-button">Зарегистрироваться</button>
+        </form>
+    </div>
+
+    <!-- Подключение скрипта для валидации -->
+    <script src="{% static 'js/registration_validation.js' %}"></script>
+{% endblock %}

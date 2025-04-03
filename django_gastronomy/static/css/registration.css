@@ -1,0 +1,93 @@
+/* Стиль контейнера регистрации */
+.registration-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #F6F6F6;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.registration-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Стиль формы */
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.form-group input {
+    width: 100%; /* Поле занимает всю доступную ширину */
+    padding: 10px;
+    padding-right: 40px; /* Добавляем отступ справа для эмодзи */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box; /* Учитываем padding в ширину */
+}
+
+.register-button {
+    padding: 10px;
+    background-color: #66A932;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-button:hover {
+    background-color: #528C29;
+}
+
+/* Стиль контейнера ввода */
+.input-wrapper {
+    position: relative; /* Нужно для позиционирования эмодзи */
+    display: flex;
+    align-items: center;
+}
+
+/* Стиль эмодзи */
+.emoji {
+    position: absolute; /* Абсолютное позиционирование внутри .input-wrapper */
+    right: 10px; /* Отступ от правого края */
+    top: 50%; /* Центрируем по вертикали */
+    transform: translateY(-50%); /* Корректируем центрирование */
+    font-size: 18px;
+    color: gray; /* Цвет по умолчанию */
+}
+
+/* Зелёная галочка */
+.emoji.valid {
+    color: green;
+}
+
+/* Красный крестик */
+.emoji.invalid {
+    color: red;
+}
+
+/* Сообщения об ошибках */
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none; /* Скрываем по умолчанию */
+}
