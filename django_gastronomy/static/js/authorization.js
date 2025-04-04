@@ -1,42 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('registration-form');
+    const form = document.getElementById('authorization-form');
     if (!form) {
-        console.error('Форма с id="registration-form" не найдена.');
+        console.error('Форма с id="authorization-form" не найдена.');
         return;
     }
 
-    const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
 
-    const usernameEmoji = document.getElementById('username-emoji');
     const emailEmoji = document.getElementById('email-emoji');
     const passwordEmoji = document.getElementById('password-emoji');
 
-    const usernameError = document.getElementById('username-error');
     const emailError = document.getElementById('email-error');
     const passwordError = document.getElementById('password-error');
 
     let isServerError = false;
-
-    // Валидация имени пользователя
-    usernameInput.addEventListener('input', function () {
-        if (isServerError) return;
-
-        const value = usernameInput.value.trim();
-        if (value.length < 6) {
-            usernameEmoji.textContent = '❌';
-            usernameEmoji.classList.remove('valid');
-            usernameEmoji.classList.add('invalid');
-            usernameError.textContent = 'Псевдоним должен содержать минимум 6 символов.';
-            usernameError.style.display = 'block';
-        } else {
-            usernameEmoji.textContent = '✅';
-            usernameEmoji.classList.remove('invalid');
-            usernameEmoji.classList.add('valid');
-            usernameError.style.display = 'none';
-        }
-    });
 
     // Валидация email
     emailInput.addEventListener('input', function () {
@@ -44,11 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const value = emailInput.value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
         if (!value) {
             emailEmoji.textContent = '❌';
             emailEmoji.classList.remove('valid');
             emailEmoji.classList.add('invalid');
-            emailError.textContent = 'Email обязателен для заполнения.';
+            emailError.textContent = 'Не введён Email.';
             emailError.style.display = 'block';
         } else if (!emailRegex.test(value)) {
             emailEmoji.textContent = '❌';
@@ -69,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isServerError) return;
 
         const value = passwordInput.value.trim();
+
         if (value.length < 6) {
             passwordEmoji.textContent = '❌';
             passwordEmoji.classList.remove('valid');
@@ -87,26 +67,18 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const usernameValue = usernameInput.value.trim();
         const emailValue = emailInput.value.trim();
         const passwordValue = passwordInput.value.trim();
 
-        console.log('Отправляемый JSON:', JSON.stringify({
-            username: usernameValue,
-            email: emailValue,
-            password: passwordValue
-        }));
-
         // Очищаем предыдущие ошибки
-        usernameError.style.display = 'none';
         emailError.style.display = 'none';
         passwordError.style.display = 'none';
 
         // Логируем отправляемые данные
-        console.log('Отправляемые данные:', { username: usernameValue, email: emailValue, password: passwordValue });
+        console.log('Отправляемые данные:', { email: emailValue, password: passwordValue });
 
         // Отправляем данные на сервер
-        fetch('/register/', {
+        fetch('/authorization/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -114,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-Requested-With': 'XMLHttpRequest'
             },
             body: JSON.stringify({
-                username: usernameValue,
                 email: emailValue,
                 password: passwordValue
             })
@@ -137,11 +108,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.error('Ошибка:', error.message);
 
+            // Очищаем предыдущие ошибки
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+
             // Проверяем текст ошибки
-            if (error.message.includes('псевдоним')) {
-                usernameError.textContent = error.message;
-                usernameError.style.display = 'block';
-            } else if (error.message.includes('email')) {
+            if (error.message.includes('email')) {
                 emailError.textContent = error.message;
                 emailError.style.display = 'block';
             } else if (error.message.includes('пароль')) {

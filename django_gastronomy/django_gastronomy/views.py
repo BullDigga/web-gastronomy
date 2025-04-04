@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib import messages
+from django.http import JsonResponse
+
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 def recipes_list_browse(request):
     published_recipes = Recipe.objects.filter(status='published').order_by('-id')[:10]
@@ -16,49 +20,92 @@ def recipes_list_browse(request):
 
 def registration_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        try:
+            # Логируем сырое тело запроса
+            print("Raw body:", request.body)
 
-        errors = []
+            # Пытаемся распарсить JSON
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError as e:
+                print("Ошибка при парсинге JSON:", e)
+                return JsonResponse({'error': 'Невалидный JSON.'}, status=400)
 
-        # Проверка имени пользователя
-        if not username:
-            errors.append('Не введён псевдоним.')
-        elif len(username) < 6:
-            errors.append('Псевдоним должен содержать минимум 6 символов.')
-        elif User.objects.filter(username=username).exists():
-            errors.append('Пользователь с данным псевдонимом уже зарегистрирован.')
+            # Логируем распарсенные данные
+            print("Parsed data:", data)
 
-        # Проверка email
-        if not email:
-            errors.append('Не введён Email.')
-        elif User.objects.filter(email=email).exists():
-            errors.append('Пользователь с данным email уже зарегистрирован.')
+            username = data.get('username')
+            email = data.get('email')
+            password = data.get('password')
 
-        # Проверка пароля
-        if not password:
-            errors.append('Не введён пароль.')
-        elif len(password) < 6:
-            errors.append('Пароль должен содержать минимум 6 символов.')
+            if not username or not email or not password:
+                return JsonResponse({'error': 'Необходимо указать все поля.'}, status=400)
 
-        # Если есть ошибки, показываем их
-        if errors:
-            for error in errors:
-                messages.error(request, error)
-            return render(request, 'registration.html')
+            # Проверяем, существует ли пользователь с таким именем
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'error': 'Пользователь с данным псевдонимом уже зарегистрирован.'}, status=400)
 
-        # Создаем нового пользователя
-        new_user = User.objects.create_user(username=username, email=email, password=password)
+            # Проверяем, существует ли пользователь с таким email
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({'error': 'Пользователь с данным email уже зарегистрирован.'}, status=400)
 
-        # Автоматический вход пользователя
-        login(request, new_user)  # Авторизуем пользователя
-        messages.success(request, 'Вы успешно зарегистрировались!')
+            # Создаём нового пользователя
+            user = User.objects.create_user(username=username, email=email, password=password)
+            print("Пользователь успешно зарегистрирован:", user.username)
+            return JsonResponse({'success': 'Вы успешно зарегистрировались!'})
 
-        # Перенаправляем на страницу профиля нового пользователя
-        return redirect('profile', user_id=new_user.id)
+        except Exception as e:
+            print("Неожиданная ошибка:", e)
+            return JsonResponse({'error': 'Произошла ошибка на сервере.'}, status=500)
 
     return render(request, 'registration.html')
+
+
+def authorization_view(request):
+    if request.method == 'POST':
+        try:
+            # Логируем сырое тело запроса
+            print("Raw body:", request.body)
+
+            # Пытаемся распарсить JSON
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError as e:
+                print("Ошибка при парсинге JSON:", e)
+                return JsonResponse({'error': 'Невалидный JSON.'}, status=400)
+
+            # Логируем распарсенные данные
+            print("Parsed data:", data)
+
+            email = data.get('email')
+            password = data.get('password')
+
+            if not email or not password:
+                return JsonResponse({'error': 'Необходимо указать email и пароль.'}, status=400)
+
+            # Проверяем, существует ли пользователь с таким email
+            try:
+                user = User.objects.get(email=email)
+                print("Пользователь найден:", user.username)
+            except User.DoesNotExist:
+                print("Пользователь с email", email, "не найден.")
+                return JsonResponse({'error': 'Пользователь с таким email не найден.'}, status=400)
+
+            # Аутентифицируем пользователя
+            authenticated_user = authenticate(request, username=user.username, password=password)
+            if authenticated_user is not None:
+                print("Аутентификация успешна для пользователя:", authenticated_user.username)
+                login(request, authenticated_user)
+                return JsonResponse({'success': 'Вы успешно вошли в систему!'})
+            else:
+                print("Аутентификация не удалась для пользователя:", user.username)
+                return JsonResponse({'error': 'Неверный пароль.'}, status=400)
+
+        except Exception as e:
+            print("Неожиданная ошибка:", e)
+            return JsonResponse({'error': 'Произошла ошибка на сервере.'}, status=500)
+
+    return render(request, 'authorization.html')
 
 
 def profile_view(request, user_id):

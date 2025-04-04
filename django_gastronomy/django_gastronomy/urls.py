@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.recipes_list_browse, name='recipes_list_browse'),
     path('register/', views.registration_view, name='registration'),
+    path('authorization/', views.authorization_view, name='authorization'),
     path('profile/<int:user_id>/', views.profile_view, name='profile'),
     path('favorites/', views.favorites_view, name='favorites'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
