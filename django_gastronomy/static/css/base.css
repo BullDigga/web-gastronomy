@@ -1,10 +1,11 @@
+/* Общий стиль страницы */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    color: #333;
 }
 
+/* Стиль хедера */
 header {
     display: flex;
     justify-content: space-between;
@@ -28,10 +29,9 @@ header .logo .logo-link {
 }
 
 header .search-bar {
-    flex-grow: 1;
+    flex-grow: 1; /* Поле поиска растягивается на всё доступное пространство */
     text-align: center;
     position: relative; /* Для позиционирования иконки */
-    padding-right: 512px;
 }
 
 header .search-bar .search-container {
@@ -67,8 +67,56 @@ header .search-bar .search-input:focus {
     background-color: #E5FF5A; /* Цвет фона при фокусе */
 }
 
-header .actor-indicator {
-    font-size: 14px;
-    color: #333;
-    text-align: right;
+/* Стиль контейнера с кнопками */
+.actor-content {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Расстояние между кнопками */
 }
+
+.auth-buttons {
+    display: flex;
+    gap: 10px; /* Отступ между кнопками */
+}
+
+/* Стиль кнопок */
+.auth-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #66A932;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #528C29; /* Темнее при наведении */
+}
+
+.auth-button.register {
+    background-color: #66A932; /* Цвет для кнопки "Регистрация" */
+}
+
+.auth-button.login {
+    background-color: #66A932; /* Цвет для кнопки "Вход" */
+}
+
+.auth-button.favorites {
+    background-color: #FFC107; /* Жёлтый цвет для кнопки "Избранное" */
+    color: black;
+}
+
+.auth-button.favorites:hover {
+    background-color: #E0A800;
+}
+
+.logout-button .auth-button {
+    background-color: #707070; /* Более тёмный серый цвет */
+}
+
+.logout-button .auth-button:hover {
+    background-color: #5A5A5A; /* Ещё темнее при наведении */
+}}

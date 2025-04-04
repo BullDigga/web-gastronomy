@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="{% static 'js/scripts.js' %}"></script>
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+
 </head>
 <body>
     <header>
@@ -27,9 +29,21 @@
         </div>
 
         <div class="actor-content">
-            <!-- Django-контент header'а, зависящий от актора -->
-            {% block header-content %}
-            {% endblock %}
+            <!-- Логика для гостей и авторизованных пользователей -->
+            {% if not user.is_authenticated %}
+                <div class="auth-buttons">
+                    <a href="{% url 'registration' %}" class="auth-button register">Регистрация</a>
+                    <a href="#" class="auth-button login">Вход</a>
+                </div>
+            {% else %}
+                <a href="{% url 'favorites' %}" class="auth-button favorites">Избранное</a>
+                <div class="auth-buttons">
+                    <a href="{% url 'profile' user.id %}" class="auth-button profile">{{ user.username }}</a>
+                </div>
+                <div class="logout-button">
+                    <a href="{% url 'logout' %}" class="auth-button logout">Выйти</a>
+                </div>
+            {% endif %}
         </div>
     </header>
 

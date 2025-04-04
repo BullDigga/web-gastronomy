@@ -1,0 +1,57 @@
+/* Стиль контейнера профиля */
+.profile-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #F6F6F6;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Стиль строки с информацией */
+.info-row {
+    display: flex;
+    align-items: baseline; /* Выравнивание текста по базовой линии */
+    margin-bottom: 15px;
+}
+
+.info-row .label {
+    font-weight: bold;
+    color: #444;
+    min-width: 100px; /* Фиксированная ширина для пояснений */
+    text-align: right; /* Прижимаем пояснения к правому краю */
+    margin-right: 10px; /* Отступ между пояснением и данными */
+}
+
+.info-row .value {
+    color: black; /* Чёрный цвет для данных пользователя */
+    font-size: 16px;
+}
+
+/* Стиль блока с кнопкой */
+.profile-actions {
+    margin-top: 20px;
+    text-align: left; /* Кнопка прижата к левому краю */
+}
+
+/* Стиль кнопки "Рецепты пользователя" */
+.profile-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #66A932;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.profile-button:hover {
+    background-color: #528C29;
+}

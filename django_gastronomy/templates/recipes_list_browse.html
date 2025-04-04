@@ -1,15 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block header-content %}
-    {% if not user.is_authenticated %}
-        <div class="auth-buttons">
-            <a href="{% url 'registration' %}" class="auth-button register">Регистрация</a>
-            <a href="#" class="auth-button login">Вход</a>
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block title %}Список рецептов{% endblock %}
 
 {% block content %}

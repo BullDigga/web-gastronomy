@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/profile_view.css' %}">
+    <script src="{% static 'js/profile_view.js' %}"></script>
+
+    <div class="profile-container">
+        <h1>Профиль</h1>
+        <div class="profile-info">
+            <div class="info-row">
+                <span class="label">Псевдоним:</span>
+                <span class="value">{{ user.username }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Email:</span>
+                <span class="value">{{ user.email }}</span>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <a href="#" class="profile-button">Рецепты пользователя ({{ recipe_count }})</a>
+        </div>
+    </div>
+{% endblock %}
