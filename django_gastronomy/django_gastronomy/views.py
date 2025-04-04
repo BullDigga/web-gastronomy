@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe
 from django.contrib.auth.models import User
+from django.contrib.auth import login
 from django.contrib import messages
 
 def recipes_list_browse(request):
@@ -49,6 +50,9 @@ def registration_view(request):
 
         # Создаем нового пользователя
         new_user = User.objects.create_user(username=username, email=email, password=password)
+
+        # Автоматический вход пользователя
+        login(request, new_user)  # Авторизуем пользователя
         messages.success(request, 'Вы успешно зарегистрировались!')
 
         # Перенаправляем на страницу профиля нового пользователя
