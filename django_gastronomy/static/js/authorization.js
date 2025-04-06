@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isServerError) return;
 
         const value = emailInput.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Регулярное выражение для email
+        const cyrillicRegex = /[а-яА-ЯЁё]/; // Регулярное выражение для кириллицы
 
         if (!value) {
             emailEmoji.textContent = '❌';
@@ -29,11 +30,17 @@ document.addEventListener('DOMContentLoaded', function () {
             emailEmoji.classList.add('invalid');
             emailError.textContent = 'Не введён Email.';
             emailError.style.display = 'block';
+        } else if (cyrillicRegex.test(value)) {
+            emailEmoji.textContent = '❌';
+            emailEmoji.classList.remove('valid');
+            emailEmoji.classList.add('invalid');
+            emailError.textContent = 'Некорректный email.'; // Ошибка при наличии русских символов
+            emailError.style.display = 'block';
         } else if (!emailRegex.test(value)) {
             emailEmoji.textContent = '❌';
             emailEmoji.classList.remove('valid');
             emailEmoji.classList.add('invalid');
-            emailError.textContent = 'Некорректный email.';
+            emailError.textContent = 'Некорректный email.'; // Ошибка формата email
             emailError.style.display = 'block';
         } else {
             emailEmoji.textContent = '✅';
@@ -108,13 +115,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.error('Ошибка:', error.message);
 
-            // Очищаем предыдущие ошибки
-            emailError.style.display = 'none';
-            passwordError.style.display = 'none';
-
             // Проверяем текст ошибки
             if (error.message.includes('email')) {
-                emailError.textContent = error.message;
+                emailError.textContent = 'Некорректный email.'; // Изменено сообщение об ошибке
                 emailError.style.display = 'block';
             } else if (error.message.includes('пароль')) {
                 passwordError.textContent = error.message;

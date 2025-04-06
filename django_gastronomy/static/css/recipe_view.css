@@ -1,0 +1,202 @@
+/* Общий стиль страницы */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F6F6F6;
+}
+
+/* Стиль контейнера рецепта */
+.recipe-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Стиль названия рецепта */
+.recipe-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Стиль блока с оценкой и кнопкой "Добавить в избранное" */
+.rating-and-favorites {
+    display: flex;
+    justify-content: space-between; /* Размещаем элементы по краям */
+    align-items: flex-start; /* Выравниваем по верху */
+    margin-bottom: 20px;
+}
+
+.rating-section {
+    display: flex;
+    flex-direction: column; /* Размещаем элементы вертикально */
+    align-items: flex-start; /* Выравниваем по левому краю */
+}
+
+.stars-and-rate {
+    display: flex;
+    align-items: center; /* Выравниваем звёзды и кнопку по центру */
+    margin-bottom: 5px; /* Отступ между звёздами и средней оценкой */
+}
+
+.stars-slider {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.star {
+    font-size: 30px; /* Размер звёзд */
+    color: #ccc; /* Цвет неактивных звёзд */
+    margin-right: -5px; /* Прижимаем звёзды друг к другу */
+    transition: color 0.3s ease; /* Плавное изменение цвета */
+}
+
+.star.active {
+    color: #FFD700; /* Цвет активных звёзд */
+}
+
+.rate-button {
+    background-color: #ccc; /* Серый цвет для гостей */
+    color: white; /* Белый текст */
+    cursor: pointer; /* Важно: указатель мыши должен быть активным */
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-left: 10px; /* Отступ между звёздами и кнопкой */
+}
+
+.rate-button.authenticated {
+    background-color: #87C756; /* Зеленый цвет для авторизованных */
+    color: white; /* Белый текст */
+}
+
+/* Средняя оценка */
+.average-rating {
+    font-size: 14px; /* Меньший шрифт */
+    color: #666; /* Серый цвет */
+    margin-top: 5px; /* Отступ сверху */
+    text-align: left; /* Выравнивание по левому краю */
+}
+
+/* Блок с кнопкой "Добавить в избранное" */
+.favorites-section {
+    display: flex;
+    align-items: center; /* Выравниваем кнопку и ошибку по центру */
+}
+
+.add-to-favorites {
+    background-color: #B5B8B1;
+    color: white; /* Белый текст */
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    align-self: flex-start; /* Прижимаем к верху */
+}
+
+.add-to-favorites.authenticated {
+    background-color: #87C756;
+    color: white; /* Белый текст */
+}
+
+/* Стиль текста ошибки */
+.error-message {
+    display: inline; /* Элемент всегда присутствует в потоке документа */
+    margin-left: 10px; /* Отступ от кнопки */
+    color: #444444; /* Цвет текста */
+    font-size: 14px;
+    line-height: 1.5;
+    vertical-align: middle; /* Выравнивание по вертикали */
+    opacity: 0; /* По умолчанию текст невидим */
+    transition: opacity 2s ease-in-out; /* Медленное затухание (по умолчанию) */
+}
+
+.error-message.visible {
+    opacity: 1; /* Показываем текст */
+    transition: opacity 0.5s ease-in-out; /* Быстрое появление */
+}
+
+/* Стиль описания рецепта */
+.recipe-description {
+    margin-bottom: 20px;
+}
+
+.recipe-text,
+.recipe-author,
+.recipe-instructions {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Стиль секции комментариев */
+.comments-section {
+    margin-top: 20px;
+}
+
+.comments-header {
+    display: flex;
+    align-items: center; /* Выравниваем по центру */
+    margin-bottom: 10px;
+}
+
+.comments-title {
+    font-size: 18px;
+    margin: 0;
+    display: flex; /* Размещаем текст и счётчик рядом */
+    align-items: center; /* Выравниваем их по центру */
+}
+
+.comments-count {
+    font-size: 14px; /* Меньший шрифт */
+    color: #666; /* Серый цвет */
+    margin-left: 5px; /* Отступ между заголовком и счётчиком */
+}
+
+/* Стиль кнопки "Оставить комментарий" */
+.add-comment-button {
+    background-color: #ccc; /* Серый цвет для гостей */
+    color: white; /* Белый текст */
+    cursor: pointer; /* Важно: указатель мыши должен быть активным */
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-left: 10px; /* Отступ между счётчиком и кнопкой */
+}
+
+.add-comment-button.authenticated {
+    background-color: #87C756; /* Зеленый цвет для авторизованных */
+    color: white; /* Белый текст */
+}
+
+/* Стиль контейнера кнопки "Выйти" */
+.logout-button {
+    display: flex;
+    align-items: center; /* Выравниваем кнопку по центру */
+}
+
+.logout-button form {
+    margin: 0; /* Убираем внешние отступы формы */
+    padding: 0; /* Убираем внутренние отступы формы */
+}
+
+.logout-button .auth-button {
+    background-color: #707070; /* Серый цвет фона */
+    color: white; /* Белый текст */
+    padding: 10px 15px; /* Отступы внутри кнопки */
+    border: none; /* Убираем границы */
+    border-radius: 4px; /* Скругляем углы */
+    font-size: 14px; /* Размер текста */
+    cursor: pointer; /* Указатель мыши */
+    transition: background-color 0.3s ease; /* Плавное изменение цвета */
+}
+
+.logout-button .auth-button:hover {
+    background-color: #5A5A5A; /* Темнее при наведении */
+}

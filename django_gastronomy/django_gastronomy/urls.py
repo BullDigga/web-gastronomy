@@ -29,6 +29,8 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.profile_view, name='profile'),
     path('favorites/', views.favorites_view, name='favorites'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    path('recipes/<int:recipe_id>/', views.recipe_view, name='recipe_view'),
+    path('user/<int:user_id>/recipes/', views.recipes_list_browse, name='user_recipes'),  # Новый маршрут
 ]
 
 if settings.DEBUG:

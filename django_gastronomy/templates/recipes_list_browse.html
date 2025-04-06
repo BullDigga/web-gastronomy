@@ -1,44 +1,62 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Список рецептов{% endblock %}
+{% block title %}
+    {% if author %}
+        Рецепты {{ author.username }}
+    {% else %}
+        Список рецептов
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/recipes_list_browse.css' %}">
     <script src="{% static 'js/recipes_list_browse.js' %}"></script>
 
-    <div class="recipes-container">
-        <h1 class="header">Рецепты</h1>
-        {% for recipe in recipes %}
-            <div class="recipe-card">
-                <div class="recipe-info">
-                    <div class="info-row">
-                        <span class="label">Название:</span>
-                        <span class="value">
-                            <a class="recipe-link" href="#">{{ recipe.title }}</a>
-                        </span>
+    <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
+        <div class="recipes-container">
+            <!-- Заголовок -->
+            <h1 class="header">
+                Рецепты
+                {% if author %}
+                    <a class="author-link" href="{% url 'profile' author.id %}">{{ author.username }}</a>
+                {% endif %}
+            </h1>
+
+            <!-- Список рецептов -->
+            {% for recipe in recipes %}
+                <div class="recipe-card" data-recipe-id="{{ recipe.id }}">
+                    <div class="recipe-info">
+                        <div class="info-row">
+                            <span class="label">Название:</span>
+                            <span class="value">
+                                <a class="recipe-link" href="{% url 'recipe_view' recipe.id %}">{{ recipe.title }}</a>
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Описание:</span>
+                            <span class="value">{{ recipe.description|truncatewords:10 }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Автор:</span>
+                            <span class="value">
+                                <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
+                            </span>
+                        </div>
                     </div>
-                    <div class="info-row">
-                        <span class="label">Описание:</span>
-                        <span class="value">{{ recipe.description|truncatewords:10 }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Автор:</span>
-                        <span class="value">
-                            <a class="author-link" href="#">{{ recipe.author.username }}</a>
-                        </span>
+                    <div class="buttons">
+                        <button class="view-recipe" data-recipe-id="{{ recipe.id }}">Посмотреть рецепт</button>
+                        <button class="add-to-favorites {% if user.is_authenticated %}authenticated{% endif %}">
+                            Добавить в избранное
+                            {% if not user.is_authenticated %}
+                                <span class="tooltip">Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное</span>
+                            {% endif %}
+                        </button>
                     </div>
                 </div>
-                <div class="buttons">
-                    <button class="view-recipe">Посмотреть рецепт</button>
-                    <button class="add-to-favorites">
-                        Добавить в избранное
-                        <span class="tooltip">Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное</span>
-                    </button>
-                </div>
-            </div>
-        {% empty %}
-            <p>Нет опубликованных рецептов.</p>
-        {% endfor %}
-    </div>
+            {% empty %}
+                <p>Нет опубликованных рецептов.</p>
+            {% endfor %}
+        </div>
+    </body>
 {% endblock %}

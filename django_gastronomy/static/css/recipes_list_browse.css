@@ -122,6 +122,10 @@ button {
     font-size: 14px;
 }
 
+.add-to-favorites.authenticated {
+    background-color: #87C756; /* Зеленый цвет */
+}
+
 /* Стиль подсказки */
 .tooltip {
     display: none; /* Скрываем по умолчанию */

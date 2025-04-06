@@ -90,6 +90,8 @@ header .search-bar .search-input:focus {
     font-size: 14px;
     text-align: center;
     transition: background-color 0.3s ease;
+    border: none; /* Убираем границы */
+    cursor: pointer; /* Указатель мыши */
 }
 
 .auth-button:hover {
@@ -113,10 +115,28 @@ header .search-bar .search-input:focus {
     background-color: #E0A800;
 }
 
+/* Стиль кнопки "Выйти" */
+.logout-button {
+    display: flex;
+    align-items: center; /* Выравниваем кнопку по центру */
+}
+
+.logout-button form {
+    margin: 0; /* Убираем отступы формы */
+    padding: 0; /* Убираем внутренние отступы формы */
+}
+
 .logout-button .auth-button {
     background-color: #707070; /* Более тёмный серый цвет */
+    color: white; /* Белый текст */
+    padding: 10px 15px; /* Одинаковые отступы */
+    border-radius: 4px; /* Скругленные углы */
+    text-decoration: none; /* Убираем подчеркивание */
+    transition: background-color 0.3s ease; /* Плавное изменение цвета */
+    border: none; /* Убираем границы */
+    cursor: pointer; /* Указатель мыши */
 }
 
 .logout-button .auth-button:hover {
     background-color: #5A5A5A; /* Ещё темнее при наведении */
-}}
+}

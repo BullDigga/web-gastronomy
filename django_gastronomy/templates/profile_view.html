@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="profile-actions">
-            <a href="#" class="profile-button">Рецепты пользователя ({{ recipe_count }})</a>
+            <a href="{% url 'user_recipes' user.id %}" class="profile-button">Рецепты пользователя ({{ recipe_count }})</a>
         </div>
     </div>
 {% endblock %}

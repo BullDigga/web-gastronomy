@@ -43,18 +43,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isServerError) return;
 
         const value = emailInput.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Регулярное выражение для email
+        const cyrillicRegex = /[а-яА-ЯЁё]/; // Регулярное выражение для кириллицы
+
         if (!value) {
             emailEmoji.textContent = '❌';
             emailEmoji.classList.remove('valid');
             emailEmoji.classList.add('invalid');
             emailError.textContent = 'Email обязателен для заполнения.';
             emailError.style.display = 'block';
+        } else if (cyrillicRegex.test(value)) {
+            emailEmoji.textContent = '❌';
+            emailEmoji.classList.remove('valid');
+            emailEmoji.classList.add('invalid');
+            emailError.textContent = 'Некорректный email.'; // Ошибка при наличии русских символов
+            emailError.style.display = 'block';
         } else if (!emailRegex.test(value)) {
             emailEmoji.textContent = '❌';
             emailEmoji.classList.remove('valid');
             emailEmoji.classList.add('invalid');
-            emailError.textContent = 'Некорректный email.';
+            emailError.textContent = 'Некорректный email.'; // Ошибка формата email
             emailError.style.display = 'block';
         } else {
             emailEmoji.textContent = '✅';
@@ -137,14 +145,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.error('Ошибка:', error.message);
 
+            // Убираем лишние пробелы и приводим текст к нижнему регистру
+            const errorMessage = error.message.trim().toLowerCase();
+
+            // Логируем обработанную ошибку для отладки
+            console.log('Обработанная ошибка:', errorMessage);
+
             // Проверяем текст ошибки
-            if (error.message.includes('псевдоним')) {
-                usernameError.textContent = error.message;
-                usernameError.style.display = 'block';
-            } else if (error.message.includes('email')) {
-                emailError.textContent = error.message;
+            if (errorMessage.includes('уже зарегистрирован')) {
+                emailError.textContent = 'Данный email уже зарегистрирован.'; // Ошибка для зарегистрированного email
                 emailError.style.display = 'block';
-            } else if (error.message.includes('пароль')) {
+            } else if (errorMessage.includes('email')) {
+                emailError.textContent = 'Некорректный email.'; // Ошибка для некорректного email
+                emailError.style.display = 'block';
+            } else if (errorMessage.includes('пароль')) {
                 passwordError.textContent = error.message;
                 passwordError.style.display = 'block';
             } else {

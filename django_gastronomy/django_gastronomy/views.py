@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe
+from comments.models import Comment
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
@@ -8,12 +9,21 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-def recipes_list_browse(request):
-    published_recipes = Recipe.objects.filter(status='published').order_by('-id')[:10]
-    print(f"Количество опубликованных рецептов: {published_recipes.count()}")
+def recipes_list_browse(request, user_id=None):
+    if user_id:
+        # Если передан user_id, фильтруем рецепты по автору
+        author = get_object_or_404(User, id=user_id)
+        recipes = Recipe.objects.filter(author=author, status='published').order_by('-id')
+    else:
+        # Если user_id не передан, показываем все опубликованные рецепты
+        author = None
+        recipes = Recipe.objects.filter(status='published').order_by('-id')
+
+    print(f"Количество рецептов: {recipes.count()}")
 
     context = {
-        'recipes': published_recipes,
+        'recipes': recipes,
+        'author': author,  # Передаём автора в контекст
     }
     return render(request, 'recipes_list_browse.html', context)
 
@@ -137,3 +147,22 @@ def favorites_view(request):
         'favorite_recipes': favorite_recipes,
     }
     return render(request, 'favorites.html', context)
+
+
+def recipe_view(request, recipe_id):
+    # Получаем рецепт из БД по ID, но только если его статус "published"
+    recipe = get_object_or_404(Recipe, id=recipe_id, status='published')
+
+    # Получаем количество комментариев
+    comments_count = recipe.comments_count()
+
+    # Получаем средний рейтинг
+    average_rating = recipe.average_rating()
+
+    # Передаем данные в шаблон
+    return render(request, 'recipe_view.html', {
+        'recipe': recipe,
+        'comments_count': comments_count,
+        'average_rating': average_rating,
+        'is_authenticated': request.user.is_authenticated  # Передаем флаг авторизации
+    })

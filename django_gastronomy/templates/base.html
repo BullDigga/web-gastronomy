@@ -10,10 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="{% static 'js/scripts.js' %}"></script>
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-
-
 </head>
-<body>
+<body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
     <header>
         <div class="logo">
             <a href="/" class="logo-link">

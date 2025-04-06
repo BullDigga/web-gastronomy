@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Просмотр рецепта: {{ recipe.title }}{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/recipe_view.css' %}">
+    <script src="{% static 'js/recipe_view.js' %}"></script>
+
+    <div class="recipe-container">
+        <!-- Название рецепта -->
+        <h2 class="recipe-title">{{ recipe.title }}</h2>
+
+        <!-- Контейнер с оценкой и кнопкой "Добавить в избранное" -->
+        <div class="rating-and-favorites">
+            <div class="rating-section">
+                <!-- Звёзды и кнопка "Оценить" -->
+                <div class="stars-and-rate">
+                    <div class="stars-slider">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <button class="rate-button {% if is_authenticated %}authenticated{% endif %}">
+                        Оценить
+                    </button>
+                    <!-- Общий контейнер для ошибок -->
+                    <span id="error-general" class="error-message"></span>
+                </div>
+
+                <!-- Средняя оценка -->
+                <p class="average-rating"><strong>Средняя оценка:</strong> {{ average_rating|floatformat:1 }}/5</p>
+            </div>
+
+            <!-- Кнопка "Добавить в избранное" -->
+            <button class="add-to-favorites {% if user.is_authenticated %}authenticated{% endif %}">
+                Добавить в избранное
+            </button>
+        </div>
+
+        <!-- Описание рецепта -->
+        <div class="recipe-description">
+            <p class="recipe-text"><strong>Описание:</strong> {{ recipe.description }}</p>
+            <p class="recipe-author">
+                <strong>Автор:</strong>
+                <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
+            </p>
+            <p class="recipe-instructions"><strong>Инструкция:</strong> {{ recipe.instruction|default:"Нет инструкции" }}</p>
+        </div>
+
+        <!-- Комментарии -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <h3 class="comments-title">Комментарии <span class="comments-count">({{ comments_count }})</span></h3>
+                <button class="add-comment-button {% if is_authenticated %}authenticated{% endif %}">
+                    Оставить комментарий
+                </button>
+                <!-- Контейнер для ошибки комментария -->
+                <span id="error-comment" class="error-message"></span>
+            </div>
+            <div class="comments-list">
+                {% for comment in recipe.comments.all %}
+                    <div class="comment">
+                        <strong>{{ comment.author.username }}:</strong> {{ comment.text }}
+                    </div>
+                {% empty %}
+                    <p>Нет комментариев.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
