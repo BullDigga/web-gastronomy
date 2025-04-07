@@ -27,10 +27,11 @@ urlpatterns = [
     path('register/', views.registration_view, name='registration'),
     path('authorization/', views.authorization_view, name='authorization'),
     path('profile/<int:user_id>/', views.profile_view, name='profile'),
-    path('favorites/', views.favorites_view, name='favorites'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('recipes/<int:recipe_id>/', views.recipe_view, name='recipe_view'),
-    path('user/<int:user_id>/recipes/', views.recipes_list_browse, name='user_recipes'),  # Новый маршрут
+    path('user/<int:user_id>/recipes/', views.recipes_list_browse, name='user_recipes'),
+    path('favorites/', views.recipes_list_browse, {'favorites': True}, name='favorites'),
+    path('favorites/<int:recipe_id>/', views.toggle_favorite, name='toggle_favorite'),
 ]
 
 if settings.DEBUG:

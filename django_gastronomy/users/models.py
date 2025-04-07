@@ -12,8 +12,9 @@ class UserManager(BaseUserManager):
         elif not password:
             raise ValueError(_('The password must be set'))
         email = self.normalize_email(email)
-        user = self.model(email=email, password=password, **extra_fields)
-        user.save()
+        user = self.model(email=email, **extra_fields)  # Убираем password из model()
+        user.set_password(password)  # Хэшируем пароль
+        user.save(using=self._db)  # Сохраняем пользователя
         return user
 
     def create_superuser(self, email, password, **extra_fields):

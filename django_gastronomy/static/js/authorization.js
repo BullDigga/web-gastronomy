@@ -107,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             if (data.success) {
-                window.location.href = '/';
+                // Перенаправляем пользователя на страницу профиля
+                window.location.href = data.redirect_url;
             }
         })
         .catch(error => {

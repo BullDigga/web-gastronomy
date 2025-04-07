@@ -1,34 +1,3 @@
-/* Стиль контейнера с кнопками */
-.auth-buttons {
-    display: flex;
-    gap: 10px; /* Отступ между кнопками */
-}
-
-/* Стиль кнопок */
-.auth-button {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #66A932;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 14px;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-.auth-button:hover {
-    background-color: #528C29; /* Темнее при наведении */
-}
-
-.auth-button.register {
-    background-color: #66A932; /* Цвет для кнопки "Регистрация" */
-}
-
-.auth-button.login {
-    background-color: #66A932; /* Цвет для кнопки "Вход" */
-}
-
 /* Общий стиль страницы */
 body {
     font-family: Arial, sans-serif;
@@ -113,33 +82,45 @@ button {
 /* Стиль кнопки "Добавить в избранное" */
 .add-to-favorites {
     position: relative; /* Нужно для позиционирования подсказки */
-    background-color: #B5B8B1;
+    background-color: #87C756; /* Зелёный цвет по умолчанию */
     color: white;
     padding: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    transition: background-color 0.3s ease; /* Плавный переход цвета */
 }
 
-.add-to-favorites.authenticated {
-    background-color: #87C756; /* Зеленый цвет */
+/* Стиль для кнопки "Убрать из избранного" */
+.add-to-favorites.favorited {
+    background-color: #DD6031; /* Основной цвет фона */
+    color: white; /* Белый текст */
+    border-color: #DD6031; /* Цвет рамки */
 }
 
-/* Стиль подсказки */
+.add-to-favorites.favorited:hover {
+    background-color: #b54e2a; /* Темнее при наведении */
+    border-color: #b54e2a; /* Темнее при наведении */
+}
+
+/* Подсказка для неавторизованных пользователей */
 .tooltip {
     display: none; /* Скрываем по умолчанию */
     position: absolute;
     top: 100%; /* Размещаем под кнопкой */
-    left: 0; /* Выравниваем по левому краю кнопки */
+    left: 50%; /* Центрируем по горизонтали */
+    transform: translateX(-50%); /* Корректируем центрирование */
     margin-top: 5px; /* Отступ сверху */
     padding: 5px; /* Внутренний отступ текста */
     font-size: 12px;
     color: #444444; /* Цвет текста */
-    background-color: transparent; /* Убираем фон */
+    background-color: #F6F6F6; /* Светлый фон */
+    border: 1px solid #ccc; /* Граница */
+    border-radius: 4px; /* Скругление углов */
     white-space: normal; /* Разрешаем перенос текста */
     word-wrap: break-word; /* Переносим длинные слова */
-    max-width: 300px; /* Увеличиваем ширину подсказки */
+    max-width: 300px; /* Ограничение ширины */
     text-align: center; /* Выравниваем текст по центру */
     z-index: 10; /* Чтобы подсказка была поверх других элементов */
 }
@@ -149,7 +130,33 @@ button {
     display: block;
 }
 
-/* Фиксируем подсказку после клика */
-.tooltip.show {
-    display: block !important;
+/* Стиль контейнера с кнопками */
+.auth-buttons {
+    display: flex;
+    gap: 10px; /* Отступ между кнопками */
+}
+
+/* Стиль кнопок */
+.auth-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #66A932;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #528C29; /* Темнее при наведении */
+}
+
+.auth-button.register {
+    background-color: #66A932; /* Цвет для кнопки "Регистрация" */
+}
+
+.auth-button.login {
+    background-color: #66A932; /* Цвет для кнопки "Вход" */
 }

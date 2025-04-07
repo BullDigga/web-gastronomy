@@ -12,15 +12,18 @@
         <div class="profile-info">
             <div class="info-row">
                 <span class="label">Псевдоним:</span>
-                <span class="value">{{ user.username }}</span>
+                <span class="value">{{ profile_user.username }}</span>
             </div>
             <div class="info-row">
                 <span class="label">Email:</span>
-                <span class="value">{{ user.email }}</span>
+                <span class="value">{{ profile_user.email }}</span>
             </div>
         </div>
         <div class="profile-actions">
-            <a href="{% url 'user_recipes' user.id %}" class="profile-button">Рецепты пользователя ({{ recipe_count }})</a>
+            <!-- Ссылка на рецепты пользователя -->
+            <a href="{% url 'user_recipes' profile_user.id %}" class="profile-button">
+                Рецепты пользователя ({{ recipe_count }})
+            </a>
         </div>
     </div>
 {% endblock %}

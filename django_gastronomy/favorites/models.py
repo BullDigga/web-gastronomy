@@ -20,7 +20,7 @@ class Favorite(models.Model):
         verbose_name = 'избранный рецепт'
         verbose_name_plural = 'избранные рецепты'
         db_table = 'favorites'
-        unique_together = ('user', 'recipe')  # Запрет дубликатов
+        unique_together = ('user', 'recipe')
 
     def __str__(self):
         return f"{self.recipe.title} в избранном у {self.user.email}"
