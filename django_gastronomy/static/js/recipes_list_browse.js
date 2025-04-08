@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     favoriteButtons.forEach(button => {
         button.addEventListener('click', function () {
+            // Если пользователь не авторизован, ничего не делаем
             if (!isAuthenticated) {
-                alert('Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное.');
                 return;
             }
 
