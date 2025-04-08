@@ -197,12 +197,19 @@ def recipe_view(request, recipe_id):
     # Получаем средний рейтинг
     average_rating = recipe.average_rating()
 
+    # Получаем ID избранных рецептов для текущего пользователя
+    if request.user.is_authenticated:
+        favorite_recipe_ids = Favorite.objects.filter(user=request.user).values_list('recipe_id', flat=True)
+    else:
+        favorite_recipe_ids = []
+
     # Передаем данные в шаблон
     return render(request, 'recipe_view.html', {
         'recipe': recipe,
         'comments_count': comments_count,
         'average_rating': average_rating,
-        'is_authenticated': request.user.is_authenticated  # Передаем флаг авторизации
+        'is_authenticated': request.user.is_authenticated,  # Передаем флаг авторизации
+        'favorite_recipe_ids': list(favorite_recipe_ids),  # Передаем список ID избранных рецептов
     })
 
 

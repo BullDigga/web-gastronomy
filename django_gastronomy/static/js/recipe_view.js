@@ -80,13 +80,62 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Обработка кликов на кнопку "Добавить в избранное"
     const favoriteButton = document.querySelector('.add-to-favorites');
-    favoriteButton.addEventListener('click', function () {
-        if (!isAuthenticated) {
-            showError(errorGeneral, 'Войдите в аккаунт, чтобы добавить рецепт в избранное.');
-        } else {
-            alert('Рецепт добавлен в избранное!');
-        }
-    });
+    if (favoriteButton) {
+        favoriteButton.addEventListener('click', async function () {
+            if (!isAuthenticated) {
+                showError(errorGeneral, 'Войдите в аккаунт, чтобы добавить рецепт в избранное.');
+                return;
+            }
+
+            const recipeId = favoriteButton.dataset.recipeId;
+
+            if (!recipeId) {
+                console.error('ID рецепта не найден.');
+                return;
+            }
+
+            // Отключаем кнопку, чтобы предотвратить повторные клики
+            favoriteButton.disabled = true;
+
+            try {
+                const response = await fetch(`/favorites/${recipeId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        recipe_id: recipeId
+                    })
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`Ошибка сервера: ${text}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Обновляем текст и стиль кнопки
+                    if (data.action === 'added') {
+                        favoriteButton.textContent = 'Удалить из избранного';
+                        favoriteButton.classList.add('favorited');
+                    } else if (data.action === 'removed') {
+                        favoriteButton.textContent = 'Добавить в избранное';
+                        favoriteButton.classList.remove('favorited');
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка:', error.message);
+                alert(error.message);
+            } finally {
+                // Включаем кнопку обратно
+                favoriteButton.disabled = false;
+            }
+        });
+    }
 
     // Обработка кликов на кнопку "Оставить комментарий"
     const commentButton = document.querySelector('.add-comment-button');

@@ -21,6 +21,8 @@
                     Рецепты пользователя <a class="author-link" href="{% url 'profile' author.id %}">{{ author.username }}</a>
                 {% elif favorites %}
                     Ваши избранные рецепты
+                {% else %}
+                    Последние опубликованные рецепты
                 {% endif %}
             </h1>
 
@@ -46,7 +48,6 @@
                         </div>
                     </div>
                     <div class="buttons">
-                        <button class="view-recipe" data-recipe-id="{{ recipe.id }}">Посмотреть рецепт</button>
                         <!-- Кнопка добавления в избранное -->
                         <button class="add-to-favorites {% if user.is_authenticated %}authenticated{% endif %} {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
                             data-recipe-id="{{ recipe.id }}">

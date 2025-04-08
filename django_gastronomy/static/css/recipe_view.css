@@ -98,6 +98,7 @@ body {
     cursor: pointer;
     font-size: 14px;
     align-self: flex-start; /* Прижимаем к верху */
+    transition: background-color 0.3s ease;
 }
 
 .add-to-favorites.authenticated {
@@ -199,4 +200,15 @@ body {
 
 .logout-button .auth-button:hover {
     background-color: #5A5A5A; /* Темнее при наведении */
+}
+
+.add-to-favorites.favorited {
+    background-color: #DD6031; /* Основной цвет фона */
+    color: white; /* Белый текст */
+    border-color: #DD6031; /* Цвет рамки */
+}
+
+.add-to-favorites.favorited:hover {
+    background-color: #b54e2a; /* Темнее при наведении */
+    border-color: #b54e2a; /* Темнее при наведении */
 }
