@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Подтверждение удаления аккаунта{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/confirm_delete_account.css' %}">
+    <script src="{% static 'js/confirm_delete_account.js' %}"></script>
+
+    <div class="authorization-container">
+        <h1>Вы действительно хотите удалить свой аккаунт?</h1>
+
+        {% if user_recipes.exists %}
+            <p>Вы создали такие рецепты как:</p>
+            <ul>
+                {% for recipe in user_recipes %}
+                    <li>{{ recipe.title }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if favorite_recipes.exists %}
+            <p>Вы добавили в избранное такие рецепты как:</p>
+            <ul>
+                {% for favorite in favorite_recipes %}
+                    <li>{{ favorite.recipe.title }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form id="delete-account-form" method="POST" action="{% url 'delete_account' %}" class="authorization-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="password">Введите ваш пароль для подтверждения:</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" required>
+                    <span class="emoji">🔒</span>
+                </div>
+                <!-- Элемент для отображения ошибки -->
+                <span class="error-message">Неверный пароль.</span>
+            </div>
+            <button type="submit" class="login-button">Удалить аккаунт</button>
+        </form>
+    </div>
+{% endblock %}

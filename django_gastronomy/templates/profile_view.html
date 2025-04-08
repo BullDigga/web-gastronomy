@@ -20,10 +20,15 @@
             </div>
         </div>
         <div class="profile-actions">
-            <!-- Ссылка на рецепты пользователя -->
             <a href="{% url 'user_recipes' profile_user.id %}" class="profile-button">
                 Рецепты пользователя ({{ recipe_count }})
             </a>
+
+            {% if request.user == profile_user %}
+                <button id="delete-account-button" class="profile-button danger">
+                    Удалить аккаунт
+                </button>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

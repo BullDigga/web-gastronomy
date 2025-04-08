@@ -32,6 +32,8 @@ urlpatterns = [
     path('user/<int:user_id>/recipes/', views.recipes_list_browse, name='user_recipes'),
     path('favorites/', views.recipes_list_browse, {'favorites': True}, name='favorites'),
     path('favorites/<int:recipe_id>/', views.toggle_favorite, name='toggle_favorite'),
+    path('confirm_delete_account/', views.confirm_delete_account, name='confirm_delete_account'),
+    path('delete_account/', views.delete_account, name='delete_account'),
 ]
 
 if settings.DEBUG:

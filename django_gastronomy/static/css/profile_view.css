@@ -37,6 +37,7 @@
 /* Стиль блока с кнопкой */
 .profile-actions {
     margin-top: 20px;
+    gap: 10px;
     text-align: left; /* Кнопка прижата к левому краю */
 }
 
@@ -50,8 +51,30 @@
     border-radius: 4px;
     font-size: 16px;
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .profile-button:hover {
     background-color: #528C29;
+}
+
+/* Стиль для кнопки "Рецепты пользователя" */
+.profile-button:not(.danger) {
+    background-color: #66A932; /* Зелёный цвет */
+}
+
+.profile-button:not(.danger):hover {
+    background-color: #528C29; /* Темнее при наведении */
+}
+
+/* Стиль для кнопки "Удалить аккаунт" */
+.profile-button.danger {
+    background-color: #DD6031; /* Красный цвет фона */
+    color: white; /* Белый текст */
+    border: none; /* Убираем границу */
+    outline: none; /* Убираем стандартную обводку */
+}
+
+.profile-button.danger:hover {
+    background-color: #b54e2a; /* Темнее при наведении */
 }

@@ -82,7 +82,7 @@ button {
 /* Стиль кнопки "Добавить в избранное" */
 .add-to-favorites {
     position: relative; /* Нужно для позиционирования подсказки */
-    background-color: #B5B8B1; /* Зелёный цвет по умолчанию */
+    background-color: #B5B8B1;
     color: white;
     padding: 10px;
     border: none;
