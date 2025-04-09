@@ -2,10 +2,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe
 from comments.models import Comment
 from favorites.models import Favorite
+from ratings.models import Rate
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db.models import Avg, Count
+from django.core.exceptions import ObjectDoesNotExist
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -194,22 +197,41 @@ def recipe_view(request, recipe_id):
     # Получаем количество комментариев
     comments_count = recipe.comments_count()
 
-    # Получаем средний рейтинг
-    average_rating = recipe.average_rating()
+    # Получаем средний рейтинг и количество оценок
+    ratings_data = recipe.rates.aggregate(
+        avg_rating=Avg('value'),  # Средняя оценка
+        count_ratings=Count('id')  # Количество оценок
+    )
+    average_rating = round(float(ratings_data['avg_rating']), 1) if ratings_data['avg_rating'] else 0
+    ratings_count = ratings_data['count_ratings']
 
-    # Получаем ID избранных рецептов для текущего пользователя
-    if request.user.is_authenticated:
-        favorite_recipe_ids = Favorite.objects.filter(user=request.user).values_list('recipe_id', flat=True)
-    else:
-        favorite_recipe_ids = []
+    # Получаем количество добавлений рецепта в избранное
+    favorites_count = recipe.favorited_by.count()  # Используем related_name='favorited_by'
+
+    # Определяем, авторизован ли пользователь
+    is_authenticated = request.user.is_authenticated
+
+    # Получаем ID избранных рецептов для текущего пользователя (если авторизован)
+    favorite_recipe_ids = []
+    if is_authenticated:
+        favorite_recipe_ids = list(Favorite.objects.filter(user=request.user).values_list('recipe_id', flat=True))
+
+    # Получаем текущую оценку пользователя (если авторизован)
+    user_rating = None
+    if is_authenticated:
+        user_rating_obj = recipe.rates.filter(user=request.user).first()
+        user_rating = user_rating_obj.value if user_rating_obj else None
 
     # Передаем данные в шаблон
     return render(request, 'recipe_view.html', {
         'recipe': recipe,
         'comments_count': comments_count,
-        'average_rating': average_rating,
-        'is_authenticated': request.user.is_authenticated,  # Передаем флаг авторизации
-        'favorite_recipe_ids': list(favorite_recipe_ids),  # Передаем список ID избранных рецептов
+        'average_rating': average_rating,  # Средняя оценка
+        'ratings_count': ratings_count,  # Количество оценок
+        'favorites_count': favorites_count,  # Количество добавлений в избранное
+        'is_authenticated': is_authenticated,  # Флаг авторизации
+        'favorite_recipe_ids': favorite_recipe_ids,  # Список ID избранных рецептов
+        'user_rating': user_rating,  # Текущая оценка пользователя
     })
 
 
@@ -226,10 +248,6 @@ def toggle_favorite(request, recipe_id):
         if not isinstance(user, User):
             return JsonResponse({'success': False, 'error': 'Неверный тип пользователя.'})
 
-        # Проверяем, что user не является строкой
-        if isinstance(user, str):
-            return JsonResponse({'success': False, 'error': 'Пользователь представлен как строка.'})
-
         # Получаем рецепт
         recipe = get_object_or_404(Recipe, id=recipe_id)
 
@@ -243,10 +261,19 @@ def toggle_favorite(request, recipe_id):
         if not created:
             # Если рецепт уже в избранном, удаляем его
             favorite.delete()
-            return JsonResponse({'success': True, 'action': 'removed'})
+            action = 'removed'
+        else:
+            # Если рецепт добавлен в избранное
+            action = 'added'
 
-        # Если рецепт добавлен в избранное
-        return JsonResponse({'success': True, 'action': 'added'})
+        # Подсчитываем количество добавлений в избранное
+        favorites_count = recipe.favorited_by.count()
+
+        return JsonResponse({
+            'success': True,
+            'action': action,
+            'favorites_count': favorites_count,  # Добавляем количество добавлений в избранное
+        })
 
     except Exception as e:
         # Логируем ошибку
@@ -310,6 +337,92 @@ def delete_account(request):
 
         except Exception as e:
             print("Неожиданная ошибка:", e)
+            return JsonResponse({'error': 'Произошла ошибка на сервере.'}, status=500)
+
+    return JsonResponse({'error': 'Неверный метод запроса.'}, status=400)
+
+
+@login_required
+@csrf_exempt
+def rate_recipe(request, recipe_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            rating_value = data.get('rating')
+
+            # Проверяем, что оценка выбрана
+            if not rating_value or not (1 <= rating_value <= 5):
+                return JsonResponse({'error': 'Выберите количество звёзд для оценки.'}, status=400)
+
+            # Получаем рецепт
+            recipe = Recipe.objects.get(id=recipe_id)
+
+            # Обновляем или создаём оценку
+            rate, created = Rate.objects.update_or_create(
+                recipe=recipe,
+                user=request.user,
+                defaults={'value': rating_value}
+            )
+
+            # Рассчитываем среднюю оценку и количество оценок
+            ratings_data = recipe.rates.aggregate(
+                avg_rating=Avg('value'),
+                count_ratings=Count('id')
+            )
+            average_rating = round(float(ratings_data['avg_rating']), 1) if ratings_data['avg_rating'] else 0
+            ratings_count = ratings_data['count_ratings']
+
+            # Подсчитываем количество добавлений в избранное
+            favorites_count = recipe.favorited_by.count()
+
+            return JsonResponse({
+                'success': True,
+                'average_rating': average_rating,
+                'ratings_count': ratings_count,
+                'favorites_count': favorites_count,  # Добавляем количество добавлений в избранное
+                'user_rating': rating_value
+            })
+
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Рецепт не найден.'}, status=404)
+        except Exception as e:
+            print("Ошибка:", e)
+            return JsonResponse({'error': 'Произошла ошибка на сервере.'}, status=500)
+
+    return JsonResponse({'error': 'Неверный метод запроса.'}, status=400)
+
+
+@login_required
+@csrf_exempt
+def delete_rating(request, recipe_id):
+    if request.method == 'POST':
+        try:
+            # Получаем рецепт
+            recipe = Recipe.objects.get(id=recipe_id)
+
+            # Удаляем оценку пользователя
+            Rate.objects.filter(recipe=recipe, user=request.user).delete()
+
+            # Рассчитываем новую среднюю оценку и количество оценок
+            ratings_data = recipe.rates.aggregate(
+                avg_rating=Avg('value'),
+                count_ratings=Count('id')
+            )
+            average_rating = round(float(ratings_data['avg_rating']), 1) if ratings_data['avg_rating'] else 0
+            ratings_count = ratings_data['count_ratings']
+
+            # Подсчитываем количество добавлений в избранное
+            favorites_count = recipe.favorited_by.count()
+
+            return JsonResponse({
+                'success': True,
+                'average_rating': average_rating,
+                'ratings_count': ratings_count,
+                'favorites_count': favorites_count,  # Добавляем количество добавлений в избранное
+            })
+
+        except Exception as e:
+            print("Ошибка:", e)
             return JsonResponse({'error': 'Произошла ошибка на сервере.'}, status=500)
 
     return JsonResponse({'error': 'Неверный метод запроса.'}, status=400)

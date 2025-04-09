@@ -1,9 +1,28 @@
 document.addEventListener('DOMContentLoaded', function () {
     const isAuthenticated = document.body.dataset.isAuthenticated === 'true';
 
+    // Глобальная переменная для ID рецепта
+    let recipeId;
+
+    // Находим кнопку "Добавить в избранное"
+    const favoriteButton = document.querySelector('.add-to-favorites');
+    if (!favoriteButton) {
+        console.error('Кнопка .add-to-favorites не найдена.');
+        return;
+    }
+
+    // Инициализируем ID рецепта
+    recipeId = favoriteButton.dataset.recipeId;
+    if (!recipeId) {
+        console.error('ID рецепта не найден.');
+        return;
+    }
+    console.log('ID рецепта:', recipeId); // Для отладки
+
     // Находим все звёзды
     const stars = document.querySelectorAll('.star');
     let currentRating = 0;
+    let initialRating = 0; // Исходная оценка пользователя
 
     // Находим элементы для вывода ошибок
     const errorGeneral = document.getElementById('error-general'); // Общий контейнер для ошибок
@@ -28,6 +47,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 
+    // Инициализация текущей оценки
+    const starsContainer = document.querySelector('.stars-slider');
+    currentRating = parseFloat(starsContainer.dataset.currentRating) || 0;
+    initialRating = currentRating; // Устанавливаем исходную оценку
+    updateStars(currentRating);
+
     // Обработка кликов на звёзды
     stars.forEach(star => {
         star.addEventListener('click', function () {
@@ -39,6 +64,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const value = parseFloat(star.getAttribute('data-value'));
             currentRating = value;
             updateStars(value);
+
+            // Показываем или скрываем кнопку "Оценить"
+            const rateButton = document.querySelector('.rate-button');
+            if (rateButton) {
+                if (currentRating === initialRating) {
+                    rateButton.style.display = 'none'; // Скрываем, если оценка совпадает с исходной
+                } else {
+                    rateButton.style.display = 'inline-block'; // Показываем, если оценка изменилась
+                }
+            }
         });
 
         star.addEventListener('mouseover', function () {
@@ -70,27 +105,133 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Обработка кликов на кнопку "Оценить"
     const rateButton = document.querySelector('.rate-button');
-    rateButton.addEventListener('click', function () {
-        if (!isAuthenticated) {
-            showError(errorGeneral, 'Войдите в аккаунт, чтобы оценить рецепт.');
-        } else {
-            alert(`Рецепт успешно оценён на ${currentRating} звёзд!`);
-        }
-    });
+    if (rateButton) {
+        rateButton.addEventListener('click', async function () {
+            if (!isAuthenticated) {
+                showError(errorGeneral, 'Войдите в аккаунт, чтобы оценить рецепт.');
+                return;
+            }
+
+            if (!currentRating) {
+                showError(errorGeneral, 'Выберите количество звёзд для оценки.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/rate_recipe/${recipeId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: JSON.stringify({ rating: currentRating }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Округляем среднюю оценку до одного знака после запятой
+                    const roundedAverageRating = parseFloat(data.average_rating).toFixed(1);
+                    const ratingsCount = data.ratings_count; // Количество оценок
+                    const favoritesCount = data.favorites_count; // Количество добавлений в избранное
+
+                    // Обновляем среднюю оценку
+                    document.querySelector('.average-rating').innerHTML =
+                        `<strong>Средняя оценка:</strong> ${roundedAverageRating}/5`;
+
+                    // Обновляем количество оценок
+                    document.querySelector('.ratings-count').innerHTML =
+                        `<strong>Количество оценок:</strong> ${ratingsCount}`;
+
+                    // Обновляем количество добавлений в избранное
+                    document.querySelector('.favorites-count').innerHTML =
+                        `<strong>Добавили в избранное:</strong> ${favoritesCount}`;
+
+                    // Обновляем исходную оценку
+                    initialRating = currentRating;
+
+                    // Скрываем кнопку "Оценить"
+                    rateButton.style.display = 'none';
+
+                    // Показываем кнопку "Удалить оценку"
+                    const deleteRatingButton = document.querySelector('.delete-rating-button');
+                    if (deleteRatingButton) {
+                        deleteRatingButton.style.display = 'inline-block';
+                    }
+                } else {
+                    showError(errorGeneral, data.error || 'Произошла ошибка при оценке.');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error.message);
+                showError(errorGeneral, 'Произошла ошибка. Попробуйте позже.');
+            }
+        });
+    }
+
+    // Обработка кликов на кнопку "Удалить оценку"
+    const deleteRatingButton = document.querySelector('.delete-rating-button');
+    if (deleteRatingButton) {
+        deleteRatingButton.addEventListener('click', async function () {
+            if (!isAuthenticated) {
+                showError(errorGeneral, 'Войдите в аккаунт, чтобы удалить оценку.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/delete_rating/${recipeId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Округляем среднюю оценку до одного знака после запятой
+                    const roundedAverageRating = parseFloat(data.average_rating).toFixed(1);
+                    const ratingsCount = data.ratings_count; // Количество оценок
+                    const favoritesCount = data.favorites_count; // Количество добавлений в избранное
+
+                    // Обновляем среднюю оценку
+                    document.querySelector('.average-rating').innerHTML =
+                        `<strong>Средняя оценка:</strong> ${roundedAverageRating}/5`;
+
+                    // Обновляем количество оценок
+                    document.querySelector('.ratings-count').innerHTML =
+                        `<strong>Количество оценок:</strong> ${ratingsCount}`;
+
+                    // Обновляем количество добавлений в избранное
+                    document.querySelector('.favorites-count').innerHTML =
+                        `<strong>Добавили в избранное:</strong> ${favoritesCount}`;
+
+                    // Сбрасываем текущую и исходную оценку
+                    currentRating = 0;
+                    initialRating = 0;
+                    updateStars(currentRating);
+
+                    // Скрываем кнопку "Удалить оценку" и показываем кнопку "Оценить"
+                    deleteRatingButton.style.display = 'none';
+                    const rateButton = document.querySelector('.rate-button');
+                    if (rateButton) {
+                        rateButton.style.display = 'inline-block';
+                    }
+                } else {
+                    showError(errorGeneral, data.error || 'Произошла ошибка при удалении оценки.');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error.message);
+                showError(errorGeneral, 'Произошла ошибка. Попробуйте позже.');
+            }
+        });
+    }
 
     // Обработка кликов на кнопку "Добавить в избранное"
-    const favoriteButton = document.querySelector('.add-to-favorites');
     if (favoriteButton) {
         favoriteButton.addEventListener('click', async function () {
             if (!isAuthenticated) {
                 showError(errorGeneral, 'Войдите в аккаунт, чтобы добавить рецепт в избранное.');
-                return;
-            }
-
-            const recipeId = favoriteButton.dataset.recipeId;
-
-            if (!recipeId) {
-                console.error('ID рецепта не найден.');
                 return;
             }
 
@@ -126,6 +267,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         favoriteButton.textContent = 'Добавить в избранное';
                         favoriteButton.classList.remove('favorited');
                     }
+
+                    // Обновляем количество добавлений в избранное
+                    const favoritesCount = data.favorites_count;
+                    document.querySelector('.favorites-count').innerHTML =
+                        `<strong>Добавили в избранное:</strong> ${favoritesCount}`;
                 }
             } catch (error) {
                 console.error('Ошибка:', error.message);
@@ -139,11 +285,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Обработка кликов на кнопку "Оставить комментарий"
     const commentButton = document.querySelector('.add-comment-button');
-    commentButton.addEventListener('click', function () {
-        if (!isAuthenticated) {
-            showError(errorComment, 'Войдите в аккаунт, чтобы оставить комментарий.');
-        } else {
-            alert('Комментарий добавлен!');
-        }
-    });
+    if (commentButton) {
+        commentButton.addEventListener('click', function () {
+            if (!isAuthenticated) {
+                showError(errorComment, 'Войдите в аккаунт, чтобы оставить комментарий.');
+            } else {
+                alert('Комментарий добавлен!');
+            }
+        });
+    }
 });

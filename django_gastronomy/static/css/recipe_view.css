@@ -212,3 +212,27 @@ body {
     background-color: #b54e2a; /* Темнее при наведении */
     border-color: #b54e2a; /* Темнее при наведении */
 }
+
+.delete-rating-button {
+    background-color: #DD6031; /* Цвет кнопки */
+    color: white; /* Цвет текста */
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px; /* Отступ слева от звёзд */
+}
+
+.delete-rating-button:hover {
+    background-color: #c74d22; /* Темнее при наведении */
+}
+
+.rating-info p {
+    font-size: 14px; /* Меньший размер шрифта */
+    color: #666; /* Цвет текста такой же, как у "Средняя оценка" */
+    margin: 5px 0; /* Отступы между строками */
+}
+
+.rating-info strong {
+    font-weight: bold; /* Жирный шрифт для заголовков */
+}

@@ -16,22 +16,39 @@
             <div class="rating-section">
                 <!-- Звёзды и кнопка "Оценить" -->
                 <div class="stars-and-rate">
-                    <div class="stars-slider">
-                        <span class="star" data-value="1">★</span>
-                        <span class="star" data-value="2">★</span>
-                        <span class="star" data-value="3">★</span>
-                        <span class="star" data-value="4">★</span>
-                        <span class="star" data-value="5">★</span>
+                    <div class="stars-slider" data-current-rating="{{ user_rating }}">
+                        {% for i in "12345" %}
+                            <span class="star {% if user_rating and user_rating >= forloop.counter %}active{% endif %}" data-value="{{ forloop.counter }}">★</span>
+                        {% endfor %}
                     </div>
-                    <button class="rate-button {% if is_authenticated %}authenticated{% endif %}">
+
+                    <!-- Кнопка "Оценить" -->
+                    <button id="rate-button" class="rate-button {% if is_authenticated %}authenticated{% endif %}"
+                            style="display: {% if not user_rating %}inline-block{% else %}none{% endif %};">
                         Оценить
                     </button>
+
+                    <!-- Кнопка "Удалить оценку" -->
+                    <button id="delete-rating-button" class="delete-rating-button"
+                            style="display: {% if user_rating %}inline-block{% else %}none{% endif %};">
+                        Удалить оценку
+                    </button>
+
                     <!-- Общий контейнер для ошибок -->
                     <span id="error-general" class="error-message"></span>
                 </div>
 
-                <!-- Средняя оценка -->
-                <p class="average-rating"><strong>Средняя оценка:</strong> {{ average_rating|floatformat:1 }}/5</p>
+                <div class="rating-info">
+                    <p class="average-rating">
+                        <strong>Средняя оценка:</strong> {{ average_rating|floatformat:1 }}/5
+                    </p>
+                    <p class="ratings-count">
+                        <strong>Количество оценок:</strong> {{ ratings_count }}
+                    </p>
+                    <p class="favorites-count">
+                        <strong>Добавили в избранное:</strong> {{ favorites_count }}
+                    </p>
+                </div>
             </div>
 
             <!-- Кнопка "Добавить в избранное" -->
