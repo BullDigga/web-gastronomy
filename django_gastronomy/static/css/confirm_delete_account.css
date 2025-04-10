@@ -93,3 +93,33 @@
 .login-button:hover {
     background-color: #b54e2a; /* Темнее при наведении */
 }
+
+.favorite-icon {
+    width: 24px; /* Размер иконки */
+    height: 24px;
+    cursor: pointer; /* Изменение курсора при наведении */
+}
+
+.add-to-favorites {
+    background: none; /* Убираем фон кнопки */
+    border: none; /* Убираем границы */
+    padding: 0; /* Убираем внутренние отступы */
+    display: flex; /* Выравниваем иконку по центру */
+    align-items: center;
+    justify-content: center;
+}
+
+.tooltip {
+    display: none; /* По умолчанию скрыт */
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 10;
+}
+
+.add-to-favorites:hover .tooltip {
+    display: block; /* Показываем тултип при наведении */
+}

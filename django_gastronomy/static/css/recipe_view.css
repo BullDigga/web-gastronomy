@@ -90,20 +90,37 @@ body {
 }
 
 .add-to-favorites {
-    background-color: #B5B8B1;
-    color: white; /* Белый текст */
-    padding: 10px;
+    background-color: #B5B8B1; /* Серый цвет фона для неавторизованных пользователей */
     border: none;
-    border-radius: 4px;
+    padding: 0;
+    width: 40px; /* Фиксированная ширина */
+    height: 40px; /* Фиксированная высота */
+    border-radius: 8px; /* Скругление углов */
     cursor: pointer;
-    font-size: 14px;
-    align-self: flex-start; /* Прижимаем к верху */
-    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease; /* Плавное изменение цвета */
 }
 
 .add-to-favorites.authenticated {
-    background-color: #87C756;
-    color: white; /* Белый текст */
+    background-color: #87C756; /* Зеленый цвет фона */
+}
+
+.add-to-favorites.favorited {
+    background-color: #DD6031; /* Красный цвет фона */
+}
+
+/* Для изображения внутри кнопки */
+.favorite-icon {
+    width: 24px; /* Ширина изображения */
+    height: 24px; /* Высота изображения */
+    object-fit: cover; /* Сохранение пропорций */
+}
+
+/* Эффект при наведении */
+.add-to-favorites:hover {
+    transform: scale(1.1); /* Небольшое увеличение */
 }
 
 /* Стиль текста ошибки */
@@ -202,16 +219,6 @@ body {
     background-color: #5A5A5A; /* Темнее при наведении */
 }
 
-.add-to-favorites.favorited {
-    background-color: #DD6031; /* Основной цвет фона */
-    color: white; /* Белый текст */
-    border-color: #DD6031; /* Цвет рамки */
-}
-
-.add-to-favorites.favorited:hover {
-    background-color: #b54e2a; /* Темнее при наведении */
-    border-color: #b54e2a; /* Темнее при наведении */
-}
 
 .delete-rating-button {
     background-color: #DD6031; /* Цвет кнопки */

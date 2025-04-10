@@ -56,11 +56,17 @@
                            {% if user.is_authenticated %}authenticated{% endif %}
                            {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
                     data-recipe-id="{{ recipe.id }}">
-                {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
-                    Удалить из избранного
-                {% else %}
-                    Добавить в избранное
-                {% endif %}
+                <img src="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
+                              {% static 'favorited.png' %}
+                          {% else %}
+                              {% static 'add_to_favorited.png' %}
+                          {% endif %}"
+                     alt="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
+                              Убрать из избранного
+                          {% else %}
+                              Добавить в избранное
+                          {% endif %}"
+                     class="favorite-icon">
             </button>
         </div>
 

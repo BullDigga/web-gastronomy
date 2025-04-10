@@ -81,15 +81,20 @@ button {
 
 /* Стиль кнопки "Добавить в избранное" */
 .add-to-favorites {
-    position: relative; /* Нужно для позиционирования подсказки */
-    background-color: #B5B8B1;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease; /* Плавный переход цвета */
+    background: none; /* Убираем фон */
+    border: none; /* Убираем границу */
+    padding: 0; /* Убираем отступы */
+    cursor: pointer; /* Добавляем указатель курсора */
+    display: inline-flex; /* Выравниваем по центру */
+    align-items: center; /* Центрируем по вертикали */
+    justify-content: center; /* Центрируем по горизонтали */
+    width: 40px; /* Фиксированная ширина */
+    height: 40px; /* Фиксированная высота (квадрат) */
+    border-radius: 8px; /* Опционально: скругление углов */
+    overflow: hidden; /* Обрезаем содержимое, если оно выходит за пределы */
+    transition: transform 0.2s ease, background-color 0.2s ease; /* Плавные эффекты */
+    float: right; /* Прижимаем кнопку вправо */
+    margin-left: auto; /* Дополнительное пространство слева */
 }
 
 .add-to-favorites.authenticated {
@@ -97,24 +102,36 @@ button {
     color: white; /* Белый текст */
 }
 
-/* Стиль для кнопки "Убрать из избранного" */
+.add-to-favorites:not(.authenticated) {
+    background-color: #ccc; /* Серый цвет фона */
+    color: #666; /* Темно-серый текст */
+    border-color: #ccc; /* Граница серого цвета */
+}
+
+/* Убираем изменение цвета при наведении для неавторизованных пользователей */
+.add-to-favorites:not(.authenticated):hover {
+    background-color: #ccc; /* Оставляем тот же серый цвет */
+    border-color: #ccc; /* Оставляем ту же границу */
+}
+
 .add-to-favorites.favorited {
     background-color: #DD6031; /* Основной цвет фона */
     color: white; /* Белый текст */
     border-color: #DD6031; /* Цвет рамки */
 }
 
+/* Убираем изменение цвета при наведении */
 .add-to-favorites.favorited:hover {
-    background-color: #b54e2a; /* Темнее при наведении */
-    border-color: #b54e2a; /* Темнее при наведении */
+    background-color: #DD6031; /* Оставляем тот же цвет */
+    border-color: #DD6031; /* Оставляем тот же цвет */
 }
 
 /* Подсказка для неавторизованных пользователей */
 .tooltip {
     display: none; /* Скрываем по умолчанию */
     position: absolute;
-    top: 100%; /* Размещаем под кнопкой */
-    left: 50%; /* Центрируем по горизонтали */
+    top: 40%; /* Размещаем под кнопкой */
+    left: 96%; /* Центрируем по горизонтали */
     transform: translateX(-50%); /* Корректируем центрирование */
     margin-top: 5px; /* Отступ сверху */
     padding: 5px; /* Внутренний отступ текста */
@@ -125,7 +142,7 @@ button {
     border-radius: 4px; /* Скругление углов */
     white-space: normal; /* Разрешаем перенос текста */
     word-wrap: break-word; /* Переносим длинные слова */
-    max-width: 300px; /* Ограничение ширины */
+    min-width: 200px; /* Ограничение ширины */
     text-align: center; /* Выравниваем текст по центру */
     z-index: 10; /* Чтобы подсказка была поверх других элементов */
 }
@@ -164,4 +181,17 @@ button {
 
 .auth-button.login {
     background-color: #66A932; /* Цвет для кнопки "Вход" */
+}
+
+/* Стиль для изображения внутри кнопки */
+.favorite-icon {
+    width: 32px; /* Ширина изображения */
+    height: 32px; /* Высота изображения */
+    object-fit: cover; /* Обеспечиваем сохранение пропорций (квадратное изображение) */
+    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+/* Эффект при наведении на изображение */
+.add-to-favorites:hover .favorite-icon {
+    transform: scale(1.1); /* Небольшое увеличение при наведении */
 }

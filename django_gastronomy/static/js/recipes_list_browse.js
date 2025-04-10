@@ -39,12 +39,15 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 if (data.success) {
-                    // Обновляем текст и стиль кнопки
+                    // Получаем изображение внутри кнопки
+                    const img = button.querySelector('.favorite-icon');
+
+                    // Обновляем изображение и стиль кнопки
                     if (data.action === 'added') {
-                        button.textContent = 'Удалить из избранного';
+                        img.src = "/static/favorited.png";
                         button.classList.add('favorited');
                     } else if (data.action === 'removed') {
-                        button.textContent = 'Добавить в избранное';
+                        img.src = "/static/add_to_favorited.png";
                         button.classList.remove('favorited');
                     }
                 }

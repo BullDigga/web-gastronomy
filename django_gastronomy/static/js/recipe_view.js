@@ -234,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 showError(errorGeneral, 'Войдите в аккаунт, чтобы добавить рецепт в избранное.');
                 return;
             }
-
             // Отключаем кнопку, чтобы предотвратить повторные клики
             favoriteButton.disabled = true;
 
@@ -257,14 +256,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 const data = await response.json();
-
                 if (data.success) {
-                    // Обновляем текст и стиль кнопки
+                    // Получаем изображение внутри кнопки
+                    const img = favoriteButton.querySelector('.favorite-icon');
+
+                    // Обновляем изображение и стиль кнопки
                     if (data.action === 'added') {
-                        favoriteButton.textContent = 'Удалить из избранного';
+                        img.src = "/static/favorited.png"; // Изменяем на "favorited.png"
                         favoriteButton.classList.add('favorited');
                     } else if (data.action === 'removed') {
-                        favoriteButton.textContent = 'Добавить в избранное';
+                        img.src = "/static/add_to_favorited.png"; // Изменяем на "add_to_favorited.png"
                         favoriteButton.classList.remove('favorited');
                     }
 
