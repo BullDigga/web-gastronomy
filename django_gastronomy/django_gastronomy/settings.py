@@ -2,6 +2,7 @@
 Django settings for django_gastronomy project.
 """
 
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,6 +35,10 @@ INSTALLED_APPS = [
     'comments',
     'favorites',
     'ratings',
+    'instructions',
+    'ingredients',
+    'units',
+    'recipe_ingredients',
 ]
 
 MIDDLEWARE = [

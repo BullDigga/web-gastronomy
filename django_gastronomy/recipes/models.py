@@ -1,4 +1,4 @@
-from django.conf import settings  # Импортируем settings
+from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -11,11 +11,6 @@ class Recipe(models.Model):
 
     title = models.CharField('название', max_length=256)
     description = models.TextField('описание')
-    instruction = models.TextField(
-        'инструкция',
-        blank=True,  # Разрешает пустые значения в формах
-        null=True  # Разрешает NULL в БД
-    )
 
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,  # Используем AUTH_USER_MODEL
@@ -23,11 +18,27 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name='автор'
     )
+
     status = models.CharField(
         'статус модерации',
         max_length=16,
         choices=STATUS_CHOICES,
-        default='draft'
+        default='moderating'  # Убедитесь, что значение по умолчанию соответствует списку
+    )
+
+    publish_date = models.DateTimeField(
+        'дата публикации',
+        blank=True,
+        null=True,  # Разрешает NULL в БД
+        help_text="Дата публикации рецепта (заполняется автоматически при статусе 'published')"
+    )
+
+    main_picture_url = models.URLField(
+        'основное изображение',
+        max_length=500,
+        blank=True,
+        null=True,  # Разрешает NULL в БД
+        help_text="Ссылка на основное изображение рецепта"
     )
 
     class Meta:
