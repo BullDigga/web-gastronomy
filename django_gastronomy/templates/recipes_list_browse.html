@@ -29,6 +29,22 @@
             <!-- Список рецептов -->
             {% for recipe in recipes %}
                 <div class="recipe-card" data-recipe-id="{{ recipe.id }}">
+                    <!-- Изображение рецепта -->
+                    <div class="recipe-image">
+                        <a href="{% url 'recipe_view' recipe.id %}" class="recipe-thumbnail-link">
+                            {% if recipe.main_picture_url %}
+                                <img src="{% static recipe.main_picture_url %}"
+                                     alt="Изображение рецепта: {{ recipe.title }}"
+                                     class="recipe-thumbnail">
+                            {% else %}
+                                <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
+                                     alt="Запасное изображение рецепта"
+                                     class="recipe-thumbnail">
+                            {% endif %}
+                        </a>
+                    </div>
+
+                    <!-- Информация о рецепте -->
                     <div class="recipe-info">
                         <div class="info-row">
                             <span class="label">Название:</span>
@@ -47,6 +63,8 @@
                             </span>
                         </div>
                     </div>
+
+                    <!-- Кнопки -->
                     <div class="buttons">
                         <!-- Кнопка добавления в избранное -->
                         <button class="add-to-favorites {% if user.is_authenticated %}authenticated{% endif %} {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
