@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/create_recipe.css' %}">
+<script src="{% static 'js/create_recipe.js' %}"></script>
+
+<div class="recipe-container">
+    <h1>Создание рецепта</h1>
+
+    <!-- Главная фотография -->
+    <div class="main-photo-and-title">
+        <div class="photo-upload">
+            <label for="main-photo" class="photo-label">
+                <img id="main-photo-preview" src="#" alt="Главная фотография" style="display: none;" />
+                <span id="photo-placeholder">+</span>
+            </label>
+            <input type="file" id="main-photo" accept="image/*" style="display: none;" />
+        </div>
+
+        <div class="title-input">
+            <label for="recipe-title">Название:</label>
+            <input type="text" id="recipe-title" placeholder="Введите название рецепта" />
+        </div>
+    </div>
+
+    <!-- Описание рецепта -->
+    <div class="recipe-description">
+        <label for="recipe-description">Описание:</label>
+        <textarea id="recipe-description" rows="2" placeholder="Введите краткое описание рецепта"></textarea>
+    </div>
+
+    <!-- Рецепт -->
+    <div class="recipe-steps">
+        <h2>Рецепт:</h2>
+
+        <div id="steps-container">
+            <!-- Первый шаг по умолчанию -->
+            <div class="step">
+                <div class="step-header">
+                    <span>Шаг 1</span>
+                    <button class="remove-step">➖</button>
+                </div>
+                <div class="step-content">
+                    <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
+                    <label for="step-photo-1" class="step-photo-label">
+                        <img id="step-photo-preview-1" src="#" alt="Фото шага" style="display: none;" />
+                        <span id="step-photo-placeholder-1">+</span>
+                    </label>
+                    <input type="file" id="step-photo-1" accept="image/*" class="step-photo" style="display: none;" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопка добавления шага -->
+        <button id="add-step">Добавить шаг</button>
+    </div>
+
+    <!-- Кнопка публикации -->
+    <div class="publish-button">
+        <button id="publish-recipe">Опубликовать рецепт</button>
+    </div>
+</div>
+
+<!-- Модальное окно для обрезки изображений -->
+<div id="crop-modal" style="display: none;">
+    <div class="modal-content">
+        <h2>Обрежьте изображение</h2>
+        <div class="image-container">
+            <canvas id="crop-canvas"></canvas>
+        </div>
+        <button id="confirm-crop">Подтвердить</button>
+        <button id="cancel-crop">Отменить</button>
+    </div>
+</div>
+{% endblock %}

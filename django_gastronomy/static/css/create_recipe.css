@@ -1,0 +1,272 @@
+/* Стиль контейнера рецепта */
+.recipe-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px; /* Отступы внутри контейнера */
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-container h1 {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Главная фотография и название */
+.main-photo-and-title {
+    display: flex; /* Размещаем изображение и информацию рядом */
+    align-items: flex-start; /* Выравниваем по верху */
+    gap: 20px; /* Отступ между изображением и информацией */
+    margin-bottom: 20px; /* Отступ перед нижней секцией */
+}
+
+/* Стиль главного изображения */
+.photo-upload {
+    width: 320px; /* Ширина (4:3) */
+    height: 240px; /* Высота (4:3) */
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.photo-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+}
+
+.photo-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Сохраняем пропорции изображения */
+    border-radius: 8px;
+}
+
+#photo-placeholder {
+    font-size: 48px; /* Больше, чтобы соответствовать размеру фото */
+    color: #ccc;
+}
+
+/* Информация справа от изображения */
+.title-input {
+    display: flex;
+    flex-direction: column; /* Метка и поле ввода располагаются сверху вниз */
+    gap: 10px; /* Отступ между меткой и полем ввода */
+    flex-grow: 1; /* Занимает оставшееся пространство */
+    margin-right: 20px; /* Одинаковый отступ справа, как и слева */
+}
+
+.title-input label {
+    font-weight: bold;
+}
+
+.title-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease; /* Плавное изменение цвета границы */
+}
+
+.title-input input:focus {
+    border-color: #007bff; /* Цвет границы при фокусе */
+    outline: none; /* Убираем стандартный outline */
+}
+
+/* Стиль описания рецепта */
+.recipe-description {
+    margin-bottom: 20px;
+    margin-right: 20px; /* Одинаковый отступ справа, как и слева */
+}
+
+.recipe-description label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.recipe-description textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical; /* Разрешаем изменять высоту текстового поля */
+}
+
+/* Секция рецепта */
+.recipe-steps h2 {
+    margin-bottom: 10px;
+}
+
+.step {
+    margin-bottom: 20px;
+}
+
+.step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.step-header span {
+    font-weight: bold;
+}
+
+.remove-step {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    color: red;
+    cursor: pointer;
+}
+
+.step-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.step-description {
+    flex-grow: 1; /* Занимает доступное пространство */
+    max-width: 100%; /* Ограничиваем максимальную ширину */
+    height: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical; /* Разрешаем изменять высоту текстового поля */
+    overflow: auto; /* Добавляем прокрутку при необходимости */
+}
+
+.step-photo-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 320px; /* Ширина (4:3) */
+    height: 240px; /* Высота (4:3) */
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    position: relative; /* Для корректного позиционирования вложенных элементов */
+}
+
+.step-photo-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Сохраняем пропорции изображения */
+    border-radius: 8px;
+}
+
+.step-photo-label span {
+    font-size: 48px; /* Размер символа "+" */
+    color: #ccc;
+    position: absolute; /* Размещаем "+" поверх изображения */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#add-step {
+    display: block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#add-step:hover {
+    background-color: #0056b3;
+}
+
+.publish-button {
+    text-align: right;
+    margin-top: 20px;
+}
+
+#publish-recipe {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#publish-recipe:hover {
+    background-color: #218838;
+}
+
+/* Стиль модального окна */
+#crop-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 900px;
+    width: 100%;
+}
+
+.image-container {
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 600px;
+}
+
+#crop-canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#confirm-crop {
+    background-color: #28a745;
+    color: white;
+}
+
+#cancel-crop {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Стиль для маркеров изменения размера */
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    cursor: nwse-resize;
+}
