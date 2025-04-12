@@ -8,6 +8,10 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.hidden {
+    display: none !important;
+}
+
 .registration-container h1 {
     text-align: center;
     margin-bottom: 20px;
@@ -90,4 +94,25 @@
     font-size: 12px;
     margin-top: 5px;
     display: none; /* Скрываем по умолчанию */
+}
+
+/* Стиль для звёздочки */
+.required-indicator {
+    color: red;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+/* Стиль для пояснения о значении * */
+.required-explanation {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #666; /* Серый цвет */
+}
+
+#optional-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Интервал между полями */
 }

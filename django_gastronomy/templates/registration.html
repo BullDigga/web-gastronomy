@@ -12,7 +12,7 @@
         <form method="POST" class="registration-form" id="registration-form">
             {% csrf_token %}
             <div class="form-group">
-                <label for="username">Псевдоним:</label>
+                <label for="username">Псевдоним:<span class="required-indicator">*</span></label>
                 <div class="input-wrapper">
                     <input type="text" id="username" name="username" required>
                     <span class="emoji" id="username-emoji"></span>
@@ -20,7 +20,7 @@
                 <small class="error-message" id="username-error"></small>
             </div>
             <div class="form-group">
-                <label for="email">Email:</label>
+                <label for="email">Email:<span class="required-indicator">*</span></label>
                 <div class="input-wrapper">
                     <input type="email" id="email" name="email" required>
                     <span class="emoji" id="email-emoji"></span>
@@ -28,17 +28,63 @@
                 <small class="error-message" id="email-error"></small>
             </div>
             <div class="form-group">
-                <label for="password">Пароль:</label>
+                <label for="password">Пароль:<span class="required-indicator">*</span></label>
                 <div class="input-wrapper">
                     <input type="password" id="password" name="password" required>
                     <span class="emoji" id="password-emoji"></span>
                 </div>
                 <small class="error-message" id="password-error"></small>
             </div>
+            <div class="form-group">
+                <label for="repeat_password">Подтвердите пароль:<span class="required-indicator">*</span></label>
+                <div class="input-wrapper">
+                    <input type="password" id="repeat_password" name="repeat_password" required>
+                    <span class="emoji" id="repeat-password-emoji"></span>
+                </div>
+                <small class="error-message" id="repeat-password-error"></small>
+            </div>
+
+            <!-- Пояснение о значении * -->
+            <div class="required-explanation">
+                <small>
+                    <span class="required-indicator">*</span> — обязательное поле
+                </small>
+            </div>
+
+            <!-- Переключатель для дополнительных данных -->
+            <div class="optional-toggle">
+                <a href="#" id="toggle-optional-fields">Дополнительные данные (опционально)</a>
+            </div>
+
+            <!-- Дополнительные поля (изначально скрыты) -->
+            <div id="optional-fields" style="display: none">
+                <div class="form-group">
+                    <label for="last_name">Фамилия:</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="last_name" name="last_name">
+                        <span class="emoji" id="last_name-emoji"></span>
+                    </div>
+                    <small class="error-message" id="last_name-error"></small>
+                </div>
+                <div class="form-group">
+                    <label for="first_name">Имя:</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="first_name" name="first_name">
+                        <span class="emoji" id="first_name-emoji"></span>
+                    </div>
+                    <small class="error-message" id="first_name-error"></small>
+                </div>
+                <div class="form-group">
+                    <label for="middle_name">Отчество:</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="middle_name" name="middle_name">
+                        <span class="emoji" id="middle_name-emoji"></span>
+                    </div>
+                    <small class="error-message" id="middle_name-error"></small>
+                </div>
+            </div>
+
             <button type="submit" class="register-button">Зарегистрироваться</button>
         </form>
     </div>
-
-    <!-- Подключение скрипта для валидации -->
-    <script src="{% static 'js/registration_validation.js' %}"></script>
 {% endblock %}

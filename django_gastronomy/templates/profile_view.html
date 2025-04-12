@@ -18,6 +18,14 @@
                 <span class="label">Email:</span>
                 <span class="value">{{ profile_user.email }}</span>
             </div>
+            <div class="info-row">
+                <span class="label">ФИО:</span>
+                <span class="value">
+                    {{ profile_user.last_name|default:"" }}
+                    {{ profile_user.first_name|default:"" }}
+                    {{ profile_user.middle_name|default:"" }}
+                </span>
+            </div>
         </div>
         <div class="profile-actions">
             <a href="{% url 'user_recipes' profile_user.id %}" class="profile-button">

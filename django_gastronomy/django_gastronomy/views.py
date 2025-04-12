@@ -50,6 +50,12 @@ def recipes_list_browse(request, user_id=None, favorites=False):
     return render(request, 'recipes_list_browse.html', context)
 
 
+from django.contrib.auth import login
+from django.contrib.auth import get_user_model
+from django.http import JsonResponse
+from django.shortcuts import render
+import json
+
 def registration_view(request):
     if request.method == 'POST':
         try:
@@ -69,9 +75,13 @@ def registration_view(request):
             username = data.get('username')
             email = data.get('email')
             password = data.get('password')
+            first_name = data.get('first_name')  # Новое поле
+            last_name = data.get('last_name')    # Новое поле
+            middle_name = data.get('middle_name')  # Новое поле
 
+            # Проверяем обязательные поля
             if not username or not email or not password:
-                return JsonResponse({'error': 'Необходимо указать все поля.'}, status=400)
+                return JsonResponse({'error': 'Необходимо указать все обязательные поля.'}, status=400)
 
             # Получаем модель пользователя
             User = get_user_model()
@@ -85,7 +95,14 @@ def registration_view(request):
                 return JsonResponse({'error': 'Пользователь с данным email уже зарегистрирован.'}, status=400)
 
             # Создаём нового пользователя
-            user = User.objects.create_user(username=username, email=email, password=password)
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name or '',  # Если поле пустое, передаем пустую строку
+                last_name=last_name or '',    # Если поле пустое, передаем пустую строку
+                middle_name=middle_name or ''  # Если поле пустое, передаем пустую строку
+            )
             print("Пользователь успешно зарегистрирован:", user.username)
 
             # Авторизуем пользователя
