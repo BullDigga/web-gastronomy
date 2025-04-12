@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     rateButton.style.display = 'none';
 
                     // Показываем кнопку "Удалить оценку"
-                    const deleteRatingButton = document.querySelector('.delete-rating-button');
+                    const deleteRatingButton = document.getElementById('delete-rating-button');
                     if (deleteRatingButton) {
                         deleteRatingButton.style.display = 'inline-block';
                     }
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Обработка кликов на кнопку "Удалить оценку"
-    const deleteRatingButton = document.querySelector('.delete-rating-button');
+    const deleteRatingButton = document.getElementById('delete-rating-button');
     if (deleteRatingButton) {
         deleteRatingButton.addEventListener('click', async function () {
             if (!isAuthenticated) {

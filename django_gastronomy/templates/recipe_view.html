@@ -45,14 +45,16 @@
                                 Оценить
                             </button>
 
-                            <!-- Кнопка "Удалить оценку" -->
-                            <button id="delete-rating-button" class="delete-rating-button"
-                                    style="display: {% if user_rating %}inline-block{% else %}none{% endif %};">
-                                Удалить оценку
-                            </button>
-
-                            <!-- Общий контейнер для ошибок -->
-                            <span id="error-general" class="error-message"></span>
+                            <img id="delete-rating-button"
+                                 src="{% static 'cross.png' %}"
+                                 alt="Удалить оценку"
+                                 style="display: {% if user_rating %}inline-block{% else %}none{% endif %};
+                                        cursor: pointer;
+                                        width: 1.5em; /* Размер, соответствующий звёздочкам */
+                                        height: 1.5em; /* Размер, соответствующий звёздочкам */
+                                        margin-left: 8px; /* Сдвиг вправо */
+                                        vertical-align: middle;
+                                        padding-top: 0.35em;"> <!-- Выравнивание по центру -->
                         </div>
 
                         <div class="rating-info">
