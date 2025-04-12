@@ -30,7 +30,8 @@ header .logo .logo-link {
 
 header .search-bar {
     flex-grow: 1; /* Поле поиска растягивается на всё доступное пространство */
-    text-align: center;
+    text-align: left;
+    margin-left: 8em;
     position: relative; /* Для позиционирования иконки */
 }
 
@@ -113,4 +114,20 @@ header .search-bar .search-input:focus {
 
 .auth-button.favorites:hover {
     background-color: #E0A800;
+}
+
+.auth-button.create-recipe {
+    background-color: #66A932; /* Зелёный цвет фона */
+    color: white; /* Белый текст */
+    padding: 10px 15px; /* Одинаковый отступ с другими кнопками */
+    border-radius: 4px; /* Скругление углов */
+    text-decoration: none; /* Убираем подчёркивание */
+    font-size: 14px; /* Одинаковый размер текста с другими кнопками */
+    transition: background-color 0.3s ease;
+    cursor: pointer; /* Указатель мыши */
+    line-height: 1; /* Фиксированная высота строки */
+    display: flex; /* Используем Flexbox для выравнивания */
+    align-items: center; /* Выравниваем содержимое по центру */
+    gap: 5px; /* Расстояние между эмодзи и текстом */
+    margin-right: 3em;
 }

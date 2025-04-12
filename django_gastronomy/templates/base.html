@@ -12,6 +12,9 @@
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
+    <!-- CSRF-токен -->
+    {% csrf_token %}
+
     <header>
         <div class="logo">
             <a href="/" class="logo-link">
@@ -34,6 +37,7 @@
                     <a href="{% url 'authorization' %}" class="auth-button authorization">Вход</a>
                 </div>
             {% else %}
+                <a href="{% url 'create_recipe' %}" class="auth-button create-recipe">✍️ Создать рецепт</a>
                 <a href="{% url 'favorites' %}" class="auth-button favorites">Избранное</a>
                 <div class="auth-buttons">
                     <a href="{% url 'profile' user.id %}" class="auth-button profile">{{ user.username }}</a>

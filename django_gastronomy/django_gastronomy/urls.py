@@ -36,6 +36,7 @@ urlpatterns = [
     path('delete_account/', views.delete_account, name='delete_account'),
     path('rate_recipe/<int:recipe_id>/', views.rate_recipe, name='rate_recipe'),
     path('delete_rating/<int:recipe_id>/', views.delete_rating, name='delete_rating'),
+    path('create_recipe/', views.create_recipe, name='create_recipe'),
 ]
 
 if settings.DEBUG:

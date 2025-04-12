@@ -443,3 +443,8 @@ def delete_rating(request, recipe_id):
             return JsonResponse({'error': 'Произошла ошибка на сервере.'}, status=500)
 
     return JsonResponse({'error': 'Неверный метод запроса.'}, status=400)
+
+@login_required
+def create_recipe(request):
+    # Заглушка: просто отображаем страницу без обработки данных
+    return render(request, 'create_recipe.html')
