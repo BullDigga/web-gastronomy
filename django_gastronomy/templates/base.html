@@ -8,7 +8,6 @@
     {% load static %}
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <script src="{% static 'js/scripts.js' %}"></script>
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
 </head>
 <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
@@ -38,9 +37,11 @@
                 </div>
             {% else %}
                 <a href="{% url 'create_recipe' %}" class="auth-button create-recipe">✍️ Создать рецепт</a>
-                <a href="{% url 'favorites' %}" class="auth-button favorites">Избранное</a>
-                <div class="auth-buttons">
-                    <a href="{% url 'profile' user.id %}" class="auth-button profile">{{ user.username }}</a>
+                <a href="{% url 'favorites' %}" class="favorites-icon">
+                    <img src="{% static 'favorites.png' %}" alt="Избранное" class="favorites-image">
+                </a>
+                <div class="user-profile">
+                    <a href="{% url 'profile' user.id %}" class="username">{{ user.username }}</a>
                 </div>
             {% endif %}
         </div>

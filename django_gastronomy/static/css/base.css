@@ -59,7 +59,7 @@ header .search-bar .search-input {
     background-color: #F6FF7A; /* Цвет фона */
     border: none; /* Убираем границу */
     border-radius: 5px; /* Скругленные углы */
-    font-size: 16px; /* Размер текста */
+    font-size: 17px; /* Размер текста */
     outline: none; /* Убираем стандартное выделение при фокусе */
     transition: background-color 0.3s ease; /* Плавное изменение цвета фона */
 }
@@ -88,7 +88,7 @@ header .search-bar .search-input:focus {
     color: white;
     text-decoration: none;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 17px;
     text-align: center;
     transition: background-color 0.3s ease;
     border: none; /* Убираем границы */
@@ -110,6 +110,7 @@ header .search-bar .search-input:focus {
 .auth-button.favorites {
     background-color: #FFC107; /* Жёлтый цвет для кнопки "Избранное" */
     color: black;
+    margin-right: 2em;
 }
 
 .auth-button.favorites:hover {
@@ -122,7 +123,7 @@ header .search-bar .search-input:focus {
     padding: 10px 15px; /* Одинаковый отступ с другими кнопками */
     border-radius: 4px; /* Скругление углов */
     text-decoration: none; /* Убираем подчёркивание */
-    font-size: 14px; /* Одинаковый размер текста с другими кнопками */
+    font-size: 17px; /* Одинаковый размер текста с другими кнопками */
     transition: background-color 0.3s ease;
     cursor: pointer; /* Указатель мыши */
     line-height: 1; /* Фиксированная высота строки */
@@ -130,4 +131,41 @@ header .search-bar .search-input:focus {
     align-items: center; /* Выравниваем содержимое по центру */
     gap: 5px; /* Расстояние между эмодзи и текстом */
     margin-right: 3em;
+}
+
+/* Стиль для имени пользователя */
+.user-profile {
+    display: flex;
+    align-items: center; /* Выравниваем по центру */
+    gap: 10px; /* Расстояние между элементами */
+}
+
+.username {
+    font-size: 17px; /* Размер текста */
+    color: #333; /* Цвет текста */
+    text-decoration: none; /* Убираем подчёркивание */
+    font-weight: bold; /* Жирный шрифт */
+    transition: color 0.3s ease; /* Плавное изменение цвета */
+}
+
+.username:hover {
+    color: #66A932; /* Цвет при наведении */
+}
+
+/* Стиль для иконки "Избранное" */
+.favorites-icon {
+    display: inline-block;
+    text-decoration: none; /* Убираем подчёркивание */
+    cursor: pointer; /* Указатель мыши */
+}
+
+.favorites-icon .favorites-image {
+    width: 32px; /* Ширина изображения */
+    height: 32px; /* Высота изображения */
+    transition: transform 0.3s ease; /* Плавный эффект при наведении */
+    margin-right: 1em;
+}
+
+.favorites-icon:hover .favorites-image {
+    transform: scale(1.1); /* Небольшое увеличение при наведении */
 }
