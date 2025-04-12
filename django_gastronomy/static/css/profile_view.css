@@ -34,11 +34,12 @@
     font-size: 16px;
 }
 
-/* Стиль блока с кнопкой */
+/* Стиль блока с кнопками */
 .profile-actions {
     margin-top: 20px;
-    gap: 10px;
-    text-align: left; /* Кнопка прижата к левому краю */
+    display: flex;
+    justify-content: space-between; /* Размещаем кнопки по краям */
+    align-items: center; /* Выравниваем по центру */
 }
 
 /* Стиль кнопки "Рецепты пользователя" */
@@ -59,11 +60,11 @@
 }
 
 /* Стиль для кнопки "Рецепты пользователя" */
-.profile-button:not(.danger) {
+.profile-button:not(.danger):not(.logout) {
     background-color: #66A932; /* Зелёный цвет */
 }
 
-.profile-button:not(.danger):hover {
+.profile-button:not(.danger):not(.logout):hover {
     background-color: #528C29; /* Темнее при наведении */
 }
 
@@ -77,4 +78,23 @@
 
 .profile-button.danger:hover {
     background-color: #b54e2a; /* Темнее при наведении */
+}
+
+/* Стиль для кнопки "Выйти" */
+.profile-button.logout {
+    background-color: #707070; /* Серый цвет */
+    color: white; /* Белый текст */
+    border: none; /* Убираем границу */
+    outline: none; /* Убираем стандартную обводку */
+    margin-left: 10px; /* Отступ между кнопками */
+}
+
+.profile-button.logout:hover {
+    background-color: #5a5a5a; /* Темнее при наведении */
+}
+
+/* Стиль контейнера для кнопок "Выйти" и "Удалить аккаунт" */
+.profile-buttons-right {
+    display: flex;
+    gap: 10px; /* Отступ между кнопками */
 }

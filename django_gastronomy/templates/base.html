@@ -38,12 +38,6 @@
                 <div class="auth-buttons">
                     <a href="{% url 'profile' user.id %}" class="auth-button profile">{{ user.username }}</a>
                 </div>
-                <div class="logout-button">
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="auth-button logout">Выйти</button>
-                    </form>
-                </div>
             {% endif %}
         </div>
     </header>

@@ -33,9 +33,17 @@
             </a>
 
             {% if request.user == profile_user %}
-                <button id="delete-account-button" class="profile-button danger">
-                    Удалить аккаунт
-                </button>
+                <div class="profile-buttons-right">
+                    <form action="{% url 'logout' %}" method="post" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="profile-button logout">
+                            Выйти
+                        </button>
+                    </form>
+                    <button id="delete-account-button" class="profile-button danger">
+                        Удалить аккаунт
+                    </button>
+                </div>
             {% endif %}
         </div>
     </div>

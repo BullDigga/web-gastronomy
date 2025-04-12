@@ -50,12 +50,6 @@ def recipes_list_browse(request, user_id=None, favorites=False):
     return render(request, 'recipes_list_browse.html', context)
 
 
-from django.contrib.auth import login
-from django.contrib.auth import get_user_model
-from django.http import JsonResponse
-from django.shortcuts import render
-import json
-
 def registration_view(request):
     if request.method == 'POST':
         try:
@@ -209,10 +203,14 @@ def favorites_view(request):
 
 def recipe_view(request, recipe_id):
     # Получаем рецепт из БД по ID, но только если его статус "published"
-    recipe = get_object_or_404(Recipe, id=recipe_id, status='published')
+    try:
+        recipe = Recipe.objects.select_related('author').get(id=recipe_id, status='published')
+    except Recipe.DoesNotExist:
+        # Если рецепт не найден или его статус не "published"
+        return render(request, 'error.html', {'message': 'Рецепт не найден или недоступен.'}, status=404)
 
     # Получаем количество комментариев
-    comments_count = recipe.comments_count()
+    comments_count = recipe.comments.count()
 
     # Получаем средний рейтинг и количество оценок
     ratings_data = recipe.rates.aggregate(
@@ -240,7 +238,7 @@ def recipe_view(request, recipe_id):
         user_rating = user_rating_obj.value if user_rating_obj else None
 
     # Передаем данные в шаблон
-    return render(request, 'recipe_view.html', {
+    context = {
         'recipe': recipe,
         'comments_count': comments_count,
         'average_rating': average_rating,  # Средняя оценка
@@ -249,7 +247,9 @@ def recipe_view(request, recipe_id):
         'is_authenticated': is_authenticated,  # Флаг авторизации
         'favorite_recipe_ids': favorite_recipe_ids,  # Список ID избранных рецептов
         'user_rating': user_rating,  # Текущая оценка пользователя
-    })
+    }
+
+    return render(request, 'recipe_view.html', context)
 
 
 @login_required

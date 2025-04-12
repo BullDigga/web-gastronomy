@@ -5,26 +5,29 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    // Получаем все элементы формы
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const repeatPasswordInput = document.getElementById('repeat_password'); // Новое поле
+    const repeatPasswordInput = document.getElementById('repeat_password'); // Поле подтверждения пароля
     const firstNameInput = document.getElementById('first_name');
     const lastNameInput = document.getElementById('last_name');
     const middleNameInput = document.getElementById('middle_name');
 
+    // Элементы для отображения эмодзи
     const usernameEmoji = document.getElementById('username-emoji');
     const emailEmoji = document.getElementById('email-emoji');
     const passwordEmoji = document.getElementById('password-emoji');
-    const repeatPasswordEmoji = document.getElementById('repeat-password-emoji'); // Новый эмодзи
+    const repeatPasswordEmoji = document.getElementById('repeat-password-emoji'); // Эмодзи для подтверждения пароля
     const firstNameEmoji = document.getElementById('first_name-emoji');
     const lastNameEmoji = document.getElementById('last_name-emoji');
     const middleNameEmoji = document.getElementById('middle_name-emoji');
 
+    // Элементы для отображения ошибок
     const usernameError = document.getElementById('username-error');
     const emailError = document.getElementById('email-error');
     const passwordError = document.getElementById('password-error');
-    const repeatPasswordError = document.getElementById('repeat-password-error'); // Новое сообщение об ошибке
+    const repeatPasswordError = document.getElementById('repeat-password-error'); // Ошибки для подтверждения пароля
     const firstNameError = document.getElementById('first_name-error');
     const lastNameError = document.getElementById('last_name-error');
     const middleNameError = document.getElementById('middle_name-error');
@@ -37,16 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const value = usernameInput.value.trim();
         if (value.length < 6) {
-            usernameEmoji.textContent = '❌';
-            usernameEmoji.classList.remove('valid');
-            usernameEmoji.classList.add('invalid');
-            usernameError.textContent = 'Псевдоним должен содержать минимум 6 символов.';
-            usernameError.style.display = 'block';
+            setError(usernameEmoji, usernameError, '❌', 'Псевдоним должен содержать минимум 6 символов.');
         } else {
-            usernameEmoji.textContent = '✅';
-            usernameEmoji.classList.remove('invalid');
-            usernameEmoji.classList.add('valid');
-            usernameError.style.display = 'none';
+            clearError(usernameEmoji, usernameError, '✅');
         }
     });
 
@@ -57,21 +53,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const value = emailInput.value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Регулярное выражение для email
         const cyrillicRegex = /[а-яА-ЯЁё]/; // Регулярное выражение для кириллицы
+
         if (!value) {
-            emailEmoji.textContent = '❌';
-            emailError.textContent = 'Email обязателен для заполнения.';
-            emailError.style.display = 'block';
+            setError(emailEmoji, emailError, '❌', 'Email обязателен для заполнения.');
         } else if (cyrillicRegex.test(value)) {
-            emailEmoji.textContent = '❌';
-            emailError.textContent = 'Некорректный email.'; // Ошибка при наличии русских символов
-            emailError.style.display = 'block';
+            setError(emailEmoji, emailError, '❌', 'Некорректный email.');
         } else if (!emailRegex.test(value)) {
-            emailEmoji.textContent = '❌';
-            emailError.textContent = 'Некорректный email.'; // Ошибка формата email
-            emailError.style.display = 'block';
+            setError(emailEmoji, emailError, '❌', 'Некорректный email.');
         } else {
-            emailEmoji.textContent = '✅';
-            emailError.style.display = 'none';
+            clearError(emailEmoji, emailError, '✅');
         }
     });
 
@@ -81,12 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const value = passwordInput.value.trim();
         if (value.length < 6) {
-            passwordEmoji.textContent = '❌';
-            passwordError.textContent = 'Пароль должен содержать минимум 6 символов.';
-            passwordError.style.display = 'block';
+            setError(passwordEmoji, passwordError, '❌', 'Пароль должен содержать минимум 6 символов.');
         } else {
-            passwordEmoji.textContent = '✅';
-            passwordError.style.display = 'none';
+            clearError(passwordEmoji, passwordError, '✅');
         }
 
         // Проверяем совпадение паролей
@@ -104,19 +91,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const repeatPasswordValue = repeatPasswordInput.value.trim();
 
         if (repeatPasswordValue && repeatPasswordValue !== passwordValue) {
-            repeatPasswordEmoji.textContent = '❌';
-            repeatPasswordEmoji.classList.remove('valid');
-            repeatPasswordEmoji.classList.add('invalid');
-            repeatPasswordError.textContent = 'Пароли не совпадают.';
-            repeatPasswordError.style.display = 'block';
+            setError(repeatPasswordEmoji, repeatPasswordError, '❌', 'Пароли не совпадают.');
         } else if (repeatPasswordValue && repeatPasswordValue === passwordValue) {
-            repeatPasswordEmoji.textContent = '✅';
-            repeatPasswordEmoji.classList.remove('invalid');
-            repeatPasswordEmoji.classList.add('valid');
-            repeatPasswordError.style.display = 'none';
+            clearError(repeatPasswordEmoji, repeatPasswordError, '✅');
         } else {
-            repeatPasswordEmoji.textContent = '';
-            repeatPasswordError.style.display = 'none';
+            clearError(repeatPasswordEmoji, repeatPasswordError);
         }
     }
 
@@ -127,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleOptionalFields.addEventListener('click', function (event) {
             event.preventDefault(); // Предотвращаем переход по ссылке
             const computedStyle = window.getComputedStyle(optionalFields);
+
             if (computedStyle.display === 'none') {
                 optionalFields.style.display = 'flex'; // Показываем блок
                 toggleOptionalFields.textContent = 'Скрыть дополнительные данные';
@@ -145,13 +125,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const value = firstNameInput.value.trim();
         if (value) {
-            firstNameEmoji.textContent = '✅';
-            firstNameEmoji.classList.remove('invalid');
-            firstNameEmoji.classList.add('valid');
-            firstNameError.style.display = 'none';
+            clearError(firstNameEmoji, firstNameError, '✅');
         } else {
-            firstNameEmoji.textContent = '';
-            firstNameError.style.display = 'none';
+            clearError(firstNameEmoji, firstNameError);
         }
     });
 
@@ -161,13 +137,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const value = lastNameInput.value.trim();
         if (value) {
-            lastNameEmoji.textContent = '✅';
-            lastNameEmoji.classList.remove('invalid');
-            lastNameEmoji.classList.add('valid');
-            lastNameError.style.display = 'none';
+            clearError(lastNameEmoji, lastNameError, '✅');
         } else {
-            lastNameEmoji.textContent = '';
-            lastNameError.style.display = 'none';
+            clearError(lastNameEmoji, lastNameError);
         }
     });
 
@@ -177,13 +149,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const value = middleNameInput.value.trim();
         if (value) {
-            middleNameEmoji.textContent = '✅';
-            middleNameEmoji.classList.remove('invalid');
-            middleNameEmoji.classList.add('valid');
-            middleNameError.style.display = 'none';
+            clearError(middleNameEmoji, middleNameError, '✅');
         } else {
-            middleNameEmoji.textContent = '';
-            middleNameError.style.display = 'none';
+            clearError(middleNameEmoji, middleNameError);
         }
     });
 
@@ -194,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const usernameValue = usernameInput.value.trim();
         const emailValue = emailInput.value.trim();
         const passwordValue = passwordInput.value.trim();
-        const repeatPasswordValue = repeatPasswordInput.value.trim(); // Новое значение
+        const repeatPasswordValue = repeatPasswordInput.value.trim();
         const firstNameValue = firstNameInput.value.trim();
         const lastNameValue = lastNameInput.value.trim();
         const middleNameValue = middleNameInput.value.trim();
@@ -216,13 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }));
 
         // Очищаем предыдущие ошибки
-        usernameError.style.display = 'none';
-        emailError.style.display = 'none';
-        passwordError.style.display = 'none';
-        repeatPasswordError.style.display = 'none'; // Очистка ошибок для нового поля
-        firstNameError.style.display = 'none';
-        lastNameError.style.display = 'none';
-        middleNameError.style.display = 'none';
+        clearAllErrors();
 
         // Логируем отправляемые данные
         console.log('Отправляемые данные:', {
@@ -278,18 +240,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Проверяем текст ошибки
             if (errorMessage.includes('уже зарегистрирован')) {
-                emailError.textContent = 'Данный email уже зарегистрирован.';
-                emailError.style.display = 'block';
+                setError(emailEmoji, emailError, '❌', 'Данный email уже зарегистрирован.');
             } else if (errorMessage.includes('email')) {
-                emailError.textContent = 'Некорректный email.';
-                emailError.style.display = 'block';
+                setError(emailEmoji, emailError, '❌', 'Некорректный email.');
             } else if (errorMessage.includes('пароль')) {
-                passwordError.textContent = error.message;
-                passwordError.style.display = 'block';
+                setError(passwordEmoji, passwordError, '❌', error.message);
             } else {
                 alert(error.message); // Общая ошибка
             }
             isServerError = false;
         });
     });
+
+    // Вспомогательная функция для установки ошибки
+    function setError(emojiElement, errorElement, emoji, message = '') {
+        emojiElement.textContent = emoji;
+        emojiElement.classList.remove('valid');
+        emojiElement.classList.add('invalid');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+
+    // Вспомогательная функция для очистки ошибки
+    function clearError(emojiElement, errorElement, emoji = '') {
+        emojiElement.textContent = emoji;
+        emojiElement.classList.remove('invalid');
+        if (emoji) {
+            emojiElement.classList.add('valid');
+        }
+        errorElement.style.display = 'none';
+    }
+
+    // Функция для очистки всех ошибок
+    function clearAllErrors() {
+        clearError(usernameEmoji, usernameError);
+        clearError(emailEmoji, emailError);
+        clearError(passwordEmoji, passwordError);
+        clearError(repeatPasswordEmoji, repeatPasswordError);
+        clearError(firstNameEmoji, firstNameError);
+        clearError(lastNameEmoji, lastNameError);
+        clearError(middleNameEmoji, middleNameError);
+    }
 });
