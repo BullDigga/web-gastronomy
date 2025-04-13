@@ -5,6 +5,20 @@
 <link rel="stylesheet" href="{% static 'css/create_recipe.css' %}">
 <script src="{% static 'js/create_recipe.js' %}"></script>
 
+<div class="ingredients-container">
+    <h2>Ингредиенты:</h2>
+    <div id="ingredients-list">
+        <!-- Первый ингредиент по умолчанию -->
+        <div class="ingredient">
+            <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
+            <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
+            <input type="text" class="ingredient-name" placeholder="Ингредиент" />
+            <button class="remove-ingredient">➖</button>
+        </div>
+    </div>
+    <button id="add-ingredient">Добавить ингредиент</button>
+</div>
+
 <div class="recipe-container">
     <h1>Создание рецепта</h1>
 
@@ -16,18 +30,25 @@
                 <span id="photo-placeholder">+</span>
             </label>
             <input type="file" id="main-photo" accept="image/*" style="display: none;" />
+            <div id="photo-instructions" style="margin-top: 10px; font-size: 12px; color: gray;">
+                Прикрепите фото 4:3.<br>Максимальный размер файла: 10 МБ.
+            </div>
+            <div id="photo-error" style="margin-top: 5px; font-size: 12px; color: red; display: none;">
+                Ошибка: Размер файла превышает 10 МБ.
+            </div>
         </div>
 
-        <div class="title-input">
-            <label for="recipe-title">Название:</label>
-            <input type="text" id="recipe-title" placeholder="Введите название рецепта" />
-        </div>
-    </div>
+        <div class="title-and-description">
+            <div class="title-input">
+                <label for="recipe-title">Название рецепта:</label>
+                <input type="text" id="recipe-title" placeholder="Введите название рецепта" />
+            </div>
 
-    <!-- Описание рецепта -->
-    <div class="recipe-description">
-        <label for="recipe-description">Описание:</label>
-        <textarea id="recipe-description" rows="2" placeholder="Введите краткое описание рецепта"></textarea>
+            <div class="recipe-description">
+                <label for="recipe-description">Описание рецепта:</label>
+                <textarea id="recipe-description" rows="4" placeholder="Введите описание рецепта"></textarea>
+            </div>
+        </div>
     </div>
 
     <!-- Рецепт -->
@@ -39,7 +60,7 @@
             <div class="step">
                 <div class="step-header">
                     <span>Шаг 1</span>
-                    <button class="remove-step">➖</button>
+                    <button class="remove-step" title="Удалить шаг">➖</button>
                 </div>
                 <div class="step-content">
                     <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
@@ -59,18 +80,6 @@
     <!-- Кнопка публикации -->
     <div class="publish-button">
         <button id="publish-recipe">Опубликовать рецепт</button>
-    </div>
-</div>
-
-<!-- Модальное окно для обрезки изображений -->
-<div id="crop-modal" style="display: none;">
-    <div class="modal-content">
-        <h2>Обрежьте изображение</h2>
-        <div class="image-container">
-            <canvas id="crop-canvas"></canvas>
-        </div>
-        <button id="confirm-crop">Подтвердить</button>
-        <button id="cancel-crop">Отменить</button>
     </div>
 </div>
 {% endblock %}

@@ -2,194 +2,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainPhotoInput = document.getElementById('main-photo');
     const mainPhotoPreview = document.getElementById('main-photo-preview');
     const photoPlaceholder = document.getElementById('photo-placeholder');
-    const cropModal = document.getElementById('crop-modal');
-    const cropCanvas = document.getElementById('crop-canvas');
-    const confirmCropButton = document.getElementById('confirm-crop');
-    const cancelCropButton = document.getElementById('cancel-crop');
-    let originalImage = null; // Исходное изображение
-    let cropData = { x: 0, y: 0, width: 0, height: 0 }; // Данные для обрезки
-    let isDragging = false;
-    let activeHandle = null;
-
-    // Функция для открытия модального окна
-    function openCropModal(imageSrc, callback) {
-        originalImage = new Image();
-        originalImage.src = imageSrc;
-        originalImage.onload = () => {
-            cropModal.style.display = 'flex'; // Показываем модальное окно
-            const canvas = cropCanvas;
-            const ctx = canvas.getContext('2d');
-            // Устанавливаем размеры холста (соотношение 4:3)
-            canvas.width = 800; // Ширина холста
-            canvas.height = 600; // Высота холста
-            // Рисуем изображение на холсте
-            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-            // Добавляем рамку для выбора области
-            addCropFrame(canvas);
-        };
-        // Подтверждение обрезки
-        confirmCropButton.onclick = () => {
-            const croppedCanvas = document.createElement('canvas');
-            const croppedCtx = croppedCanvas.getContext('2d');
-            // Устанавливаем размеры обрезанного холста
-            croppedCanvas.width = cropData.width;
-            croppedCanvas.height = cropData.height;
-            // Рисуем обрезанную область
-            croppedCtx.drawImage(
-                originalImage,
-                cropData.x, cropData.y, cropData.width, cropData.height,
-                0, 0, cropData.width, cropData.height
-            );
-            callback(croppedCanvas.toDataURL()); // Передаем результат обратно через callback
-            closeCropModal();
-        };
-        // Отмена обрезки
-        cancelCropButton.onclick = () => {
-            closeCropModal();
-        };
-    }
-
-    // Функция для закрытия модального окна
-    function closeCropModal() {
-        cropModal.style.display = 'none';
-        const ctx = cropCanvas.getContext('2d');
-        ctx.clearRect(0, 0, cropCanvas.width, cropCanvas.height); // Очищаем холст
-    }
-
-    // Функция для добавления рамки выбора
-    function addCropFrame(canvas) {
-        const ctx = canvas.getContext('2d');
-        let frame = { x: 50, y: 50, width: 600, height: 450 }; // Размеры рамки (4:3)
-        // Создаем элементы для ручек изменения размеров
-        const handles = [
-            { id: 'top-left', x: 0, y: 0 },
-            { id: 'top-right', x: 0, y: 0 },
-            { id: 'bottom-left', x: 0, y: 0 },
-            { id: 'bottom-right', x: 0, y: 0 }
-        ];
-        handles.forEach(handle => {
-            const handleElement = document.createElement('div');
-            handleElement.style.position = 'absolute';
-            handleElement.style.width = '10px';
-            handleElement.style.height = '10px';
-            handleElement.style.backgroundColor = 'red';
-            handleElement.style.cursor = 'pointer';
-            handleElement.style.borderRadius = '50%';
-            canvas.parentElement.appendChild(handleElement);
-        });
-        // Обработчик для перетаскивания рамки
-        let offsetX = 0, offsetY = 0;
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            if (
-                mouseX >= frame.x && mouseX <= frame.x + frame.width &&
-                mouseY >= frame.y && mouseY <= frame.y + frame.height
-            ) {
-                isDragging = true;
-                offsetX = mouseX - frame.x;
-                offsetY = mouseY - frame.y;
-            }
-            // Проверка нажатия на ручку изменения размеров
-            handles.forEach((handle, index) => {
-                const handleX = frame.x + (index === 1 || index === 3 ? frame.width : 0) - 5;
-                const handleY = frame.y + (index === 2 || index === 3 ? frame.height : 0) - 5;
-                if (
-                    mouseX >= handleX && mouseX <= handleX + 10 &&
-                    mouseY >= handleY && mouseY <= handleY + 10
-                ) {
-                    activeHandle = index;
-                }
-            });
-        });
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            if (isDragging) {
-                frame.x = mouseX - offsetX;
-                frame.y = mouseY - offsetY;
-                // Ограничение движения рамки в пределах холста
-                frame.x = Math.max(0, Math.min(canvas.width - frame.width, frame.x));
-                frame.y = Math.max(0, Math.min(canvas.height - frame.height, frame.y));
-                redrawFrame(ctx, frame, handles);
-            }
-            if (activeHandle !== null) {
-                const handle = handles[activeHandle];
-                switch (activeHandle) {
-                    case 0: // Верхний левый угол
-                        frame.x = Math.min(mouseX, frame.x + frame.width);
-                        frame.y = Math.min(mouseY, frame.y + frame.height);
-                        frame.width = Math.abs(frame.x + frame.width - mouseX);
-                        frame.height = (frame.width * 3) / 4;
-                        break;
-                    case 1: // Верхний правый угол
-                        frame.y = Math.min(mouseY, frame.y + frame.height);
-                        frame.width = Math.abs(mouseX - frame.x);
-                        frame.height = (frame.width * 3) / 4;
-                        break;
-                    case 2: // Нижний левый угол
-                        frame.x = Math.min(mouseX, frame.x + frame.width);
-                        frame.width = Math.abs(frame.x + frame.width - mouseX);
-                        frame.height = Math.abs(mouseY - frame.y);
-                        break;
-                    case 3: // Нижний правый угол
-                        frame.width = Math.abs(mouseX - frame.x);
-                        frame.height = (frame.width * 3) / 4;
-                        break;
-                }
-                // Ограничиваем рамку в пределах холста
-                frame.x = Math.max(0, Math.min(canvas.width - frame.width, frame.x));
-                frame.y = Math.max(0, Math.min(canvas.height - frame.height, frame.y));
-                redrawFrame(ctx, frame, handles);
-            }
-        });
-        canvas.addEventListener('mouseup', () => {
-            isDragging = false;
-            activeHandle = null;
-        });
-        // Начальная отрисовка рамки
-        redrawFrame(ctx, frame, handles);
-        function redrawFrame(ctx, frame, handles) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-            // Рисуем рамку
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(frame.x, frame.y, frame.width, frame.height);
-            // Обновляем позиции ручек
-            handles.forEach((handle, index) => {
-                const handleX = frame.x + (index === 1 || index === 3 ? frame.width : 0) - 5;
-                const handleY = frame.y + (index === 2 || index === 3 ? frame.height : 0) - 5;
-                const handleElement = canvas.parentElement.children[index];
-                handleElement.style.left = `${handleX}px`;
-                handleElement.style.top = `${handleY}px`;
-            });
-            // Сохраняем данные для обрезки
-            cropData = {
-                x: (frame.x / canvas.width) * originalImage.width,
-                y: (frame.y / canvas.height) * originalImage.height,
-                width: (frame.width / canvas.width) * originalImage.width,
-                height: (frame.height / canvas.height) * originalImage.height
-            };
-        }
-    }
+    const photoError = document.getElementById('photo-error');
 
     // Обработка загрузки главной фотографии
     mainPhotoInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
+
         if (file) {
+            // Проверка размера файла
+            if (file.size > 10 * 1024 * 1024) {
+                photoError.style.display = 'block';
+                return;
+            }
+
+            photoError.style.display = 'none';
+
             const reader = new FileReader();
             reader.onload = (e) => {
-                openCropModal(e.target.result, (croppedImage) => {
-                    mainPhotoPreview.src = croppedImage; // Устанавливаем обрезанное изображение
-                    mainPhotoPreview.style.display = 'block';
-                    photoPlaceholder.style.display = 'none';
-                    // Убираем рамку .photo-label
-                    const photoLabel = document.querySelector('.photo-label');
-                    photoLabel.style.border = 'none';
-                });
+                mainPhotoPreview.src = e.target.result; // Устанавливаем изображение
+                mainPhotoPreview.style.display = 'block';
+                photoPlaceholder.style.display = 'none';
+
+                // Убираем рамку .photo-label
+                const photoLabel = document.querySelector('.photo-label');
+                photoLabel.style.border = 'none';
             };
             reader.readAsDataURL(file);
         }
@@ -199,6 +35,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const stepsContainer = document.getElementById('steps-container');
     const addStepButton = document.getElementById('add-step');
 
+    // Функция для инициализации обработчиков для шага
+    function initializeStepHandlers(stepElement) {
+        // Назначаем обработчик удаления шага
+        attachRemoveStepHandler(stepElement);
+
+        // Назначаем обработчик загрузки изображений для шага
+        const stepPhotoInput = stepElement.querySelector('.step-photo');
+        const stepPhotoPreview = stepElement.querySelector('.step-photo-label img');
+        const stepPhotoPlaceholder = stepElement.querySelector('.step-photo-label span');
+
+        stepPhotoInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                // Проверка размера файла
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Ошибка: Размер файла превышает 10 МБ.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    stepPhotoPreview.src = e.target.result;
+                    stepPhotoPreview.style.display = 'block';
+                    stepPhotoPlaceholder.style.display = 'none';
+
+                    // Убираем рамку .step-photo-label
+                    const stepPhotoLabel = stepElement.querySelector('.step-photo-label');
+                    stepPhotoLabel.style.border = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
     // Функция для назначения обработчика удаления шага
     function attachRemoveStepHandler(stepElement) {
         const removeButton = stepElement.querySelector('.remove-step');
@@ -206,9 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentStep = event.currentTarget.closest('.step'); // Находим текущий шаг
             const steps = Array.from(document.querySelectorAll('.step')); // Получаем все шаги как массив
             const stepIndex = steps.indexOf(currentStep); // Определяем индекс текущего шага
-
             console.log(`Кнопка "Удалить шаг" была нажата для шага №${stepIndex + 1}`); // Логгирование
-
             if (steps.length > 1) {
                 stepsContainer.removeChild(currentStep); // Удаляем текущий шаг
                 renumberSteps(); // Переименовываем оставшиеся шаги
@@ -222,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newStep.innerHTML = `
             <div class="step-header">
                 <span>Шаг</span>
-                <button class="remove-step">➖</button>
+                <button class="remove-step" title="Удалить шаг">➖</button>
             </div>
             <div class="step-content">
                 <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
@@ -235,30 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         stepsContainer.appendChild(newStep);
 
-        // Назначаем обработчик для нового шага
-        attachRemoveStepHandler(newStep);
-
-        const stepPhotoInput = newStep.querySelector('.step-photo');
-        const stepPhotoPreview = newStep.querySelector('.step-photo-label img');
-        const stepPhotoPlaceholder = newStep.querySelector('.step-photo-label span');
-
-        stepPhotoInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    openCropModal(e.target.result, (croppedImage) => {
-                        stepPhotoPreview.src = croppedImage;
-                        stepPhotoPreview.style.display = 'block';
-                        stepPhotoPlaceholder.style.display = 'none';
-                        // Убираем рамку .step-photo-label
-                        const stepPhotoLabel = newStep.querySelector('.step-photo-label');
-                        stepPhotoLabel.style.border = 'none';
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        // Инициализируем обработчики для нового шага
+        initializeStepHandlers(newStep);
     }
 
     // Функция для переименования шагов
@@ -277,11 +123,151 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Инициализация первого шага
-    addNewStep();
+    const initialSteps = document.querySelectorAll('.step');
+    initialSteps.forEach((step) => {
+        initializeStepHandlers(step);
+    });
+
+    // Переименование шагов после инициализации
     renumberSteps();
 
-    // Назначение обработчиков для существующих шагов
-    document.querySelectorAll('.step').forEach((step) => {
-        attachRemoveStepHandler(step);
+    // Обработка добавления новых ингредиентов
+    const ingredientsList = document.getElementById('ingredients-list');
+    const addIngredientButton = document.getElementById('add-ingredient');
+
+    // Функция для назначения обработчика удаления ингредиента
+    function attachRemoveIngredientHandler(ingredientElement) {
+        const removeButton = ingredientElement.querySelector('.remove-ingredient');
+        removeButton.addEventListener('click', () => {
+            ingredientsList.removeChild(ingredientElement);
+        });
+    }
+
+    // Функция для добавления нового ингредиента
+    function addNewIngredient() {
+        const newIngredient = document.createElement('div');
+        newIngredient.classList.add('ingredient');
+        newIngredient.innerHTML = `
+            <input type="text" class="ingredient-quantity" placeholder="Количество" />
+            <input type="text" class="ingredient-unit" placeholder="Ед. измерения" />
+            <input type="text" class="ingredient-name" placeholder="Ингредиент" />
+            <button class="remove-ingredient">➖</button>
+        `;
+        ingredientsList.appendChild(newIngredient);
+
+        // Назначаем обработчик для нового ингредиента
+        attachRemoveIngredientHandler(newIngredient);
+    }
+
+    // Добавление нового ингредиента по нажатию кнопки
+    addIngredientButton.addEventListener('click', () => {
+        addNewIngredient();
     });
+
+    // Инициализация первого ингредиента
+    document.querySelectorAll('.ingredient').forEach((ingredient) => {
+        attachRemoveIngredientHandler(ingredient);
+    });
+
+    // Обработка кнопки "Опубликовать рецепт"
+    const publishButton = document.getElementById('publish-recipe');
+    publishButton.addEventListener('click', async () => {
+        try {
+            // Собираем данные формы
+            const formData = new FormData();
+
+            // Главное изображение
+            const mainPhotoInput = document.getElementById('main-photo');
+            if (!mainPhotoInput.files.length) {
+                alert('Пожалуйста, загрузите главное изображение.');
+                return;
+            }
+            formData.append('main_photo', mainPhotoInput.files[0]);
+
+            // Название и описание рецепта
+            const title = document.getElementById('recipe-title').value.trim();
+            const description = document.getElementById('recipe-description').value.trim();
+            if (!title || !description) {
+                alert('Пожалуйста, заполните название и описание рецепта.');
+                return;
+            }
+            formData.append('title', title);
+            formData.append('description', description);
+
+            // Ингредиенты
+            const ingredients = [];
+            document.querySelectorAll('.ingredient').forEach((ingredientElement) => {
+                const quantity = ingredientElement.querySelector('.ingredient-quantity').value.trim();
+                const unit = ingredientElement.querySelector('.ingredient-unit').value.trim();
+                const name = ingredientElement.querySelector('.ingredient-name').value.trim();
+
+                if (quantity && unit && name) {
+                    ingredients.push({ quantity, unit, name });
+                }
+            });
+
+            if (ingredients.length === 0) {
+                alert('Пожалуйста, добавьте хотя бы один ингредиент.');
+                return;
+            }
+            formData.append('ingredients', JSON.stringify(ingredients));
+
+            // Шаги приготовления
+            const steps = [];
+            document.querySelectorAll('.step').forEach((stepElement, index) => {
+                const description = stepElement.querySelector('.step-description').value.trim();
+                const photoInput = stepElement.querySelector('.step-photo');
+
+                if (description && photoInput.files.length > 0) {
+                    steps.push({ description, photo: photoInput.files[0] });
+                }
+            });
+
+            if (steps.length === 0) {
+                alert('Пожалуйста, добавьте хотя бы один шаг с описанием и изображением.');
+                return;
+            }
+
+            steps.forEach((step, index) => {
+                formData.append(`step_${index}_description`, step.description);
+                formData.append(`step_${index}_photo`, step.photo);
+            });
+
+            // Отправляем данные на сервер
+            const response = await fetch('/create_recipe/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken') // Добавляем CSRF-токен
+                }
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Рецепт успешно опубликован!');
+                window.location.href = '/'; // Перенаправляем пользователя на главную страницу
+            } else {
+                alert('Ошибка при публикации рецепта: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при отправке данных.');
+        }
+    });
+
+    // Функция для получения CSRF-токена из куки
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 });

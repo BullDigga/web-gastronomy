@@ -2,110 +2,154 @@
 .recipe-container {
     max-width: 800px;
     margin: 20px auto;
-    padding: 20px; /* Отступы внутри контейнера */
+    padding: 20px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .recipe-container h1 {
     text-align: left;
     margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
 }
 
-/* Главная фотография и название */
+/* Главная фотография и информация */
 .main-photo-and-title {
-    display: flex; /* Размещаем изображение и информацию рядом */
-    align-items: flex-start; /* Выравниваем по верху */
-    gap: 20px; /* Отступ между изображением и информацией */
-    margin-bottom: 20px; /* Отступ перед нижней секцией */
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
 /* Стиль главного изображения */
 .photo-upload {
-    width: 320px; /* Ширина (4:3) */
-    height: 240px; /* Высота (4:3) */
-    border-radius: 8px;
+    width: 320px;
+    height: 240px;
+    border-radius: 12px;
     cursor: pointer;
+    position: relative;
 }
 
 .photo-label {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
+    width: 320px;
+    height: 240px;
     border: 2px dashed #ccc;
-    border-radius: 8px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.photo-label:hover {
+    border-color: #007bff;
 }
 
 .photo-label img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Сохраняем пропорции изображения */
-    border-radius: 8px;
+    object-fit: cover;
+    border-radius: 12px;
 }
 
 #photo-placeholder {
-    font-size: 48px; /* Больше, чтобы соответствовать размеру фото */
+    font-size: 48px;
     color: #ccc;
-}
-
-/* Информация справа от изображения */
-.title-input {
-    display: flex;
-    flex-direction: column; /* Метка и поле ввода располагаются сверху вниз */
-    gap: 10px; /* Отступ между меткой и полем ввода */
-    flex-grow: 1; /* Занимает оставшееся пространство */
-    margin-right: 20px; /* Одинаковый отступ справа, как и слева */
-}
-
-.title-input label {
     font-weight: bold;
 }
 
+/* Подсказка под главной фотографией */
+#photo-instructions {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+/* Сообщение об ошибке */
+#photo-error {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #dc3545;
+    text-align: center;
+    display: none;
+}
+
+/* Контейнер для названия и описания */
+.title-and-description {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-grow: 1;
+    margin-bottom: 10px;
+}
+
+/* Стиль для меток */
+.title-and-description label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.title-input {
+
+}
+
+/* Поле ввода названия */
 .title-input input {
-    width: 100%;
-    padding: 10px;
+    width: calc(100% - 20px);
+    padding: 9px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 16px;
-    transition: border-color 0.3s ease; /* Плавное изменение цвета границы */
+    transition: border-color 0.3s ease;
 }
 
 .title-input input:focus {
-    border-color: #007bff; /* Цвет границы при фокусе */
-    outline: none; /* Убираем стандартный outline */
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
 }
 
-/* Стиль описания рецепта */
-.recipe-description {
-    margin-bottom: 20px;
-    margin-right: 20px; /* Одинаковый отступ справа, как и слева */
-}
-
-.recipe-description label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
+/* Текстовое поле для описания */
 .recipe-description textarea {
-    width: 100%;
-    padding: 10px;
+    width: calc(100% - 20px);
+    padding: 9px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 16px;
-    resize: vertical; /* Разрешаем изменять высоту текстового поля */
+    resize: vertical;
+    transition: border-color 0.3s ease;
+    height: 170px;
+}
+
+.recipe-description textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
+}
+
+/* Гэп сверху перед контейнером шагов */
+.steps-container {
+    margin-top: 20px;
 }
 
 /* Секция рецепта */
 .recipe-steps h2 {
     margin-bottom: 10px;
+    font-size: 20px;
+    color: #333;
 }
 
 .step {
     margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f8f9fa;
 }
 
 .step-header {
@@ -117,14 +161,49 @@
 
 .step-header span {
     font-weight: bold;
+    color: #333;
 }
 
 .remove-step {
     background-color: transparent;
     border: none;
     font-size: 20px;
-    color: red;
+    color: #dc3545;
     cursor: pointer;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.remove-step:hover {
+    color: #b02a37;
+}
+
+/* Убираем атрибут title и используем только псевдоэлемент */
+.remove-step[title] {
+    title: none;
+}
+
+.remove-step::after {
+    content: 'Удалить шаг';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+}
+
+.remove-step:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 .step-content {
@@ -134,139 +213,180 @@
 }
 
 .step-description {
-    flex-grow: 1; /* Занимает доступное пространство */
-    max-width: 100%; /* Ограничиваем максимальную ширину */
+    flex-grow: 1;
+    max-width: 100%;
     height: 200px;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 16px;
-    resize: vertical; /* Разрешаем изменять высоту текстового поля */
-    overflow: auto; /* Добавляем прокрутку при необходимости */
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.step-description:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
 }
 
 .step-photo-label {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 320px; /* Ширина (4:3) */
-    height: 240px; /* Высота (4:3) */
+    width: 320px;
+    height: 240px;
     border: 2px dashed #ccc;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-    position: relative; /* Для корректного позиционирования вложенных элементов */
+    position: relative;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s ease;
+}
+
+.step-photo-label:hover {
+    border-color: #007bff;
 }
 
 .step-photo-label img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Сохраняем пропорции изображения */
-    border-radius: 8px;
+    object-fit: cover;
+    border-radius: 12px;
 }
 
 .step-photo-label span {
-    font-size: 48px; /* Размер символа "+" */
+    font-size: 48px;
     color: #ccc;
-    position: absolute; /* Размещаем "+" поверх изображения */
+    font-weight: bold;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
+/* Кнопка добавления шага */
 #add-step {
     display: block;
     margin-top: 20px;
-    padding: 10px 20px;
+    padding: 12px 20px;
     background-color: #007bff;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
 #add-step:hover {
     background-color: #0056b3;
 }
 
+/* Кнопка публикации рецепта */
 .publish-button {
     text-align: right;
     margin-top: 20px;
 }
 
 #publish-recipe {
-    padding: 10px 20px;
+    padding: 12px 20px;
     background-color: #28a745;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
 #publish-recipe:hover {
     background-color: #218838;
 }
 
-/* Стиль модального окна */
-#crop-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
+.ingredients-container {
+    width: 250px; /* Фиксированная ширина */
+    padding: 10px 8px; /* Уменьшенные внутренние отступы: сверху/снизу — 10px, слева/справа — 8px */
     background-color: #fff;
-    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Фиксированное положение */
+    left: 20px; /* Отступ слева */
+    z-index: 100; /* Чтобы контейнер был поверх других элементов */
+}
+
+.ingredients-container h2 {
+    margin-bottom: 10px; /* Уменьшенный отступ */
+    font-size: 18px; /* Уменьшенный размер заголовка */
+    color: #333;
+}
+
+#ingredients-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Уменьшенный отступ между ингредиентами */
+}
+
+.ingredient {
+    display: flex;
+    gap: 5px; /* Отступ между элементами */
+    align-items: center; /* Выравнивание по центру по вертикали */
+    justify-content: space-between; /* Распределяем элементы с отступами */
+}
+
+.ingredient input {
+    flex-grow: 1;
+    padding: 6px; /* Уменьшенный внутренний отступ */
+    border: 1px solid #ccc;
     border-radius: 8px;
-    text-align: center;
-    max-width: 900px;
-    width: 100%;
+    font-size: 12px; /* Уменьшенный размер шрифта */
+    width: 50px;
 }
 
-.image-container {
-    margin: 20px 0;
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: 600px;
+
+.ingredients-container .ingredient-unit {
+    width: 44px;
 }
 
-#crop-canvas {
-    max-width: 100%;
-    max-height: 100%;
+
+.ingredient-name {
+    flex-basis: 60%; /* Больше места для названия ингредиента */
 }
 
-button {
-    padding: 10px 20px;
-    margin: 5px;
+.ingredients-container .remove-ingredient {
+    background-color: transparent;
     border: none;
-    border-radius: 4px;
+    font-size: 16px; /* Уменьшенный размер иконки */
+    color: #dc3545;
     cursor: pointer;
-    font-size: 16px;
+    transition: color 0.3s ease; /* Плавное изменение цвета */
+    line-height: 1; /* Убираем лишние вертикальные отступы */
+    padding: 0; /* Убираем отступы */
+    margin-left: auto; /* Прижимаем кнопку к правому краю */
+    margin-right: -6px;
 }
 
-#confirm-crop {
-    background-color: #28a745;
-    color: white;
+.remove-ingredient:hover {
+    color: #b02a37;
 }
 
-#cancel-crop {
-    background-color: #dc3545;
-    color: white;
+#add-ingredient {
+    display: block;
+    margin-top: 10px; /* Уменьшенный отступ */
+    padding: 8px 12px; /* Уменьшенный внутренний отступ */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px; /* Уменьшенный размер шрифта */
+    transition: background-color 0.3s ease;
 }
 
-/* Стиль для маркеров изменения размера */
-.resize-handle {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    border-radius: 50%;
-    cursor: nwse-resize;
+#add-ingredient:hover {
+    background-color: #0056b3;
+}
+
+.ingredients-container .ingredient-quantity {
+    width: 38px;
 }

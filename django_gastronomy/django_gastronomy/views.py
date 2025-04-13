@@ -1,5 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from recipes.models import Recipe
+from recipe_ingredients.models import RecipeIngredient
+from instructions.models import Instruction
+from ingredients.models import Ingredient
+from units.models import Unit
 from comments.models import Comment
 from favorites.models import Favorite
 from ratings.models import Rate
@@ -7,8 +11,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib import messages
 from django.http import JsonResponse
+from django.db import transaction
 from django.db.models import Avg, Count
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
+import os
+from django.conf import settings
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -444,7 +452,90 @@ def delete_rating(request, recipe_id):
 
     return JsonResponse({'error': 'Неверный метод запроса.'}, status=400)
 
+
 @login_required
+@csrf_exempt
 def create_recipe(request):
-    # Заглушка: просто отображаем страницу без обработки данных
+    if request.method == 'POST':
+        try:
+            # Получаем данные из запроса
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            main_photo = request.FILES.get('main_photo')
+            ingredients_data = json.loads(request.POST.get('ingredients', '[]'))
+            steps_data = {key: value for key, value in request.FILES.items() if key.startswith('step_')}
+
+            # Проверяем обязательные поля
+            if not all([title, description, main_photo]):
+                return JsonResponse({'success': False, 'message': 'Заполните все обязательные поля.'})
+
+            # Создаем путь для сохранения изображений
+            main_image_dir = os.path.join(settings.STATICFILES_DIRS[0], 'recipe_images', 'main_recipe_images')
+            instruction_image_dir = os.path.join(settings.STATICFILES_DIRS[0], 'recipe_images',
+                                                 'instruction_recipe_images')
+
+            # Создаем директории, если их нет
+            os.makedirs(main_image_dir, exist_ok=True)
+            os.makedirs(instruction_image_dir, exist_ok=True)
+
+            # Сохраняем главное изображение
+            main_photo_name = f"{main_photo.name}"
+            main_photo_path = os.path.join(main_image_dir, main_photo_name)
+            with open(main_photo_path, 'wb+') as destination:
+                for chunk in main_photo.chunks():
+                    destination.write(chunk)
+            main_photo_url = f"/recipe_images/main_recipe_images/{main_photo_name}"
+
+            # Создаем рецепт в транзакции
+            with transaction.atomic():
+                recipe = Recipe.objects.create(
+                    title=title,
+                    description=description,
+                    author=request.user,
+                    status='published',
+                    main_picture_url=main_photo_url
+                )
+
+                # Добавляем ингредиенты
+                for ingredient_data in ingredients_data:
+                    ingredient_name = ingredient_data.get('name')
+                    unit_name = ingredient_data.get('unit')
+                    quantity = ingredient_data.get('quantity')
+
+                    if not all([ingredient_name, unit_name, quantity]):
+                        raise ValueError('Некорректные данные для ингредиента.')
+
+                    ingredient, _ = Ingredient.objects.get_or_create(name=ingredient_name)
+                    unit, _ = Unit.objects.get_or_create(name=unit_name)
+                    RecipeIngredient.objects.create(
+                        recipe=recipe,
+                        ingredient=ingredient,
+                        unit=unit,
+                        quantity=quantity
+                    )
+
+                # Добавляем шаги
+                for key, photo in steps_data.items():
+                    step_index = int(key.split('_')[1])
+                    description = request.POST.get(f'step_{step_index}_description')
+                    if not description or not photo:
+                        raise ValueError(f'Шаг {step_index + 1} не содержит описание или изображение.')
+
+                    photo_name = f"{photo.name}"
+                    photo_path = os.path.join(instruction_image_dir, photo_name)
+                    with open(photo_path, 'wb+') as destination:
+                        for chunk in photo.chunks():
+                            destination.write(chunk)
+                    photo_url = f"/static/recipe_images/instruction_recipe_images/{photo_name}"
+                    Instruction.objects.create(
+                        recipe=recipe,
+                        step_number=step_index + 1,
+                        instruction_text=description,
+                        image_url=photo_url
+                    )
+
+            return JsonResponse({'success': True, 'message': 'Рецепт успешно создан и опубликован.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
     return render(request, 'create_recipe.html')

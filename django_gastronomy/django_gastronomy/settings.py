@@ -4,6 +4,7 @@ Django settings for django_gastronomy project.
 
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -116,7 +117,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'  # URL для доступа к статическим файлам
 STATICFILES_DIRS = [BASE_DIR / 'static']  # Путь к папке со статическими файлами
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Путь для сборки статических файлов в продакшене
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Media files
 MEDIA_URL = '/media/'  # URL для доступа к медиафайлам
