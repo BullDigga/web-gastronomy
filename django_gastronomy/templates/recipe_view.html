@@ -27,6 +27,26 @@
 
     <!-- Основной контейнер рецепта -->
     <div class="recipe-container">
+        <!-- Кнопка "Добавить в избранное" (в правом верхнем углу) -->
+        <div class="favorite-button-container">
+            <button class="add-to-favorites
+                           {% if user.is_authenticated %}authenticated{% endif %}
+                           {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
+                    data-recipe-id="{{ recipe.id }}">
+                <img src="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
+                              {% static 'favorited.png' %}
+                          {% else %}
+                              {% static 'add_to_favorited.png' %}
+                          {% endif %}"
+                     alt="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
+                              Убрать из избранного
+                          {% else %}
+                              Добавить в избранное
+                          {% endif %}"
+                     class="favorite-icon">
+            </button>
+        </div>
+
         <!-- Верхняя секция -->
         <div class="top-section">
             <!-- Главное изображение -->
@@ -51,7 +71,7 @@
                 <!-- Название рецепта -->
                 <h2 class="recipe-title">{{ recipe.title }}</h2>
 
-                <!-- Контейнер с оценкой и кнопкой "Добавить в избранное" -->
+                <!-- Контейнер с оценкой -->
                 <div class="rating-and-favorites">
                     <div class="rating-section">
                         <!-- Звёзды и кнопка "Оценить" -->
@@ -73,11 +93,11 @@
                                  alt="Удалить оценку"
                                  style="display: {% if user_rating %}inline-block{% else %}none{% endif %};
                                         cursor: pointer;
-                                        width: 1.5em; /* Размер, соответствующий звёздочкам */
-                                        height: 1.5em; /* Размер, соответствующий звёздочкам */
-                                        margin-left: 8px; /* Сдвиг вправо */
+                                        width: 1.5em;
+                                        height: 1.5em;
+                                        margin-left: 8px;
                                         vertical-align: middle;
-                                        padding-top: 0.35em;"> <!-- Выравнивание по центру -->
+                                        padding-top: 0.35em;">
                         </div>
 
                         <div class="rating-info">
@@ -91,25 +111,13 @@
                                 <strong>Добавили в избранное:</strong> {{ favorites_count }}
                             </p>
                         </div>
-                    </div>
 
-                    <!-- Кнопка "Добавить в избранное" -->
-                    <button class="add-to-favorites
-                                   {% if user.is_authenticated %}authenticated{% endif %}
-                                   {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
-                            data-recipe-id="{{ recipe.id }}">
-                        <img src="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
-                                      {% static 'favorited.png' %}
-                                  {% else %}
-                                      {% static 'add_to_favorited.png' %}
-                                  {% endif %}"
-                             alt="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
-                                      Убрать из избранного
-                                  {% else %}
-                                      Добавить в избранное
-                                  {% endif %}"
-                             class="favorite-icon">
-                    </button>
+                        <!-- Автор -->
+                        <div class="recipe-author">
+                            <strong>Автор:</strong>
+                            <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,22 +127,17 @@
             <!-- Описание рецепта -->
             <div class="recipe-description">
                 <p class="recipe-text"><strong>Описание:</strong> {{ recipe.description }}</p>
-                <p class="recipe-author">
-                    <strong>Автор:</strong>
-                    <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
-                </p>
             </div>
 
             <!-- Шаги приготовления -->
             <div class="steps-section">
-                <h3 class="steps-title">Шаги приготовления</h3>
                 <div class="steps-container">
                     {% for step in recipe.instructions.all %}
                         <div class="step {% cycle 'odd-step' 'even-step' %}">
                             <div class="step-content">
                                 <!-- Описание шага -->
                                 <div class="step-description-container">
-                                    <span class="step-number">Шаг {{ step.step_number }}:</span>
+                                    <span class="step-number">Шаг {{ step.step_number }}</span>
                                     <p class="step-description">{{ step.instruction_text }}</p>
                                 </div>
 

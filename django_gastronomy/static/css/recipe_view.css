@@ -15,12 +15,21 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-left: 280px; /* Отступ слева, чтобы контейнер не перекрывал ингредиенты */
+    position: relative;
+}
+
+.favorite-button-container {
+    position: absolute; /* Абсолютное позиционирование внутри recipe-container */
+    top: 10px; /* Отступ сверху */
+    right: 10px; /* Отступ справа */
+    z-index: 10; /* Чтобы кнопка была поверх других элементов */
+    padding: 12px;
 }
 
 /* Верхняя секция */
 .top-section {
     display: flex; /* Размещаем изображение и информацию рядом */
-    align-items: flex-start; /* Выравниваем по верху */
+    align-items: stretch; /* Выравниваем по верху */
     gap: 20px; /* Отступ между изображением и информацией */
     margin-bottom: 20px; /* Отступ перед нижней секцией */
 }
@@ -48,6 +57,8 @@ body {
 /* Информация справа от изображения */
 .info-right {
     flex-grow: 1; /* Занимает оставшееся пространство */
+    display: flex; /* Размещаем элементы в колонку */
+    flex-direction: column; /* Элементы идут друг под другом */
 }
 
 /* Стиль названия рецепта */
@@ -58,21 +69,22 @@ body {
 
 /* Стиль блока с оценкой и кнопкой "Добавить в избранное" */
 .rating-and-favorites {
-    display: flex;
+    display: flex; /* Размещаем рейтинг и кнопку "Добавить в избранное" рядом */
     justify-content: space-between; /* Размещаем элементы по краям */
     align-items: flex-start; /* Выравниваем по верху */
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Отступ снизу */
 }
 
 .rating-section {
-    display: flex;
-    flex-direction: column; /* Размещаем элементы вертикально */
-    align-items: flex-start; /* Выравниваем по левому краю */
+    display: flex; /* Размещаем элементы в колонку */
+    flex-direction: column; /* Элементы идут друг под другом */
+    justify-content: space-between; /* Распределяем элементы по высоте */
+    height: 100%; /* Растягиваем на всю высоту */
 }
 
 .stars-and-rate {
-    display: flex;
-    align-items: center; /* Выравниваем звёзды и кнопку по центру */
+    display: flex; /* Размещаем звёзды и кнопку в строку */
+    align-items: center; /* Выравниваем по центру */
     margin-bottom: 5px; /* Отступ между звёздами и средней оценкой */
 }
 
@@ -126,7 +138,7 @@ body {
 .add-to-favorites {
     background-color: #B5B8B1; /* Серый цвет фона для неавторизованных пользователей */
     border: none;
-    padding: 0;
+
     width: 40px; /* Фиксированная ширина */
     height: 40px; /* Фиксированная высота */
     border-radius: 8px; /* Скругление углов */
@@ -182,6 +194,12 @@ body {
 /* Стиль описания рецепта */
 .recipe-description {
     margin-bottom: 20px;
+}
+
+.recipe-author {
+    margin-top: auto; /* Перемещаем автора вниз */
+    font-size: 14px; /* Меньший шрифт */
+    color: #666; /* Серый цвет */
 }
 
 .recipe-text,
@@ -272,6 +290,11 @@ body {
     background-color: #c74d22; /* Темнее при наведении */
 }
 
+.rating-info {
+    margin-bottom: 5px; /* Отступ между информацией о рейтингах и автором */
+}
+
+
 .rating-info p {
     font-size: 14px; /* Меньший размер шрифта */
     color: #666; /* Цвет текста такой же, как у "Средняя оценка" */
@@ -320,7 +343,7 @@ body {
 }
 
 .ingredient-item::before {
-    content: "◦"; /* Добавляем маркер */
+    content: ""; /* Добавляем маркер */
     color: #000; /* Цвет маркера */
     margin-right: 8px; /* Отступ между маркером и текстом */
     flex-shrink: 0; /* Запрещаем сжатие маркера */
@@ -396,7 +419,6 @@ body {
 .step-description {
     font-size: 18px;
     line-height: 1.5;
-    color: #333; /* Чёрный цвет текста */
 }
 
 .step-photo-container {
