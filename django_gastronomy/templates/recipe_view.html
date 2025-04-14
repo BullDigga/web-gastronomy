@@ -13,13 +13,17 @@
             <!-- Главное изображение -->
             <div class="recipe-main-image">
                 {% if recipe.main_picture_url %}
-                    <img src="{% static recipe.main_picture_url %}"
-                         alt="Главное изображение рецепта: {{ recipe.title }}"
-                         class="main-image">
+                    <a href="{% static recipe.main_picture_url %}" target="_blank" rel="noopener noreferrer">
+                        <img src="{% static recipe.main_picture_url %}"
+                             alt="Главное изображение рецепта: {{ recipe.title }}"
+                             class="main-image">
+                    </a>
                 {% else %}
-                    <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
-                         alt="Главное изображение рецепта: {{ recipe.title }}"
-                         class="main-image">
+                    <a href="{% static 'recipe_images/main_recipe_images/default_full_size_image.png' %}" target="_blank" rel="noopener noreferrer">
+                        <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
+                             alt="Главное изображение рецепта: {{ recipe.title }}"
+                             class="main-image">
+                    </a>
                 {% endif %}
             </div>
 
