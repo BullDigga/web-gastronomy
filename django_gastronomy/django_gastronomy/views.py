@@ -27,37 +27,58 @@ import json
 
 
 def recipes_list_browse(request, user_id=None, favorites=False):
+    """
+    View для просмотра списка рецептов.
+    Поддерживает фильтрацию по автору, избранным рецептам или показ всех опубликованных рецептов.
+    """
     User = get_user_model()
     current_user = request.user  # Текущий пользователь
 
+    # Если передан user_id, фильтруем рецепты по конкретному автору
     if user_id:
-        # Если передан user_id, фильтруем рецепты по автору
-        author = get_object_or_404(User, id=user_id)
-        recipes = Recipe.objects.filter(author=author, status='published').order_by('-id')
+        author = get_object_or_404(User, id=user_id)  # Находим автора по ID
+        recipes = Recipe.objects.filter(
+            author=author,
+            status='published'
+        ).order_by('-id')  # Сортируем рецепты по дате создания (новые первыми)
+
+    # Если запрошены избранные рецепты и пользователь аутентифицирован
     elif favorites and current_user.is_authenticated:
-        # Если запрошены избранные рецепты и пользователь аутентифицирован
-        favorite_recipe_ids = Favorite.objects.filter(user=current_user).values_list('recipe_id', flat=True)
-        recipes = Recipe.objects.filter(id__in=favorite_recipe_ids, status='published').order_by('-id')
+        favorite_recipe_ids = Favorite.objects.filter(
+            user=current_user
+        ).values_list('recipe_id', flat=True)  # Получаем ID избранных рецептов
+        recipes = Recipe.objects.filter(
+            id__in=favorite_recipe_ids,
+            status='published'
+        ).order_by('-id')  # Фильтруем рецепты по ID и сортируем
         author = None  # Нет конкретного автора
+
+    # Если ничего не передано, показываем все опубликованные рецепты
     else:
-        # Если ничего не передано, показываем все опубликованные рецепты
-        author = None
-        recipes = Recipe.objects.filter(status='published').order_by('-id')
+        author = None  # Нет конкретного автора
+        recipes = Recipe.objects.filter(
+            status='published'
+        ).order_by('-id')  # Показываем все опубликованные рецепты
 
     # Получаем ID избранных рецептов для текущего пользователя
     if current_user.is_authenticated:
-        favorite_recipe_ids = Favorite.objects.filter(user=current_user).values_list('recipe_id', flat=True)
+        favorite_recipe_ids = Favorite.objects.filter(
+            user=current_user
+        ).values_list('recipe_id', flat=True)
     else:
-        favorite_recipe_ids = []
+        favorite_recipe_ids = []  # Если пользователь не аутентифицирован, список пустой
 
+    # Отладочная информация
     print(f"Количество рецептов: {recipes.count()}")
 
+    # Контекст для передачи данных в шаблон
     context = {
-        'recipes': recipes,
-        'author': author,  # Передаём автора в контекст
+        'recipes': recipes,  # Список рецептов
+        'author': author,  # Автор рецептов (если есть)
         'favorites': favorites,  # Флаг для избранных рецептов
         'favorite_recipe_ids': list(favorite_recipe_ids),  # Список ID избранных рецептов
     }
+
     return render(request, 'recipes_list_browse.html', context)
 
 

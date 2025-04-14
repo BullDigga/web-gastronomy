@@ -56,7 +56,7 @@ body {
 }
 
 .recipe-info {
-    flex: 2;
+    flex: 7;
     margin-right: 20px;
 }
 
@@ -215,4 +215,11 @@ button {
 /* Эффект при наведении на изображение */
 .add-to-favorites:hover .favorite-icon {
     transform: scale(1.1); /* Небольшое увеличение при наведении */
+}
+
+.user-icon {
+    width: 1em; /* Размер иконки соразмерен с высотой текста */
+    height: 1em; /* Сохранение пропорций */
+    vertical-align: middle; /* Выравнивание по центру относительно текста */
+    margin-bottom: 2px; /* Небольшой отступ слева */
 }

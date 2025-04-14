@@ -117,3 +117,7 @@ class Recipe(models.Model):
     def comments_count(self):
         """Количество комментариев (UC-6)"""
         return self.comments.count()
+
+    def ratings_count(self):
+        """Количество оценок рецепта"""
+        return self.rates.count()

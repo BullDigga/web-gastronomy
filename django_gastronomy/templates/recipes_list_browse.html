@@ -56,7 +56,7 @@
                         </div>
                         <div class="info-row">
                             <span class="label">Описание:</span>
-                            <span class="value">{{ recipe.description|truncatewords:10 }}</span>
+                            <span class="value">{{ recipe.description|truncatewords:13 }}</span>
                         </div>
                         <div class="info-row">
                             <span class="label">Автор:</span>
@@ -66,11 +66,11 @@
                         </div>
                         <div class="info-row">
                             <span class="label">Рейтинг:</span>
-                            <span class="value">{{ recipe.average_rating|floatformat:1 }}/5</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="label">Комментарии:</span>
-                            <span class="value">{{ recipe.comments_count }}</span>
+                            <span class="value">
+                                {{ recipe.average_rating|floatformat:1 }}/5
+                                (<span class="rating-count">{{ recipe.ratings_count }}</span>
+                                <img src="{% static 'user_icon.png' %}" alt="Пользователи" class="user-icon">)
+                            </span>
                         </div>
                     </div>
 
