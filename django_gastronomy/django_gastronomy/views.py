@@ -531,7 +531,7 @@ def create_recipe(request):
 
                     # Создаем сжатую версию изображения шага
                     img = Image.open(photo)
-                    output_size = (300, 225)  # Размер миниатюры (4:3 пропорция)
+                    output_size = (600, 450)  # Размер миниатюры (4:3 пропорция)
                     img.thumbnail(output_size, Image.Resampling.LANCZOS)
 
                     thumb_io = BytesIO()

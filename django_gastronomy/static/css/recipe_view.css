@@ -14,6 +14,7 @@ body {
     background-color: #FFFFFF;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 280px; /* Отступ слева, чтобы контейнер не перекрывал ингредиенты */
 }
 
 /* Верхняя секция */
@@ -280,3 +281,146 @@ body {
 .rating-info strong {
     font-weight: bold; /* Жирный шрифт для заголовков */
 }
+
+/* Контейнер для ингредиентов */
+.ingredients-container {
+    width: 230px; /* Фиксированная ширина */
+    padding: 10px 8px; /* Уменьшенные внутренние отступы */
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Фиксированное положение */
+    left: 20px; /* Отступ слева */
+    z-index: 100; /* Чтобы контейнер был поверх других элементов */
+}
+
+.ingredients-container h2 {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px; /* Уменьшенный отступ */
+    font-size: 18px; /* Размер заголовка */
+    color: #333;
+}
+
+.ingredients-list {
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Отступ между ингредиентами */
+    list-style-type: none; /* Убираем стандартные маркеры */
+    padding: 0; /* Убираем отступы */
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: flex-start; /* Выравнивание по верху */
+    gap: 5px; /* Отступ между элементами */
+    font-size: 16px;
+    color: black; /* Чёрный цвет текста */
+}
+
+.ingredient-item::before {
+    content: "◦"; /* Добавляем маркер */
+    color: #000; /* Цвет маркера */
+    margin-right: 8px; /* Отступ между маркером и текстом */
+    flex-shrink: 0; /* Запрещаем сжатие маркера */
+}
+
+.quantity-unit {
+    white-space: nowrap; /* Запрещаем перенос строки */
+    margin-right: 5px; /* Отступ между количеством и разделителем */
+    flex-shrink: 0; /* Запрещаем сжатие количества и единицы измерения */
+}
+
+.separator {
+    margin-right: 5px; /* Отступ между разделителем и названием */
+    color: #666; /* Серый цвет для разделителя */
+    flex-shrink: 0; /* Запрещаем сжатие разделителя */
+}
+
+.name {
+    flex-grow: 1; /* Название занимает оставшееся пространство */
+    word-wrap: break-word; /* Перенос длинных слов */
+    min-width: 0; /* Обеспечиваем корректный перенос текста */
+    align-self: flex-start; /* Выравнивание текста по верху */
+}
+
+/* Секция шагов приготовления */
+.steps-section {
+    margin-top: 20px;
+}
+
+.steps-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333; /* Чёрный цвет заголовка */
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Отступ между шагами */
+}
+
+.step {
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row; /* Расположение элементов шага горизонтально */
+    align-items: flex-start; /* Выравнивание по верху */
+    gap: 20px; /* Отступ между описанием и изображением */
+    background-color: #FAFAFA; /* Более нейтральный светлый фон */
+}
+
+.step-content {
+    display: flex;
+    flex: 1; /* Занимает всё доступное пространство */
+    gap: 2em;
+}
+
+.step-description-container {
+    flex: 2; /* Описание занимает больше места */
+    display: flex;
+    flex-direction: column;
+}
+
+.step-number {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333; /* Чёрный цвет номера шага */
+    margin-bottom: 5px;
+}
+
+.step-description {
+    font-size: 18px;
+    line-height: 1.5;
+    color: #333; /* Чёрный цвет текста */
+}
+
+.step-photo-container {
+    flex: 1.5; /* Изображение занимает меньше места */
+    display: flex;
+    justify-content: center; /* Центрирование изображения по горизонтали */
+    align-items: center; /* Центрирование изображения по вертикали */
+}
+
+.step-image {
+    max-width: 100%;
+    max-height: 300px; /* Увеличенная высота изображения */
+    border-radius: 8px;
+    object-fit: cover; /* Сохранение пропорций изображения */
+    cursor: pointer; /* Указатель мыши меняется при наведении */
+    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+.step-image:hover {
+    transform: scale(1.05); /* Небольшое увеличение при наведении */
+}
+
+.no-image {
+    font-size: 14px;
+    color: #888;
+    text-align: center;
+}}

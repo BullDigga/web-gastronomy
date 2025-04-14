@@ -7,19 +7,38 @@
     <link rel="stylesheet" href="{% static 'css/recipe_view.css' %}">
     <script src="{% static 'js/recipe_view.js' %}"></script>
 
+    <!-- Контейнер для ингредиентов -->
+    <div class="ingredients-container">
+        <h2>Ингредиенты:</h2>
+        <ul class="ingredients-list">
+            {% for recipe_ingredient in recipe.ingredients.all %}
+                <li class="ingredient-item">
+                    <span class="quantity-unit">
+                        {{ recipe_ingredient.quantity|floatformat }} {{ recipe_ingredient.unit }}
+                    </span>
+                    <span class="separator">—</span>
+                    <span class="name">{{ recipe_ingredient.ingredient.name }}</span>
+                </li>
+            {% empty %}
+                <p>Ингредиенты не указаны.</p>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Основной контейнер рецепта -->
     <div class="recipe-container">
         <!-- Верхняя секция -->
         <div class="top-section">
             <!-- Главное изображение -->
             <div class="recipe-main-image">
-                {% if recipe.main_picture_compressed_url %}
-                    <a href="{{ recipe.main_picture_url }}" target="_blank" rel="noopener noreferrer">
-                        <img src="{{ recipe.main_picture_compressed_url }}"
+                {% if recipe.main_picture_compressed %}
+                    <a href="{{ recipe.main_picture.url }}" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ recipe.main_picture_compressed.url }}"
                              alt="Главное изображение рецепта: {{ recipe.title }}"
                              class="main-image">
                     </a>
                 {% else %}
-                        <a href="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}" target="_blank" rel="noopener noreferrer">
+                    <a href="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}" target="_blank" rel="noopener noreferrer">
                         <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
                              alt="Главное изображение рецепта: {{ recipe.title }}"
                              class="main-image">
@@ -104,7 +123,39 @@
                     <strong>Автор:</strong>
                     <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
                 </p>
-                <p class="recipe-instructions"><strong>Инструкция:</strong> {{ recipe.instruction|default:"Нет инструкции" }}</p>
+            </div>
+
+            <!-- Шаги приготовления -->
+            <div class="steps-section">
+                <h3 class="steps-title">Шаги приготовления</h3>
+                <div class="steps-container">
+                    {% for step in recipe.instructions.all %}
+                        <div class="step {% cycle 'odd-step' 'even-step' %}">
+                            <div class="step-content">
+                                <!-- Описание шага -->
+                                <div class="step-description-container">
+                                    <span class="step-number">Шаг {{ step.step_number }}:</span>
+                                    <p class="step-description">{{ step.instruction_text }}</p>
+                                </div>
+
+                                <!-- Изображение шага -->
+                                <div class="step-photo-container">
+                                    {% if step.image_compressed %}
+                                        <a href="{{ step.image.url }}" target="_blank" rel="noopener noreferrer">
+                                            <img src="{{ step.image_compressed.url }}"
+                                                 alt="Изображение для шага {{ step.step_number }}"
+                                                 class="step-image">
+                                        </a>
+                                    {% else %}
+                                        <p class="no-image">Изображение отсутствует</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>Шаги приготовления не указаны.</p>
+                    {% endfor %}
+                </div>
             </div>
 
             <!-- Комментарии -->
