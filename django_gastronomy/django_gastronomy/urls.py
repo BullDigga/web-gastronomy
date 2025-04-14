@@ -37,7 +37,7 @@ urlpatterns = [
     path('rate_recipe/<int:recipe_id>/', views.rate_recipe, name='rate_recipe'),
     path('delete_rating/<int:recipe_id>/', views.delete_rating, name='delete_rating'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

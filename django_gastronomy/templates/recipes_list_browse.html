@@ -11,7 +11,7 @@
 
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/recipes_list_browse.css' %}">
-    <script src="{% static 'js/recipes_list_browse.js' %}"></script>
+    <script src="{% static 'js/recipes_list_browse.js' %}" defer></script>
 
     <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
         <div class="recipes-container">
@@ -32,11 +32,13 @@
                     <!-- Изображение рецепта -->
                     <div class="recipe-image">
                         <a href="{% url 'recipe_view' recipe.id %}" class="recipe-thumbnail-link">
-                            {% if recipe.main_picture_url %}
-                                <img src="{% static recipe.main_picture_url %}"
+                            {% if recipe.main_picture_compressed %}
+                                <!-- Используем сжатую версию изображения -->
+                                <img src="{{ recipe.main_picture_compressed.url }}"
                                      alt="Изображение рецепта: {{ recipe.title }}"
                                      class="recipe-thumbnail">
                             {% else %}
+                                <!-- Если сжатое изображение отсутствует, используем запасное -->
                                 <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
                                      alt="Запасное изображение рецепта"
                                      class="recipe-thumbnail">
@@ -62,13 +64,21 @@
                                 <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
                             </span>
                         </div>
+                        <div class="info-row">
+                            <span class="label">Рейтинг:</span>
+                            <span class="value">{{ recipe.average_rating|floatformat:1 }}/5</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Комментарии:</span>
+                            <span class="value">{{ recipe.comments_count }}</span>
+                        </div>
                     </div>
 
                     <!-- Кнопки -->
                     <div class="buttons">
                         <!-- Кнопка добавления в избранное -->
                         <button class="add-to-favorites {% if user.is_authenticated %}authenticated{% endif %} {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
-                            data-recipe-id="{{ recipe.id }}">
+                                data-recipe-id="{{ recipe.id }}">
                             {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
                                 <img src="{% static 'favorited.png' %}" alt="Убрать из избранного" class="favorite-icon">
                             {% else %}

@@ -17,6 +17,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 import os
 from django.conf import settings
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -463,28 +466,24 @@ def create_recipe(request):
             description = request.POST.get('description')
             main_photo = request.FILES.get('main_photo')
             ingredients_data = json.loads(request.POST.get('ingredients', '[]'))
-            steps_data = {key: value for key, value in request.FILES.items() if key.startswith('step_')}
 
             # Проверяем обязательные поля
-            if not all([title, description, main_photo]):
+            if not title or not description or not main_photo:
                 return JsonResponse({'success': False, 'message': 'Заполните все обязательные поля.'})
 
             # Создаем путь для сохранения изображений
-            main_image_dir = os.path.join(settings.STATICFILES_DIRS[0], 'recipe_images', 'main_recipe_images')
-            instruction_image_dir = os.path.join(settings.STATICFILES_DIRS[0], 'recipe_images',
-                                                 'instruction_recipe_images')
+            main_image_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'main_recipe_images')
+            instruction_image_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'instruction_recipe_images')
+            instruction_image_compressed_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'instruction_recipe_images_compressed')
 
             # Создаем директории, если их нет
             os.makedirs(main_image_dir, exist_ok=True)
             os.makedirs(instruction_image_dir, exist_ok=True)
+            os.makedirs(instruction_image_compressed_dir, exist_ok=True)
 
             # Сохраняем главное изображение
-            main_photo_name = f"{main_photo.name}"
-            main_photo_path = os.path.join(main_image_dir, main_photo_name)
-            with open(main_photo_path, 'wb+') as destination:
-                for chunk in main_photo.chunks():
-                    destination.write(chunk)
-            main_photo_url = f"/recipe_images/main_recipe_images/{main_photo_name}"
+            main_photo_name = f"recipe_images/main_recipe_images/{main_photo.name}"
+            main_photo_path = default_storage.save(main_photo_name, main_photo)
 
             # Создаем рецепт в транзакции
             with transaction.atomic():
@@ -493,7 +492,7 @@ def create_recipe(request):
                     description=description,
                     author=request.user,
                     status='published',
-                    main_picture_url=main_photo_url
+                    main_picture=main_photo_path  # Относительный путь
                 )
 
                 # Добавляем ингредиенты
@@ -515,24 +514,45 @@ def create_recipe(request):
                     )
 
                 # Добавляем шаги
-                for key, photo in steps_data.items():
-                    step_index = int(key.split('_')[1])
+                step_index = 0
+                while True:
                     description = request.POST.get(f'step_{step_index}_description')
+                    photo = request.FILES.get(f'step_{step_index}_photo')
+
+                    if not description and not photo:
+                        break
+
                     if not description or not photo:
                         raise ValueError(f'Шаг {step_index + 1} не содержит описание или изображение.')
 
-                    photo_name = f"{photo.name}"
-                    photo_path = os.path.join(instruction_image_dir, photo_name)
-                    with open(photo_path, 'wb+') as destination:
-                        for chunk in photo.chunks():
-                            destination.write(chunk)
-                    photo_url = f"/static/recipe_images/instruction_recipe_images/{photo_name}"
+                    # Сохраняем основное изображение шага
+                    photo_name = f"recipe_images/instruction_recipe_images/{photo.name}"
+                    photo_path = default_storage.save(photo_name, photo)
+
+                    # Создаем сжатую версию изображения шага
+                    img = Image.open(photo)
+                    output_size = (300, 225)  # Размер миниатюры (4:3 пропорция)
+                    img.thumbnail(output_size, Image.Resampling.LANCZOS)
+
+                    thumb_io = BytesIO()
+                    img.save(thumb_io, format='JPEG', quality=85)
+
+                    compressed_filename = f'compressed_{photo.name}'
+                    compressed_photo_path = default_storage.save(
+                        f'recipe_images/instruction_recipe_images_compressed/{compressed_filename}',
+                        ContentFile(thumb_io.getvalue())
+                    )
+
+                    # Создаем объект Instruction
                     Instruction.objects.create(
                         recipe=recipe,
                         step_number=step_index + 1,
                         instruction_text=description,
-                        image_url=photo_url
+                        image=photo_path,
+                        image_compressed=compressed_photo_path
                     )
+
+                    step_index += 1
 
             return JsonResponse({'success': True, 'message': 'Рецепт успешно создан и опубликован.'})
         except Exception as e:

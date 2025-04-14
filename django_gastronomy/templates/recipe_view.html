@@ -12,14 +12,14 @@
         <div class="top-section">
             <!-- Главное изображение -->
             <div class="recipe-main-image">
-                {% if recipe.main_picture_url %}
-                    <a href="{% static recipe.main_picture_url %}" target="_blank" rel="noopener noreferrer">
-                        <img src="{% static recipe.main_picture_url %}"
+                {% if recipe.main_picture_compressed_url %}
+                    <a href="{{ recipe.main_picture_url }}" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ recipe.main_picture_compressed_url }}"
                              alt="Главное изображение рецепта: {{ recipe.title }}"
                              class="main-image">
                     </a>
                 {% else %}
-                    <a href="{% static 'recipe_images/main_recipe_images/default_full_size_image.png' %}" target="_blank" rel="noopener noreferrer">
+                        <a href="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}" target="_blank" rel="noopener noreferrer">
                         <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
                              alt="Главное изображение рецепта: {{ recipe.title }}"
                              class="main-image">

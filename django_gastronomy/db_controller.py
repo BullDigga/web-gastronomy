@@ -14,7 +14,7 @@ def create_recipe(
         description,
         author_email,  # Используем email вместо username
         status='moderating',
-        main_picture_url=None  # Добавляем опциональное поле для изображения
+        main_picture=None  # Добавляем опциональное поле для изображения
 ):
     """
     Создает новый рецепт в базе данных.
@@ -45,7 +45,7 @@ def create_recipe(
         description=description,
         author=author,
         status=status,
-        main_picture_url=main_picture_url  # Добавляем изображение, если оно передано
+        main_picture=main_picture  # Добавляем изображение, если оно передано
     )
 
     print(f"Рецепт добавлен: {recipe.title}, статус: {recipe.status}")
@@ -53,9 +53,9 @@ def create_recipe(
 
 if __name__ == '__main__':
     create_recipe(
-        title="Тыквенный суп-пюре с имбирём и кокосовым молоком",
+        title="4Тыквенный суп-пюре с имбирём и кокосовым молоком",
         description="Ароматный и согревающий суп с нежной текстурой, сладковатым вкусом тыквы и острой ноткой имбиря.",
-        author_email="2@2.2",
+        author_email="kolya.spiridonov.2003@gmail.com",
         status="published",
-        main_picture_url="recipe_images/main_recipe_images/1.jpg"
+        main_picture="D:/web-gastronomy/django_gastronomy/media/ryba-eda-blyudo.jpg"
     )

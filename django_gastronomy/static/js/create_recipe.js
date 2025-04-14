@@ -148,8 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const newIngredient = document.createElement('div');
         newIngredient.classList.add('ingredient');
         newIngredient.innerHTML = `
-            <input type="text" class="ingredient-quantity" placeholder="Количество" />
-            <input type="text" class="ingredient-unit" placeholder="Ед. измерения" />
+            <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
+            <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
             <input type="text" class="ingredient-name" placeholder="Ингредиент" />
             <button class="remove-ingredient">➖</button>
         `;
