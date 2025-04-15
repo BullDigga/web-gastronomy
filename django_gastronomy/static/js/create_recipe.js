@@ -1,10 +1,128 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Ингредиенты
+    const ingredientsList = document.getElementById('ingredients-list');
+    const addIngredientButton = document.getElementById('add-ingredient');
+
+    function attachRemoveIngredientHandler(ingredientElement) {
+        const removeButton = ingredientElement.querySelector('.remove-ingredient');
+        removeButton.addEventListener('click', () => {
+            ingredientsList.removeChild(ingredientElement);
+            validateIngredients();
+        });
+    }
+
+    function addNewIngredient() {
+        const newIngredient = document.createElement('div');
+        newIngredient.classList.add('ingredient');
+        newIngredient.innerHTML = `
+            <div class="ingredient-fields">
+                <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
+                <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
+                <input type="text" class="ingredient-name" placeholder="Ингредиент" />
+                <button class="remove-ingredient">➖</button>
+            </div>
+            <div class="ingredient-error" style="color: red; font-size: 12px; display: none;"></div>
+        `;
+        ingredientsList.appendChild(newIngredient);
+
+        // Назначаем обработчики для нового ингредиента
+        attachValidationHandlers(newIngredient);
+        attachRemoveIngredientHandler(newIngredient);
+        attachEnterKeyHandler(newIngredient);
+
+        // Устанавливаем фокус на поле "Кол-во" нового ингредиента
+        const quantityInput = newIngredient.querySelector('.ingredient-quantity');
+        quantityInput.focus();
+    }
+
+    function attachEnterKeyHandler(ingredientElement) {
+        const inputs = ingredientElement.querySelectorAll('.ingredient-quantity, .ingredient-unit, .ingredient-name');
+        inputs.forEach((input) => {
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Предотвращаем стандартное поведение
+
+                    // Находим все ингредиенты
+                    const allIngredients = document.querySelectorAll('.ingredient');
+                    const lastIngredient = allIngredients[allIngredients.length - 1];
+
+                    // Проверяем, является ли текущий элемент полем "Ингредиент" последнего ингредиента
+                    if (
+                        input.classList.contains('ingredient-name') &&
+                        input.closest('.ingredient') === lastIngredient
+                    ) {
+                        addNewIngredient();
+                    } else {
+                        input.blur(); // Снимаем фокус с текущего элемента
+                    }
+                }
+            });
+        });
+    }
+
+    function attachValidationHandlers(ingredientElement) {
+        const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
+        const unitInput = ingredientElement.querySelector('.ingredient-unit');
+        quantityInput.addEventListener('input', validateIngredients);
+        unitInput.addEventListener('input', validateIngredients);
+    }
+
+    function clearErrors(ingredientElement) {
+        const errorContainer = ingredientElement.querySelector('.ingredient-error');
+        if (errorContainer) {
+            errorContainer.innerHTML = ''; // Очищаем все сообщения об ошибках
+            errorContainer.style.display = 'none'; // Скрываем контейнер
+        }
+    }
+
+    function addError(ingredientElement, message) {
+        const errorContainer = ingredientElement.querySelector('.ingredient-error');
+        if (errorContainer) {
+            const errorElement = document.createElement('div'); // Создаем новый элемент для ошибки
+            errorElement.textContent = message;
+            errorElement.style.fontSize = '12px'; // Меньший шрифт
+            errorContainer.appendChild(errorElement); // Добавляем ошибку в контейнер
+            errorContainer.style.display = 'block'; // Показываем контейнер
+        }
+    }
+
+    function validateIngredients() {
+        let isValid = true;
+        document.querySelectorAll('.ingredient').forEach((ingredientElement) => {
+            clearErrors(ingredientElement);
+            const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
+            const unitInput = ingredientElement.querySelector('.ingredient-unit');
+            const quantityValue = quantityInput.value.trim();
+            const unitValue = unitInput.value.trim();
+            if (quantityValue && isNaN(quantityValue)) {
+                addError(ingredientElement, 'Количество должно быть числом.');
+                isValid = false;
+            }
+            if (unitValue && /\d/.test(unitValue)) {
+                addError(ingredientElement, 'Единица измерения не должна содержать цифр.');
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
+    // Обработчик кнопки "Добавить ингредиент"
+    addIngredientButton.addEventListener('click', () => {
+        addNewIngredient();
+    });
+
+    // Инициализация обработчиков для существующих ингредиентов
+    document.querySelectorAll('.ingredient').forEach((ingredient) => {
+        attachValidationHandlers(ingredient);
+        attachRemoveIngredientHandler(ingredient);
+        attachEnterKeyHandler(ingredient);
+    });
+
     // Главная фотография
     const mainPhotoInput = document.getElementById('main-photo');
     const mainPhotoPreview = document.getElementById('main-photo-preview');
     const photoPlaceholder = document.getElementById('photo-placeholder');
     const photoError = document.getElementById('photo-error');
-
     mainPhotoInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -30,11 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeStepHandlers(stepElement) {
         attachRemoveStepHandler(stepElement);
-
         const stepPhotoInput = stepElement.querySelector('.step-photo');
         const stepPhotoPreview = stepElement.querySelector('.step-photo-label img');
         const stepPhotoPlaceholder = stepElement.querySelector('.step-photo-label span');
-
         stepPhotoInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -103,99 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     renumberSteps();
 
-    // Ингредиенты
-    const ingredientsList = document.getElementById('ingredients-list');
-    const addIngredientButton = document.getElementById('add-ingredient');
-
-    function attachRemoveIngredientHandler(ingredientElement) {
-        const removeButton = ingredientElement.querySelector('.remove-ingredient');
-        removeButton.addEventListener('click', () => {
-            ingredientsList.removeChild(ingredientElement);
-            validateIngredients();
-        });
-    }
-
-    function addNewIngredient() {
-        const newIngredient = document.createElement('div');
-        newIngredient.classList.add('ingredient');
-        newIngredient.innerHTML = `
-            <div class="ingredient-fields">
-                <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
-                <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
-                <input type="text" class="ingredient-name" placeholder="Ингредиент" />
-                <button class="remove-ingredient">➖</button>
-            </div>
-            <div class="ingredient-error" style="color: red; font-size: 12px; display: none;"></div>
-        `;
-        ingredientsList.appendChild(newIngredient);
-
-        // Назначаем обработчики для нового ингредиента
-        attachValidationHandlers(newIngredient);
-        attachRemoveIngredientHandler(newIngredient);
-    }
-
-    function attachValidationHandlers(ingredientElement) {
-        const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
-        const unitInput = ingredientElement.querySelector('.ingredient-unit');
-
-        quantityInput.addEventListener('input', validateIngredients);
-        unitInput.addEventListener('input', validateIngredients);
-    }
-
-    function clearErrors(ingredientElement) {
-        const errorContainer = ingredientElement.querySelector('.ingredient-error');
-        if (errorContainer) {
-            errorContainer.innerHTML = ''; // Очищаем все сообщения об ошибках
-            errorContainer.style.display = 'none'; // Скрываем контейнер
-        }
-    }
-
-    function addError(ingredientElement, message) {
-        const errorContainer = ingredientElement.querySelector('.ingredient-error');
-        if (errorContainer) {
-            const errorElement = document.createElement('div'); // Создаем новый элемент для ошибки
-            errorElement.textContent = message;
-            errorElement.style.fontSize = '12px'; // Меньший шрифт
-            errorContainer.appendChild(errorElement); // Добавляем ошибку в контейнер
-            errorContainer.style.display = 'block'; // Показываем контейнер
-        }
-    }
-
-    function validateIngredients() {
-        let isValid = true;
-
-        document.querySelectorAll('.ingredient').forEach((ingredientElement) => {
-            clearErrors(ingredientElement);
-
-            const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
-            const unitInput = ingredientElement.querySelector('.ingredient-unit');
-
-            const quantityValue = quantityInput.value.trim();
-            const unitValue = unitInput.value.trim();
-
-            if (quantityValue && isNaN(quantityValue)) {
-                addError(ingredientElement, 'Количество должно быть числом.');
-                isValid = false;
-            }
-
-            if (unitValue && /\d/.test(unitValue)) {
-                addError(ingredientElement, 'Единица измерения не должна содержать цифр.');
-                isValid = false;
-            }
-        });
-
-        return isValid;
-    }
-
-    addIngredientButton.addEventListener('click', () => {
-        addNewIngredient();
-    });
-
-    document.querySelectorAll('.ingredient').forEach((ingredient) => {
-        attachValidationHandlers(ingredient);
-        attachRemoveIngredientHandler(ingredient);
-    });
-
     // Публикация рецепта
     const publishButton = document.getElementById('publish-recipe');
     publishButton.addEventListener('click', async () => {
@@ -203,17 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Пожалуйста, исправьте ошибки в форме.');
             return;
         }
-
         try {
             const formData = new FormData();
-
             // Главное изображение
             if (!mainPhotoInput.files.length) {
                 alert('Пожалуйста, загрузите главное изображение.');
                 return;
             }
             formData.append('main_photo', mainPhotoInput.files[0]);
-
             // Название и описание
             const title = document.getElementById('recipe-title').value.trim();
             const description = document.getElementById('recipe-description').value.trim();
@@ -223,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             formData.append('title', title);
             formData.append('description', description);
-
             // Ингредиенты
             const ingredients = [];
             document.querySelectorAll('.ingredient').forEach((ingredientElement) => {
@@ -239,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             formData.append('ingredients', JSON.stringify(ingredients));
-
             // Шаги
             const steps = [];
             document.querySelectorAll('.step').forEach((stepElement, index) => {
@@ -257,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append(`step_${index}_description`, step.description);
                 formData.append(`step_${index}_photo`, step.photo);
             });
-
             // Отправка данных на сервер
             const response = await fetch('/create_recipe/', {
                 method: 'POST',
