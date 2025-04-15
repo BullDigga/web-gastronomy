@@ -10,6 +10,18 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="{% static 'js/base.js' %}"></script>
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+    <style>
+        /* Стили для iframe */
+        iframe#radio-frame {
+            position: fixed;
+            right: 10px; /* Отступ справа */
+            width: 300px; /* Ширина iframe */
+            height: 250px; /* Высота iframe (увеличьте, если нужно) */
+            border: none; /* Убираем рамку */
+            z-index: 1000; /* Размещаем поверх других элементов */
+        }
+    </style>
 </head>
 <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
     <!-- CSRF-токен -->
@@ -48,27 +60,8 @@
         </div>
     </header>
 
-    <div class="radio-player">
-        <audio id="radioPlayer">
-            <source src="http://us2.internet-radio.com:8443/stream" type="audio/mpeg">
-            Ваш браузер не поддерживает элемент audio.
-        </audio>
-        <div class="controls">
-            <img src="{% static 'radio_images/megaton_cafe_radio.jpg' %}" alt="Megaton Cafe Radio" class="radio-logo">
-            <div class="radio-info">
-                <div class="radio-title">Megaton Cafe Radio</div>
-            </div>
-            <div class="play-volume-controls">
-                <img id="playPauseImage"
-                     src="{% static 'radio_images/play.png' %}"
-                     data-play-src="{% static 'radio_images/play.png' %}"
-                     data-pause-src="{% static 'radio_images/pause.png' %}"
-                     alt="Play"
-                     class="play-pause-image">
-                <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1">
-            </div>
-        </div>
-    </div>
+    <!-- Добавляем iframe для радиоплеера -->
+    <iframe id="radio-frame" src="{% url 'radio_player' %}"></iframe>
 
     <main>
         <!-- Блок для дочерних шаблонов -->

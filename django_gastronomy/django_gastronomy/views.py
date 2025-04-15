@@ -580,3 +580,6 @@ def create_recipe(request):
             return JsonResponse({'success': False, 'message': str(e)})
 
     return render(request, 'create_recipe.html')
+
+def radio_player(request):
+    return render(request, 'radio_player.html')

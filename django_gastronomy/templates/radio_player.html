@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Player</title>
+    <style>
+        /* Стили для радиоплеера */
+        .radio-player {
+            position: fixed;
+            right: 20px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            text-align: center;
+            width: 200px; /* Ограничим ширину */
+            margin-top: 20px;
+        }
+
+        .play-volume-controls {
+            display: flex; /* Размещаем элементы в одну строку */
+            align-items: center; /* Выравниваем по центру */
+            gap: 10px; /* Расстояние между кнопкой и ползунком */
+            width: 100%; /* Занимаем всю доступную ширину */
+        }
+
+        .radio-player .radio-logo {
+            width: 100px; /* Размер изображения */
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .radio-player .radio-info {
+            text-align: center;
+        }
+
+        .radio-player .radio-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none; /* Отключаем стандартные стили */
+            width: 100%;
+            height: 5px;
+            background: #FFA500; /* Цвет линии */
+            border-radius: 5px; /* Закругляем края */
+            outline: none;
+        }
+
+        /* Стиль "бегунка" */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #FFFFFF; /* Цвет бегунка */
+            border: 2px solid #FFA500; /* Обводка бегунка */
+            border-radius: 50%; /* Делаем круглым */
+            cursor: pointer;
+        }
+
+        /* Для Firefox */
+        input[type="range"]::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: #FFFFFF;
+            border: 2px solid #FFA500;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .play-pause-image {
+            width: 30px; /* Размер изображений play/pause */
+            height: 30px;
+            cursor: pointer;
+            outline: none; /* Убираем синее обрамление */
+        }
+    </style>
+</head>
+<body>
+    <div class="radio-player">
+        <audio id="radioPlayer">
+            <source src="http://us2.internet-radio.com:8443/stream" type="audio/mpeg">
+            Ваш браузер не поддерживает элемент audio.
+        </audio>
+        <div class="controls">
+            <img src="{% static 'radio_images/megaton_cafe_radio.jpg' %}" alt="Megaton Cafe Radio" class="radio-logo">
+            <div class="radio-info">
+                <div class="radio-title">Megaton Cafe Radio</div>
+            </div>
+            <div class="play-volume-controls">
+                <img id="playPauseImage"
+                     src="{% static 'radio_images/play.png' %}"
+                     data-play-src="{% static 'radio_images/play.png' %}"
+                     data-pause-src="{% static 'radio_images/pause.png' %}"
+                     alt="Play"
+                     class="play-pause-image">
+                <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const radioPlayer = document.getElementById('radioPlayer');
+            const playPauseImage = document.getElementById('playPauseImage');
+            const volumeControl = document.getElementById('volumeControl');
+
+            const playSrc = playPauseImage.getAttribute('data-play-src');
+            const pauseSrc = playPauseImage.getAttribute('data-pause-src');
+
+            let isPlaying = false;
+
+            // Восстановление состояния из localStorage
+            const savedState = JSON.parse(localStorage.getItem('radioState'));
+            if (savedState && savedState.isPlaying) {
+                isPlaying = true;
+                radioPlayer.volume = savedState.volume;
+                volumeControl.value = savedState.volume;
+                playPauseImage.src = pauseSrc;
+                radioPlayer.play();
+            }
+
+            // Переключение состояния кнопки (Play/Pause)
+            playPauseImage.addEventListener('click', () => {
+                if (isPlaying) {
+                    radioPlayer.pause();
+                    playPauseImage.src = playSrc;
+                } else {
+                    radioPlayer.play().catch((error) => {
+                        console.error('Воспроизведение заблокировано браузером:', error);
+                        alert('Пожалуйста, нажмите кнопку Play, чтобы начать воспроизведение.');
+                    });
+                    playPauseImage.src = pauseSrc;
+                }
+                isPlaying = !isPlaying;
+
+                localStorage.setItem(
+                    'radioState',
+                    JSON.stringify({
+                        isPlaying: isPlaying,
+                        volume: radioPlayer.volume
+                    })
+                );
+            });
+
+            // Регулировка громкости
+            volumeControl.addEventListener('input', () => {
+                radioPlayer.volume = volumeControl.value;
+
+                localStorage.setItem(
+                    'radioState',
+                    JSON.stringify({
+                        isPlaying: isPlaying,
+                        volume: radioPlayer.volume
+                    })
+                );
+            });
+        });
+    </script>
+</body>
+</html>
