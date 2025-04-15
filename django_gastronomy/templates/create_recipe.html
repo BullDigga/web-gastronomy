@@ -9,12 +9,15 @@
     <h2>Ингредиенты:</h2>
     <div id="ingredients-list">
         <!-- Первый ингредиент по умолчанию -->
-        <div class="ingredient">
-            <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
-            <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
-            <input type="text" class="ingredient-name" placeholder="Ингредиент" />
-            <button class="remove-ingredient">➖</button>
-        </div>
+            <div class="ingredient">
+                <div class="ingredient-fields">
+                    <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
+                    <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
+                    <input type="text" class="ingredient-name" placeholder="Ингредиент" />
+                    <button class="remove-ingredient">➖</button>
+                </div>
+                <div class="ingredient-error" style="color: red; font-size: 12px; display: none;"></div>
+            </div>
     </div>
     <button id="add-ingredient">Добавить ингредиент</button>
 </div>

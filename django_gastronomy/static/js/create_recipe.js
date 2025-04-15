@@ -1,46 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Главная фотография
     const mainPhotoInput = document.getElementById('main-photo');
     const mainPhotoPreview = document.getElementById('main-photo-preview');
     const photoPlaceholder = document.getElementById('photo-placeholder');
     const photoError = document.getElementById('photo-error');
 
-    // Обработка загрузки главной фотографии
     mainPhotoInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
-
         if (file) {
-            // Проверка размера файла
             if (file.size > 10 * 1024 * 1024) {
                 photoError.style.display = 'block';
                 return;
             }
-
             photoError.style.display = 'none';
-
             const reader = new FileReader();
             reader.onload = (e) => {
-                mainPhotoPreview.src = e.target.result; // Устанавливаем изображение
+                mainPhotoPreview.src = e.target.result;
                 mainPhotoPreview.style.display = 'block';
                 photoPlaceholder.style.display = 'none';
-
-                // Убираем рамку .photo-label
-                const photoLabel = document.querySelector('.photo-label');
-                photoLabel.style.border = 'none';
+                document.querySelector('.photo-label').style.border = 'none';
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // Обработка добавления новых шагов
+    // Шаги приготовления
     const stepsContainer = document.getElementById('steps-container');
     const addStepButton = document.getElementById('add-step');
 
-    // Функция для инициализации обработчиков для шага
     function initializeStepHandlers(stepElement) {
-        // Назначаем обработчик удаления шага
         attachRemoveStepHandler(stepElement);
 
-        // Назначаем обработчик загрузки изображений для шага
         const stepPhotoInput = stepElement.querySelector('.step-photo');
         const stepPhotoPreview = stepElement.querySelector('.step-photo-label img');
         const stepPhotoPlaceholder = stepElement.querySelector('.step-photo-label span');
@@ -48,38 +38,30 @@ document.addEventListener('DOMContentLoaded', () => {
         stepPhotoInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
-                // Проверка размера файла
                 if (file.size > 10 * 1024 * 1024) {
                     alert('Ошибка: Размер файла превышает 10 МБ.');
                     return;
                 }
-
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     stepPhotoPreview.src = e.target.result;
                     stepPhotoPreview.style.display = 'block';
                     stepPhotoPlaceholder.style.display = 'none';
-
-                    // Убираем рамку .step-photo-label
-                    const stepPhotoLabel = stepElement.querySelector('.step-photo-label');
-                    stepPhotoLabel.style.border = 'none';
+                    stepElement.querySelector('.step-photo-label').style.border = 'none';
                 };
                 reader.readAsDataURL(file);
             }
         });
     }
 
-    // Функция для назначения обработчика удаления шага
     function attachRemoveStepHandler(stepElement) {
         const removeButton = stepElement.querySelector('.remove-step');
-        removeButton.addEventListener('click', (event) => {
-            const currentStep = event.currentTarget.closest('.step'); // Находим текущий шаг
-            const steps = Array.from(document.querySelectorAll('.step')); // Получаем все шаги как массив
-            const stepIndex = steps.indexOf(currentStep); // Определяем индекс текущего шага
-            console.log(`Кнопка "Удалить шаг" была нажата для шага №${stepIndex + 1}`); // Логгирование
+        removeButton.addEventListener('click', () => {
+            const currentStep = stepElement;
+            const steps = Array.from(document.querySelectorAll('.step'));
             if (steps.length > 1) {
-                stepsContainer.removeChild(currentStep); // Удаляем текущий шаг
-                renumberSteps(); // Переименовываем оставшиеся шаги
+                stepsContainer.removeChild(currentStep);
+                renumberSteps();
             }
         });
     }
@@ -94,97 +76,145 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="step-content">
                 <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
-                <label for="step-photo-${Date.now()}" class="step-photo-label">
-                    <img id="step-photo-preview-${Date.now()}" src="#" alt="Фото шага" style="display: none;" />
-                    <span id="step-photo-placeholder-${Date.now()}">+</span>
+                <label class="step-photo-label">
+                    <img src="#" alt="Фото шага" style="display: none;" />
+                    <span>+</span>
                 </label>
-                <input type="file" id="step-photo-${Date.now()}" accept="image/*" class="step-photo" style="display: none;" />
+                <input type="file" accept="image/*" class="step-photo" style="display: none;" />
             </div>
         `;
         stepsContainer.appendChild(newStep);
-
-        // Инициализируем обработчики для нового шага
         initializeStepHandlers(newStep);
     }
 
-    // Функция для переименования шагов
     function renumberSteps() {
-        const steps = document.querySelectorAll('.step');
-        steps.forEach((step, index) => {
-            const stepHeader = step.querySelector('.step-header span');
-            stepHeader.textContent = `Шаг ${index + 1}`;
+        document.querySelectorAll('.step').forEach((step, index) => {
+            step.querySelector('.step-header span').textContent = `Шаг ${index + 1}`;
         });
     }
 
-    // Добавление нового шага по нажатию кнопки
     addStepButton.addEventListener('click', () => {
         addNewStep();
         renumberSteps();
     });
 
-    // Инициализация первого шага
-    const initialSteps = document.querySelectorAll('.step');
-    initialSteps.forEach((step) => {
+    document.querySelectorAll('.step').forEach((step) => {
         initializeStepHandlers(step);
     });
-
-    // Переименование шагов после инициализации
     renumberSteps();
 
-    // Обработка добавления новых ингредиентов
+    // Ингредиенты
     const ingredientsList = document.getElementById('ingredients-list');
     const addIngredientButton = document.getElementById('add-ingredient');
 
-    // Функция для назначения обработчика удаления ингредиента
     function attachRemoveIngredientHandler(ingredientElement) {
         const removeButton = ingredientElement.querySelector('.remove-ingredient');
         removeButton.addEventListener('click', () => {
             ingredientsList.removeChild(ingredientElement);
+            validateIngredients();
         });
     }
 
-    // Функция для добавления нового ингредиента
     function addNewIngredient() {
         const newIngredient = document.createElement('div');
         newIngredient.classList.add('ingredient');
         newIngredient.innerHTML = `
-            <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
-            <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
-            <input type="text" class="ingredient-name" placeholder="Ингредиент" />
-            <button class="remove-ingredient">➖</button>
+            <div class="ingredient-fields">
+                <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
+                <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
+                <input type="text" class="ingredient-name" placeholder="Ингредиент" />
+                <button class="remove-ingredient">➖</button>
+            </div>
+            <div class="ingredient-error" style="color: red; font-size: 12px; display: none;"></div>
         `;
         ingredientsList.appendChild(newIngredient);
 
-        // Назначаем обработчик для нового ингредиента
+        // Назначаем обработчики для нового ингредиента
+        attachValidationHandlers(newIngredient);
         attachRemoveIngredientHandler(newIngredient);
     }
 
-    // Добавление нового ингредиента по нажатию кнопки
+    function attachValidationHandlers(ingredientElement) {
+        const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
+        const unitInput = ingredientElement.querySelector('.ingredient-unit');
+
+        quantityInput.addEventListener('input', validateIngredients);
+        unitInput.addEventListener('input', validateIngredients);
+    }
+
+    function clearErrors(ingredientElement) {
+        const errorContainer = ingredientElement.querySelector('.ingredient-error');
+        if (errorContainer) {
+            errorContainer.innerHTML = ''; // Очищаем все сообщения об ошибках
+            errorContainer.style.display = 'none'; // Скрываем контейнер
+        }
+    }
+
+    function addError(ingredientElement, message) {
+        const errorContainer = ingredientElement.querySelector('.ingredient-error');
+        if (errorContainer) {
+            const errorElement = document.createElement('div'); // Создаем новый элемент для ошибки
+            errorElement.textContent = message;
+            errorElement.style.fontSize = '12px'; // Меньший шрифт
+            errorContainer.appendChild(errorElement); // Добавляем ошибку в контейнер
+            errorContainer.style.display = 'block'; // Показываем контейнер
+        }
+    }
+
+    function validateIngredients() {
+        let isValid = true;
+
+        document.querySelectorAll('.ingredient').forEach((ingredientElement) => {
+            clearErrors(ingredientElement);
+
+            const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
+            const unitInput = ingredientElement.querySelector('.ingredient-unit');
+
+            const quantityValue = quantityInput.value.trim();
+            const unitValue = unitInput.value.trim();
+
+            if (quantityValue && isNaN(quantityValue)) {
+                addError(ingredientElement, 'Количество должно быть числом.');
+                isValid = false;
+            }
+
+            if (unitValue && /\d/.test(unitValue)) {
+                addError(ingredientElement, 'Единица измерения не должна содержать цифр.');
+                isValid = false;
+            }
+        });
+
+        return isValid;
+    }
+
     addIngredientButton.addEventListener('click', () => {
         addNewIngredient();
     });
 
-    // Инициализация первого ингредиента
     document.querySelectorAll('.ingredient').forEach((ingredient) => {
+        attachValidationHandlers(ingredient);
         attachRemoveIngredientHandler(ingredient);
     });
 
-    // Обработка кнопки "Опубликовать рецепт"
+    // Публикация рецепта
     const publishButton = document.getElementById('publish-recipe');
     publishButton.addEventListener('click', async () => {
+        if (!validateIngredients()) {
+            alert('Пожалуйста, исправьте ошибки в форме.');
+            return;
+        }
+
         try {
-            // Собираем данные формы
             const formData = new FormData();
 
             // Главное изображение
-            const mainPhotoInput = document.getElementById('main-photo');
             if (!mainPhotoInput.files.length) {
                 alert('Пожалуйста, загрузите главное изображение.');
                 return;
             }
             formData.append('main_photo', mainPhotoInput.files[0]);
 
-            // Название и описание рецепта
+            // Название и описание
             const title = document.getElementById('recipe-title').value.trim();
             const description = document.getElementById('recipe-description').value.trim();
             if (!title || !description) {
@@ -200,52 +230,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 const quantity = ingredientElement.querySelector('.ingredient-quantity').value.trim();
                 const unit = ingredientElement.querySelector('.ingredient-unit').value.trim();
                 const name = ingredientElement.querySelector('.ingredient-name').value.trim();
-
                 if (quantity && unit && name) {
                     ingredients.push({ quantity, unit, name });
                 }
             });
-
             if (ingredients.length === 0) {
                 alert('Пожалуйста, добавьте хотя бы один ингредиент.');
                 return;
             }
             formData.append('ingredients', JSON.stringify(ingredients));
 
-            // Шаги приготовления
+            // Шаги
             const steps = [];
             document.querySelectorAll('.step').forEach((stepElement, index) => {
                 const description = stepElement.querySelector('.step-description').value.trim();
                 const photoInput = stepElement.querySelector('.step-photo');
-
                 if (description && photoInput.files.length > 0) {
                     steps.push({ description, photo: photoInput.files[0] });
                 }
             });
-
             if (steps.length === 0) {
                 alert('Пожалуйста, добавьте хотя бы один шаг с описанием и изображением.');
                 return;
             }
-
             steps.forEach((step, index) => {
                 formData.append(`step_${index}_description`, step.description);
                 formData.append(`step_${index}_photo`, step.photo);
             });
 
-            // Отправляем данные на сервер
+            // Отправка данных на сервер
             const response = await fetch('/create_recipe/', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken') // Добавляем CSRF-токен
+                    'X-CSRFToken': getCookie('csrftoken')
                 }
             });
-
             const result = await response.json();
             if (result.success) {
                 alert('Рецепт успешно опубликован!');
-                window.location.href = '/'; // Перенаправляем пользователя на главную страницу
+                window.location.href = '/';
             } else {
                 alert('Ошибка при публикации рецепта: ' + result.message);
             }
@@ -255,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Функция для получения CSRF-токена из куки
+    // Получение CSRF-токена
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {

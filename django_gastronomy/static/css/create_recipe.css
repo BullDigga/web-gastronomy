@@ -329,9 +329,21 @@
 
 .ingredient {
     display: flex;
-    gap: 5px; /* Отступ между элементами */
-    align-items: center; /* Выравнивание по центру по вертикали */
-    justify-content: space-between; /* Распределяем элементы с отступами */
+    flex-direction: column; /* Размещаем элементы вертикально */
+    gap: 5px; /* Расстояние между полями и сообщением об ошибке */
+    margin-bottom: 10px; /* Расстояние между ингредиентами */
+}
+
+.ingredient-fields {
+    display: flex;
+    gap: 5px; /* Расстояние между полями и кнопкой */
+    align-items: center; /* Выравнивание по центру */
+}
+
+.ingredient-error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px; /* Отступ сверху для ошибки */
 }
 
 .ingredient input {
