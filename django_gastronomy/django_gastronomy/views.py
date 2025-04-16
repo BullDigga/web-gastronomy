@@ -98,12 +98,18 @@ def registration_view(request):
             # Логируем распарсенные данные
             print("Parsed data:", data)
 
+            # Обязательные поля
             username = data.get('username')
             email = data.get('email')
             password = data.get('password')
-            first_name = data.get('first_name')  # Новое поле
-            last_name = data.get('last_name')    # Новое поле
-            middle_name = data.get('middle_name')  # Новое поле
+
+            # Необязательные поля
+            first_name = data.get('first_name', '')  # Новое поле
+            last_name = data.get('last_name', '')    # Новое поле
+            middle_name = data.get('middle_name', '')  # Новое поле
+            gender = data.get('gender', None)        # Новое поле (необязательное)
+            date_of_birth = data.get('date_of_birth', None)  # Новое поле (необязательное)
+            country = data.get('country', '')        # Новое поле (необязательное)
 
             # Проверяем обязательные поля
             if not username or not email or not password:
@@ -125,9 +131,12 @@ def registration_view(request):
                 username=username,
                 email=email,
                 password=password,
-                first_name=first_name or '',  # Если поле пустое, передаем пустую строку
-                last_name=last_name or '',    # Если поле пустое, передаем пустую строку
-                middle_name=middle_name or ''  # Если поле пустое, передаем пустую строку
+                first_name=first_name,
+                last_name=last_name,
+                middle_name=middle_name,
+                gender=gender,
+                date_of_birth=date_of_birth,
+                country=country
             )
             print("Пользователь успешно зарегистрирован:", user.username)
 

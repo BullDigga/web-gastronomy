@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from datetime import date
 
 class UserManager(BaseUserManager):
     '''
@@ -24,6 +25,11 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser):
+    GENDER_CHOICES = (
+        ('M', _('Male')),
+        ('F', _('Female')),
+    )
+
     email = models.EmailField(
         _('email address'),
         unique=True,
@@ -42,6 +48,28 @@ class User(AbstractBaseUser):
 
     # Поле для даты регистрации
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+
+    # Добавляем новые поля
+    gender = models.CharField(
+        _('gender'),
+        max_length=1,
+        choices=GENDER_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_('Gender of the user (Male or Female).')
+    )
+    date_of_birth = models.DateField(
+        _('date of birth'),
+        blank=True,
+        null=True,
+        help_text=_('The user\'s date of birth.')
+    )
+    country = models.CharField(
+        _('country'),
+        max_length=100,
+        blank=True,
+        help_text=_('The country where the user resides.')
+    )
 
     objects = UserManager()
 
@@ -71,3 +99,14 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_staff
+
+    @property
+    def age(self):
+        if not self.date_of_birth:
+            return None
+        today = date.today()
+        age = today.year - self.date_of_birth.year
+        # Корректировка, если день рождения ещё не наступил в этом году
+        if (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day):
+            age -= 1
+        return age

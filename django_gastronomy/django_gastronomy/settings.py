@@ -4,6 +4,7 @@ Django settings for django_gastronomy project.
 
 
 from pathlib import Path
+from django.conf.locale.ru import formats as ru_formats
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,3 +129,17 @@ MEDIA_ROOT = BASE_DIR / 'media'  # Путь к папке для хранени�
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ru_formats.DATE_FORMAT = "j E Y"  # Пример: "15 июня 2023"
+
+USE_L10N = True
+LANGUAGE_CODE = 'ru-ru'
+
+LANGUAGES = [
+    ('ru', 'Russian'),
+    ('en', 'English'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]

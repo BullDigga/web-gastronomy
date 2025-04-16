@@ -36,7 +36,9 @@
     color: #444;
 }
 
-.form-group input {
+/* Стиль для всех полей ввода (input, select) */
+.form-group input,
+.form-group select {
     width: 100%; /* Поле занимает всю доступную ширину */
     padding: 10px;
     padding-right: 40px; /* Добавляем отступ справа для эмодзи */
@@ -44,6 +46,26 @@
     border-radius: 4px;
     font-size: 14px;
     box-sizing: border-box; /* Учитываем padding в ширину */
+    background-color: white; /* Фоновое цвет */
+    transition: border-color 0.3s ease; /* Плавное изменение цвета границы */
+}
+
+/* Стиль для select */
+.form-group select {
+    appearance: none; /* Убираем стандартные стрелки браузера */
+    -webkit-appearance: none; /* Для Safari */
+    -moz-appearance: none; /* Для Firefox */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='%23666' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Стрелка вниз */
+    background-repeat: no-repeat;
+    background-position: right 10px center; /* Расположение стрелки */
+    background-size: 12px; /* Размер стрелки */
+}
+
+/* При фокусе на поле */
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #66A932; /* Цвет границы при фокусе */
+    outline: none; /* Убираем обводку */
 }
 
 .register-button {

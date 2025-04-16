@@ -26,12 +26,41 @@
                     {{ profile_user.middle_name|default:"" }}
                 </span>
             </div>
+            <div class="info-row">
+                <span class="label">Пол:</span>
+                <span class="value {% if not profile_user.gender %}unspecified{% endif %}">
+                    {% if profile_user.gender %}
+                        {% if profile_user.gender == 'M' %}
+                            Мужчина
+                        {% elif profile_user.gender == 'F' %}
+                            Женщина
+                        {% endif %}
+                    {% else %}
+                        Не указан
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="label">Дата рождения:</span>
+                <span class="value {% if not profile_user.date_of_birth %}unspecified{% endif %}">
+                    {% if profile_user.date_of_birth %}
+                        {{ profile_user.date_of_birth|date:"d E Y" }} ({{ profile_user.age }} лет)
+                    {% else %}
+                        Не указана
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="label">Страна проживания:</span>
+                <span class="value {% if not profile_user.country %}unspecified{% endif %}">
+                    {{ profile_user.country|default:"Не указана" }}
+                </span>
+            </div>
         </div>
         <div class="profile-actions">
             <a href="{% url 'user_recipes' profile_user.id %}" class="profile-button">
                 Рецепты пользователя ({{ recipe_count }})
             </a>
-
             {% if request.user == profile_user %}
                 <div class="profile-buttons-right">
                     <form action="{% url 'logout' %}" method="post" class="logout-form">

@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const firstNameInput = document.getElementById('first_name');
     const lastNameInput = document.getElementById('last_name');
     const middleNameInput = document.getElementById('middle_name');
+    const genderSelect = document.getElementById('gender'); // Пол
+    const dateOfBirthInput = document.getElementById('date_of_birth'); // Дата рождения
+    const countryInput = document.getElementById('country'); // Страна
 
     // Элементы для отображения эмодзи
     const usernameEmoji = document.getElementById('username-emoji');
@@ -37,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Валидация имени пользователя
     usernameInput.addEventListener('input', function () {
         if (isServerError) return;
-
         const value = usernameInput.value.trim();
         if (value.length < 6) {
             setError(usernameEmoji, usernameError, '❌', 'Псевдоним должен содержать минимум 6 символов.');
@@ -49,11 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Валидация email
     emailInput.addEventListener('input', function () {
         if (isServerError) return;
-
         const value = emailInput.value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Регулярное выражение для email
         const cyrillicRegex = /[а-яА-ЯЁё]/; // Регулярное выражение для кириллицы
-
         if (!value) {
             setError(emailEmoji, emailError, '❌', 'Email обязателен для заполнения.');
         } else if (cyrillicRegex.test(value)) {
@@ -68,14 +68,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Валидация пароля
     passwordInput.addEventListener('input', function () {
         if (isServerError) return;
-
         const value = passwordInput.value.trim();
         if (value.length < 6) {
             setError(passwordEmoji, passwordError, '❌', 'Пароль должен содержать минимум 6 символов.');
         } else {
             clearError(passwordEmoji, passwordError, '✅');
         }
-
         // Проверяем совпадение паролей
         validateRepeatPassword();
     });
@@ -89,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function validateRepeatPassword() {
         const passwordValue = passwordInput.value.trim();
         const repeatPasswordValue = repeatPasswordInput.value.trim();
-
         if (repeatPasswordValue && repeatPasswordValue !== passwordValue) {
             setError(repeatPasswordEmoji, repeatPasswordError, '❌', 'Пароли не совпадают.');
         } else if (repeatPasswordValue && repeatPasswordValue === passwordValue) {
@@ -106,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleOptionalFields.addEventListener('click', function (event) {
             event.preventDefault(); // Предотвращаем переход по ссылке
             const computedStyle = window.getComputedStyle(optionalFields);
-
             if (computedStyle.display === 'none') {
                 optionalFields.style.display = 'flex'; // Показываем блок
                 toggleOptionalFields.textContent = 'Скрыть дополнительные данные';
@@ -122,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Валидация имени (необязательное поле)
     firstNameInput.addEventListener('input', function () {
         if (isServerError) return;
-
         const value = firstNameInput.value.trim();
         if (value) {
             clearError(firstNameEmoji, firstNameError, '✅');
@@ -134,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Валидация фамилии (необязательное поле)
     lastNameInput.addEventListener('input', function () {
         if (isServerError) return;
-
         const value = lastNameInput.value.trim();
         if (value) {
             clearError(lastNameEmoji, lastNameError, '✅');
@@ -146,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Валидация отчества (необязательное поле)
     middleNameInput.addEventListener('input', function () {
         if (isServerError) return;
-
         const value = middleNameInput.value.trim();
         if (value) {
             clearError(middleNameEmoji, middleNameError, '✅');
@@ -166,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const firstNameValue = firstNameInput.value.trim();
         const lastNameValue = lastNameInput.value.trim();
         const middleNameValue = middleNameInput.value.trim();
+        const genderValue = genderSelect.value; // Значение поля "Пол"
+        const dateOfBirthValue = dateOfBirthInput.value; // Значение поля "Дата рождения"
+        const countryValue = countryInput.value.trim(); // Значение поля "Страна"
 
         // Проверяем совпадение паролей перед отправкой
         validateRepeatPassword();
@@ -174,18 +170,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        console.log('Отправляемый JSON:', JSON.stringify({
-            username: usernameValue,
-            email: emailValue,
-            password: passwordValue,
-            first_name: firstNameValue || null,
-            last_name: lastNameValue || null,
-            middle_name: middleNameValue || null
-        }));
-
-        // Очищаем предыдущие ошибки
-        clearAllErrors();
-
         // Логируем отправляемые данные
         console.log('Отправляемые данные:', {
             username: usernameValue,
@@ -193,7 +177,10 @@ document.addEventListener('DOMContentLoaded', function () {
             password: passwordValue,
             first_name: firstNameValue || null,
             last_name: lastNameValue || null,
-            middle_name: middleNameValue || null
+            middle_name: middleNameValue || null,
+            gender: genderValue || null,
+            date_of_birth: dateOfBirthValue || null,
+            country: countryValue || null
         });
 
         // Отправляем данные на сервер
@@ -210,7 +197,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 password: passwordValue,
                 first_name: firstNameValue || null,
                 last_name: lastNameValue || null,
-                middle_name: middleNameValue || null
+                middle_name: middleNameValue || null,
+                gender: genderValue || null,
+                date_of_birth: dateOfBirthValue || null,
+                country: countryValue || null
             })
         })
         .then(response => {
