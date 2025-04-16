@@ -20,6 +20,9 @@ from django.conf import settings
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+from django.db.models import Q
+from django.db.models.functions import Lower
+
 
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -60,6 +63,35 @@ def recipes_list_browse(request, user_id=None, favorites=False):
             status='published'
         ).order_by('-id')  # Показываем все опубликованные рецепты
 
+    # Фильтрация по поисковому запросу
+    query = request.GET.get('q', '').strip()
+    if query:
+        # Преобразуем запрос в нижний регистр
+        normalized_query = query.lower()
+        print(f"Нормализованный запрос: {normalized_query}")  # Отладочная информация
+
+        # Получаем все рецепты из базы данных
+        all_recipes = list(recipes)
+
+        # Выводим отладочную информацию о данных из базы
+        for recipe in all_recipes:
+            original_title = recipe.title  # Исходное название рецепта
+            python_lower_title = recipe.title.lower()  # Применяем .lower() в Python
+            print(
+                f"ID: {recipe.id}, "
+                f"Original Title: {original_title}, "
+                f"Python Lower Title: {python_lower_title}"
+            )
+
+        # Фильтруем рецепты в Python
+        filtered_recipes = [
+            recipe for recipe in all_recipes
+            if normalized_query in recipe.title.lower() or normalized_query in recipe.description.lower()
+        ]
+
+        # Заменяем QuerySet на отфильтрованный список
+        recipes = filtered_recipes
+
     # Получаем ID избранных рецептов для текущего пользователя
     if current_user.is_authenticated:
         favorite_recipe_ids = Favorite.objects.filter(
@@ -69,7 +101,8 @@ def recipes_list_browse(request, user_id=None, favorites=False):
         favorite_recipe_ids = []  # Если пользователь не аутентифицирован, список пустой
 
     # Отладочная информация
-    print(f"Количество рецептов: {recipes.count()}")
+    print(f"Поисковый запрос: {query}")
+    print(f"Количество найденных рецептов: {len(recipes)}")
 
     # Контекст для передачи данных в шаблон
     context = {
@@ -77,6 +110,7 @@ def recipes_list_browse(request, user_id=None, favorites=False):
         'author': author,  # Автор рецептов (если есть)
         'favorites': favorites,  # Флаг для избранных рецептов
         'favorite_recipe_ids': list(favorite_recipe_ids),  # Список ID избранных рецептов
+        'query': query,  # Поисковый запрос для отображения в шаблоне
     }
 
     return render(request, 'recipes_list_browse.html', context)

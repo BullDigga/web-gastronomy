@@ -121,3 +121,11 @@ class Recipe(models.Model):
     def ratings_count(self):
         """Количество оценок рецепта"""
         return self.rates.count()
+
+    def get_title_lower(self):
+        """Возвращает название рецепта в нижнем регистре."""
+        return self.title.lower()
+
+    def get_description_lower(self):
+        """Возвращает описание рецепта в нижнем регистре."""
+        return self.description.lower()

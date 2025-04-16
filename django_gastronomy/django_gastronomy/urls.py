@@ -38,6 +38,7 @@ urlpatterns = [
     path('delete_rating/<int:recipe_id>/', views.delete_rating, name='delete_rating'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('radio_player/', views.radio_player, name='radio_player'),
+    path('recipes/', views.recipes_list_browse, name='recipes_list_browse'),
 ]
 
 if settings.DEBUG:

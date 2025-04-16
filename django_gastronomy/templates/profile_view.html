@@ -10,52 +10,56 @@
     <div class="profile-container">
         <h1>Профиль</h1>
         <div class="profile-info">
+            <!-- Псевдоним -->
             <div class="info-row">
                 <span class="label">Псевдоним:</span>
                 <span class="value">{{ profile_user.username }}</span>
             </div>
+            <!-- Email -->
             <div class="info-row">
                 <span class="label">Email:</span>
                 <span class="value">{{ profile_user.email }}</span>
             </div>
-            <div class="info-row">
-                <span class="label">ФИО:</span>
-                <span class="value">
-                    {{ profile_user.last_name|default:"" }}
-                    {{ profile_user.first_name|default:"" }}
-                    {{ profile_user.middle_name|default:"" }}
-                </span>
-            </div>
-            <div class="info-row">
-                <span class="label">Пол:</span>
-                <span class="value {% if not profile_user.gender %}unspecified{% endif %}">
-                    {% if profile_user.gender %}
+            <!-- ФИО -->
+            {% if profile_user.last_name or profile_user.first_name or profile_user.middle_name %}
+                <div class="info-row">
+                    <span class="label">ФИО:</span>
+                    <span class="value">
+                        {{ profile_user.last_name|default:"" }}
+                        {{ profile_user.first_name|default:"" }}
+                        {{ profile_user.middle_name|default:"" }}
+                    </span>
+                </div>
+            {% endif %}
+            <!-- Пол -->
+            {% if profile_user.gender %}
+                <div class="info-row">
+                    <span class="label">Пол:</span>
+                    <span class="value">
                         {% if profile_user.gender == 'M' %}
                             Мужчина
                         {% elif profile_user.gender == 'F' %}
                             Женщина
                         {% endif %}
-                    {% else %}
-                        Не указан
-                    {% endif %}
-                </span>
-            </div>
-            <div class="info-row">
-                <span class="label">Дата рождения:</span>
-                <span class="value {% if not profile_user.date_of_birth %}unspecified{% endif %}">
-                    {% if profile_user.date_of_birth %}
+                    </span>
+                </div>
+            {% endif %}
+            <!-- Дата рождения -->
+            {% if profile_user.date_of_birth %}
+                <div class="info-row">
+                    <span class="label">Дата рождения:</span>
+                    <span class="value">
                         {{ profile_user.date_of_birth|date:"d E Y" }} ({{ profile_user.age }} лет)
-                    {% else %}
-                        Не указана
-                    {% endif %}
-                </span>
-            </div>
-            <div class="info-row">
-                <span class="label">Страна проживания:</span>
-                <span class="value {% if not profile_user.country %}unspecified{% endif %}">
-                    {{ profile_user.country|default:"Не указана" }}
-                </span>
-            </div>
+                    </span>
+                </div>
+            {% endif %}
+            <!-- Страна проживания -->
+            {% if profile_user.country %}
+                <div class="info-row">
+                    <span class="label">Страна проживания:</span>
+                    <span class="value">{{ profile_user.country }}</span>
+                </div>
+            {% endif %}
         </div>
         <div class="profile-actions">
             <a href="{% url 'user_recipes' profile_user.id %}" class="profile-button">

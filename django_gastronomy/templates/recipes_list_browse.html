@@ -17,7 +17,9 @@
         <div class="recipes-container">
             <!-- Заголовок -->
             <h1 class="header">
-                {% if author %}
+                {% if query %}
+                    Рецепты по запросу «{{ query }}»
+                {% elif author %}
                     Рецепты пользователя <a class="author-link" href="{% url 'profile' author.id %}">{{ author.username }}</a>
                 {% elif favorites %}
                     Ваши избранные рецепты

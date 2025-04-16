@@ -35,9 +35,43 @@ header .search-bar {
     position: relative; /* Для позиционирования иконки */
 }
 
+/* Стиль контейнера поиска */
+.search-container {
+    display: flex;
+    align-items: center;
+    position: relative; /* Для позиционирования кнопки */
+}
+
+/* Стиль кнопки "Найти" */
+.search-button {
+    position: absolute; /* Абсолютное позиционирование внутри .search-container */
+    right: 10px; /* Отступ справа */
+    top: 50%; /* Центрируем по вертикали */
+    transform: translateY(-50%); /* Корректируем центрирование */
+    padding: 5px 10px; /* Внутренние отступы кнопки */
+    background-color: #66A932; /* Цвет фона */
+    color: white; /* Цвет текста */
+    border: none; /* Убираем границу */
+    border-radius: 4px; /* Скругление углов */
+    font-size: 14px; /* Размер текста */
+    cursor: pointer; /* Указатель мыши */
+    transition: background-color 0.3s ease; /* Плавное изменение цвета */
+    z-index: 1; /* Размещаем кнопку поверх поля ввода */
+}
+
+.search-button:hover {
+    background-color: #528C29;
+}
+
+/* Скрытие кнопки по умолчанию */
+.hidden {
+    display: none;
+}
+
 header .search-bar .search-container {
-    position: relative; /* Контейнер для иконки и поля ввода */
-    display: inline-block;
+    position: relative; /* Добавляем относительное позиционирование */
+    display: flex;
+    align-items: center;
     width: 300px; /* Фиксированная ширина поля ввода */
 }
 
@@ -55,13 +89,14 @@ header .search-bar .search-input {
     width: 100%; /* Поле ввода занимает всю ширину контейнера */
     height: 35px; /* Высота поля */
     padding-left: 40px; /* Отступ слева для иконки */
-    padding-right: 10px; /* Отступ справа */
+    padding-right: 80px; /* Отступ справа для кнопки "Найти" (ширина кнопки + запас) */
     background-color: #F6FF7A; /* Цвет фона */
     border: none; /* Убираем границу */
     border-radius: 5px; /* Скругленные углы */
     font-size: 17px; /* Размер текста */
     outline: none; /* Убираем стандартное выделение при фокусе */
     transition: background-color 0.3s ease; /* Плавное изменение цвета фона */
+    box-sizing: border-box; /* Учитываем padding в ширину */
 }
 
 header .search-bar .search-input:focus {
