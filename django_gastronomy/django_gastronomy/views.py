@@ -70,27 +70,31 @@ def recipes_list_browse(request, user_id=None, favorites=False):
         normalized_query = query.lower()
         print(f"Нормализованный запрос: {normalized_query}")  # Отладочная информация
 
-        # Получаем все рецепты из базы данных
-        all_recipes = list(recipes)
+        # Аннотируем данные из базы, приводя их к нижнему регистру
+        recipes = recipes.annotate(
+            lower_title=Lower('title'),  # Преобразуем название в нижний регистр
+            lower_description=Lower('description')  # Преобразуем описание в нижний регистр
+        )
 
         # Выводим отладочную информацию о данных из базы
-        for recipe in all_recipes:
+        for recipe in recipes:
             original_title = recipe.title  # Исходное название рецепта
             python_lower_title = recipe.title.lower()  # Применяем .lower() в Python
+            db_lower_title = recipe.lower_title  # Название, преобразованное в базе данных через LOWER
             print(
                 f"ID: {recipe.id}, "
                 f"Original Title: {original_title}, "
-                f"Python Lower Title: {python_lower_title}"
+                f"Python Lower Title: {python_lower_title}, "
+                f"DB Lower Title: {db_lower_title}"
             )
 
-        # Фильтруем рецепты в Python
-        filtered_recipes = [
-            recipe for recipe in all_recipes
-            if normalized_query in recipe.title.lower() or normalized_query in recipe.description.lower()
-        ]
-
-        # Заменяем QuerySet на отфильтрованный список
-        recipes = filtered_recipes
+        # Фильтруем рецепты
+        recipes = recipes.filter(
+            Q(lower_title__contains=normalized_query) |  # Поиск по названию рецепта
+            Q(lower_description__contains=normalized_query) |  # Поиск по описанию
+            Q(author__username__icontains=normalized_query) |  # Поиск по имени автора
+            Q(ingredients__ingredient__name__icontains=normalized_query)  # Поиск по названию ингредиента
+        ).distinct()  # Используем distinct(), чтобы избежать дубликатов при поиске по связанным полям
 
     # Получаем ID избранных рецептов для текущего пользователя
     if current_user.is_authenticated:
@@ -102,7 +106,7 @@ def recipes_list_browse(request, user_id=None, favorites=False):
 
     # Отладочная информация
     print(f"Поисковый запрос: {query}")
-    print(f"Количество найденных рецептов: {len(recipes)}")
+    print(f"Количество найденных рецептов: {recipes.count()}")
 
     # Контекст для передачи данных в шаблон
     context = {
