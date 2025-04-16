@@ -8,6 +8,15 @@
     <script src="{% static 'js/profile_view.js' %}"></script>
 
     <div class="profile-container">
+        <!-- Добавляем кнопку "Редактировать" -->
+        {% if request.user == profile_user %}
+            <div class="edit-profile-button">
+                <a href="{% url 'edit_profile' %}" class="profile-button edit">
+                    Редактировать
+                </a>
+            </div>
+        {% endif %}
+
         <h1>Профиль</h1>
         <div class="profile-info">
             <!-- Псевдоним -->

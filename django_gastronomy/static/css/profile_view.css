@@ -1,5 +1,6 @@
 /* Стиль контейнера профиля */
 .profile-container {
+    position: relative; /* Делаем контейнер позиционируемым */
     max-width: 600px;
     margin: 50px auto;
     padding: 20px;
@@ -12,6 +13,28 @@
     text-align: center;
     margin-bottom: 20px;
     color: #333;
+}
+
+/* Кнопка "Редактировать" */
+.edit-profile-button {
+    position: absolute; /* Абсолютное позиционирование внутри контейнера */
+    top: 10px; /* Отступ сверху */
+    right: 10px; /* Отступ справа */
+}
+
+.edit-profile-button a {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff; /* Синий цвет фона */
+    color: white; /* Белый текст */
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-profile-button a:hover {
+    background-color: #0056b3; /* Темнее при наведении */
 }
 
 /* Стиль строки с информацией */

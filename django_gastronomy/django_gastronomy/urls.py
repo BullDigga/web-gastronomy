@@ -39,6 +39,7 @@ urlpatterns = [
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('radio_player/', views.radio_player, name='radio_player'),
     path('recipes/', views.recipes_list_browse, name='recipes_list_browse'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]
 
 if settings.DEBUG:

@@ -630,3 +630,51 @@ def create_recipe(request):
 
 def radio_player(request):
     return render(request, 'radio_player.html')
+
+
+@login_required
+def edit_profile(request):
+    """
+    View для редактирования профиля пользователя.
+    Обрабатывает GET и POST запросы для редактирования данных.
+    """
+    user = request.user  # Получаем текущего пользователя
+
+    if request.method == 'POST':
+        # Получаем данные из POST-запроса
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name', '').strip()
+        last_name = request.POST.get('last_name', '').strip()
+        middle_name = request.POST.get('middle_name', '').strip()
+        gender = request.POST.get('gender', '').strip()
+        date_of_birth = request.POST.get('date_of_birth', '').strip()
+        country = request.POST.get('country', '').strip()
+
+        # Проверяем обязательное поле username
+        if not username or len(username) < 6:
+            messages.error(request, 'Псевдоним должен содержать минимум 6 символов.')
+            return redirect('edit_profile')
+
+        # Обновляем данные пользователя
+        user.username = username
+        user.first_name = first_name
+        user.last_name = last_name
+        user.middle_name = middle_name
+        user.gender = gender
+        user.date_of_birth = date_of_birth if date_of_birth else None
+        user.country = country
+
+        # Сохраняем изменения
+        user.save()
+
+        # Добавляем сообщение об успехе
+        messages.success(request, 'Профиль успешно обновлен!')
+
+        # Перенаправляем на страницу просмотра профиля
+        return redirect('profile', user_id=user.id)  # Используем именованный маршрут
+
+    # Если GET-запрос, отображаем страницу с текущими данными пользователя
+    context = {
+        'user': user,
+    }
+    return render(request, 'edit_profile.html', context)

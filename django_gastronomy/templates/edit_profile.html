@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+
+    <div class="profile-edit-container">
+        <h1>Редактирование профиля</h1>
+
+        <!-- Форма редактирования профиля -->
+        <form method="POST" class="profile-edit-form">
+            {% csrf_token %}
+
+            <!-- Псевдоним -->
+            <div class="form-group">
+                <label for="username">Псевдоним:</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+
+            <!-- Имя -->
+            <div class="form-group">
+                <label for="first_name">Имя:</label>
+                <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+            </div>
+
+            <!-- Фамилия -->
+            <div class="form-group">
+                <label for="last_name">Фамилия:</label>
+                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+            </div>
+
+            <!-- Отчество -->
+            <div class="form-group">
+                <label for="middle_name">Отчество:</label>
+                <input type="text" id="middle_name" name="middle_name" value="{{ user.middle_name }}">
+            </div>
+
+            <!-- Пол -->
+            <div class="form-group">
+                <label for="gender">Пол:</label>
+                <select id="gender" name="gender">
+                    <option value="">Не указано</option>
+                    <option value="M" {% if user.gender == "M" %}selected{% endif %}>Мужчина</option>
+                    <option value="F" {% if user.gender == "F" %}selected{% endif %}>Женщина</option>
+                </select>
+            </div>
+
+            <!-- Дата рождения -->
+            <div class="form-group">
+                <label for="date_of_birth">Дата рождения:</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" value="{{ user.date_of_birth|date:'Y-m-d' }}">
+            </div>
+
+            <!-- Страна проживания -->
+            <div class="form-group">
+                <label for="country">Страна проживания:</label>
+                <input type="text" id="country" name="country" value="{{ user.country }}">
+            </div>
+
+            <!-- Кнопка отправки формы -->
+            <button type="submit" class="save-button">Сохранить изменения</button>
+        </form>
+    </div>
+{% endblock %}
