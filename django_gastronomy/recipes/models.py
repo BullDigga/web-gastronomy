@@ -41,6 +41,7 @@ class Recipe(models.Model):
     main_picture = models.ImageField(
         'основное изображение',
         upload_to='recipe_images/main_recipe_images/',
+        max_length=500,  # Увеличиваем лимит до 500 символов
         blank=True,
         null=True,
         help_text="Основное изображение рецепта"
@@ -49,6 +50,7 @@ class Recipe(models.Model):
     main_picture_compressed = models.ImageField(
         'сжатое основное изображение',
         upload_to='recipe_images/main_recipe_images_compressed/',
+        max_length=500,  # Увеличиваем лимит до 500 символов
         blank=True,
         null=True,
         help_text="Сжатая версия основного изображения рецепта"

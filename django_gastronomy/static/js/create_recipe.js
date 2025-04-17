@@ -185,18 +185,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function addNewStep() {
         const newStep = document.createElement('div');
         newStep.classList.add('step');
+        const stepIndex = document.querySelectorAll('.step').length + 1; // Номер нового шага
         newStep.innerHTML = `
             <div class="step-header">
-                <span>Шаг</span>
+                <span>Шаг ${stepIndex}</span>
                 <button class="remove-step" title="Удалить шаг">➖</button>
             </div>
             <div class="step-content">
                 <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
-                <label class="step-photo-label">
-                    <img src="#" alt="Фото шага" style="display: none;" />
-                    <span>+</span>
+                <label for="step-photo-${stepIndex}" class="step-photo-label">
+                    <img id="step-photo-preview-${stepIndex}" src="#" alt="Фото шага" style="display: none;" />
+                    <span id="step-photo-placeholder-${stepIndex}">+</span>
                 </label>
-                <input type="file" accept="image/*" class="step-photo" style="display: none;" />
+                <input type="file" id="step-photo-${stepIndex}" accept="image/*" class="step-photo" style="display: none;" />
             </div>
         `;
         stepsContainer.appendChild(newStep);

@@ -26,6 +26,7 @@ class Instruction(models.Model):
         upload_to='recipe_images/instruction_recipe_images/',
         blank=True,
         null=True,
+        max_length=500,  # Увеличиваем лимит до 500 символов
         verbose_name="Изображение"
     )
 
@@ -34,6 +35,7 @@ class Instruction(models.Model):
         upload_to='recipe_images/instruction_recipe_images_compressed/',
         blank=True,
         null=True,
+        max_length=500,  # Увеличиваем лимит до 500 символов
         verbose_name="Сжатое изображение"
     )
 

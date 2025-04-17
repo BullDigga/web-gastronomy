@@ -3,6 +3,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f9f9f9; /* Cornsilk - фон страницы */
+    color: #3f612d; /* Dark moss green - основной цвет текста */
 }
 
 /* Стиль хедера */
@@ -10,57 +12,57 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #DFBDBD;
+    background-color: #f7e3d4; /* Desert sand - фон хедера */
     padding: 10px 20px;
 }
 
 header .logo {
     font-size: 18px;
-    color: #000000;
+    color: #1c0600cf; /* Dark moss green - цвет текста логотипа */
 }
 
 header .logo .logo-link {
-    text-decoration: none; /* Убираем подчеркивание */
-    color: inherit; /* Наследуем цвет текста от родителя */
-    display: flex; /* Используем Flexbox для выравнивания */
-    align-items: center; /* Выравниваем текст по вертикали */
-    gap: 8px; /* Расстояние между эмодзи и текстом */
-    transition: color 0.3s ease; /* Плавное изменение цвета */
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
 }
 
 header .search-bar {
-    flex-grow: 1; /* Поле поиска растягивается на всё доступное пространство */
+    flex-grow: 1;
     text-align: left;
     margin-left: 8em;
-    position: relative; /* Для позиционирования иконки */
+    position: relative;
 }
 
 /* Стиль контейнера поиска */
 .search-container {
     display: flex;
     align-items: center;
-    position: relative; /* Для позиционирования кнопки */
+    position: relative;
 }
 
 /* Стиль кнопки "Найти" */
 .search-button {
-    position: absolute; /* Абсолютное позиционирование внутри .search-container */
-    right: 10px; /* Отступ справа */
-    top: 50%; /* Центрируем по вертикали */
-    transform: translateY(-50%); /* Корректируем центрирование */
-    padding: 5px 10px; /* Внутренние отступы кнопки */
-    background-color: #66A932; /* Цвет фона */
-    color: white; /* Цвет текста */
-    border: none; /* Убираем границу */
-    border-radius: 4px; /* Скругление углов */
-    font-size: 14px; /* Размер текста */
-    cursor: pointer; /* Указатель мыши */
-    transition: background-color 0.3s ease; /* Плавное изменение цвета */
-    z-index: 1; /* Размещаем кнопку поверх поля ввода */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 5px 10px;
+    background-color: #3f612d; /* Dark moss green - цвет кнопки */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 1;
 }
 
 .search-button:hover {
-    background-color: #528C29;
+    background-color: #2a411e; /* Темнее при наведении */
 }
 
 /* Скрытие кнопки по умолчанию */
@@ -69,166 +71,158 @@ header .search-bar {
 }
 
 header .search-bar .search-container {
-    position: relative; /* Добавляем относительное позиционирование */
+    position: relative;
     display: flex;
     align-items: center;
-    width: 300px; /* Фиксированная ширина поля ввода */
+    width: 300px;
 }
 
 header .search-bar .search-icon {
-    position: absolute; /* Позиционируем иконку внутри контейнера */
-    left: 10px; /* Отступ слева */
-    top: 50%; /* Центрируем по вертикали */
-    transform: translateY(-50%); /* Корректируем центрирование */
-    pointer-events: none; /* Иконка не должна мешать кликам */
-    color: #aaa; /* Цвет иконки */
-    font-size: 18px; /* Размер иконки */
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #3f612d; /* Dark moss green - цвет иконки */
+    font-size: 18px;
 }
 
 header .search-bar .search-input {
-    width: 100%; /* Поле ввода занимает всю ширину контейнера */
-    height: 35px; /* Высота поля */
-    padding-left: 40px; /* Отступ слева для иконки */
-    padding-right: 80px; /* Отступ справа для кнопки "Найти" (ширина кнопки + запас) */
-    background-color: #F6FF7A; /* Цвет фона */
-    border: none; /* Убираем границу */
-    border-radius: 5px; /* Скругленные углы */
-    font-size: 17px; /* Размер текста */
-    outline: none; /* Убираем стандартное выделение при фокусе */
-    transition: background-color 0.3s ease; /* Плавное изменение цвета фона */
-    box-sizing: border-box; /* Учитываем padding в ширину */
+    width: 100%;
+    height: 35px;
+    padding-left: 40px;
+    padding-right: 80px;
+    background-color: #fffef9; /* Cornsilk - фон поля ввода */
+    border: none;
+    border-radius: 5px;
+    font-size: 17px;
+    outline: none;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 header .search-bar .search-input:focus {
-    background-color: #E5FF5A; /* Цвет фона при фокусе */
+    background-color: #f6d4ba; /* Desert sand - фон при фокусе */
 }
 
 /* Стиль контейнера с кнопками */
 .actor-content {
     display: flex;
     align-items: center;
-    gap: 10px; /* Расстояние между кнопками */
+    gap: 10px;
 }
 
 .auth-buttons {
     display: flex;
-    gap: 10px; /* Отступ между кнопками */
+    gap: 10px;
 }
 
 /* Стиль кнопок */
 .auth-button {
     display: inline-block;
     padding: 10px 15px;
-    background-color: #66A932;
-    color: white;
+    background-color: #f3b391; /* Peach - цвет кнопок */
+    color: #3f612d; /* Dark moss green - цвет текста */
     text-decoration: none;
     border-radius: 4px;
     font-size: 17px;
     text-align: center;
     transition: background-color 0.3s ease;
-    border: none; /* Убираем границы */
-    cursor: pointer; /* Указатель мыши */
+    border: none;
+    cursor: pointer;
 }
 
 .auth-button:hover {
-    background-color: #528C29; /* Темнее при наведении */
-}
-
-.auth-button.register {
-    background-color: #66A932; /* Цвет для кнопки "Регистрация" */
-}
-
-.auth-button.login {
-    background-color: #66A932; /* Цвет для кнопки "Вход" */
+    background-color: #e69c75; /* Темнее при наведении */
 }
 
 .auth-button.favorites {
-    background-color: #FFC107; /* Жёлтый цвет для кнопки "Избранное" */
-    color: black;
+    background-color: #feea00; /* Canary - цвет для избранного */
+    color: #3f612d;
     margin-right: 2em;
 }
 
 .auth-button.favorites:hover {
-    background-color: #E0A800;
+    background-color: #e0c700; /* Темнее при наведении */
 }
 
 .auth-button.create-recipe {
-    background-color: #66A932; /* Зелёный цвет фона */
-    color: white; /* Белый текст */
-    padding: 10px 15px; /* Одинаковый отступ с другими кнопками */
-    border-radius: 4px; /* Скругление углов */
-    text-decoration: none; /* Убираем подчёркивание */
-    font-size: 17px; /* Одинаковый размер текста с другими кнопками */
+    background-color: #bd4a2787; /* Peach */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 17px;
     transition: background-color 0.3s ease;
-    cursor: pointer; /* Указатель мыши */
-    line-height: 1; /* Фиксированная высота строки */
-    display: flex; /* Используем Flexbox для выравнивания */
-    align-items: center; /* Выравниваем содержимое по центру */
-    gap: 5px; /* Расстояние между эмодзи и текстом */
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     margin-right: 3em;
 }
 
 /* Стиль для имени пользователя */
 .user-profile {
     display: flex;
-    align-items: center; /* Выравниваем по центру */
-    gap: 10px; /* Расстояние между элементами */
+    align-items: center;
+    gap: 10px;
 }
 
 .username {
-    font-size: 17px; /* Размер текста */
-    color: #333; /* Цвет текста */
-    text-decoration: none; /* Убираем подчёркивание */
-    font-weight: bold; /* Жирный шрифт */
-    transition: color 0.3s ease; /* Плавное изменение цвета */
+    font-size: 17px;
+    color: #1c0600cf; /* Dark moss green */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
 }
 
 .username:hover {
-    color: #66A932; /* Цвет при наведении */
+    color: #f3b391; /* Peach */
 }
 
 /* Стиль для иконки "Избранное" */
 .favorites-icon {
     display: inline-block;
-    text-decoration: none; /* Убираем подчёркивание */
-    cursor: pointer; /* Указатель мыши */
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .favorites-icon .favorites-image {
-    width: 32px; /* Ширина изображения */
-    height: 32px; /* Высота изображения */
-    transition: transform 0.3s ease; /* Плавный эффект при наведении */
+    width: 32px;
+    height: 32px;
+    transition: transform 0.3s ease;
     margin-right: 1em;
 }
 
 .favorites-icon:hover .favorites-image {
-    transform: scale(1.1); /* Небольшое увеличение при наведении */
+    transform: scale(1.1);
 }
 
 /* Стиль для закрепленного радиопроигрывателя */
 .radio-player {
     position: fixed;
     right: 20px;
-    background-color: #f4f4f4;
-    border: 1px solid #ccc;
+    background-color: #fefadc; /* Cornsilk */
+    border: 1px solid #f6d4ba; /* Desert sand */
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     text-align: center;
-    width: 200px; /* Ограничим ширину */
+    width: 200px;
     margin-top: 20px;
 }
 
 .play-volume-controls {
-    display: flex; /* Размещаем элементы в одну строку */
-    align-items: center; /* Выравниваем по центру */
-    gap: 10px; /* Расстояние между кнопкой и ползунком */
-    width: 100%; /* Занимаем всю доступную ширину */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
 }
 
 .radio-player .radio-logo {
-    width: 100px; /* Размер изображения */
+    width: 100px;
     height: auto;
     border-radius: 5px;
 }
@@ -240,7 +234,7 @@ header .search-bar .search-input:focus {
 .radio-player .radio-title {
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: #3f612d; /* Dark moss green */
     margin-bottom: 5px;
 }
 
@@ -250,21 +244,21 @@ header .search-bar .search-input:focus {
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+    background-color: #f3b391; /* Peach */
+    color: #3f612d; /* Dark moss green */
     transition: background-color 0.3s ease;
 }
 
 .radio-player button:hover {
-    background-color: #0056b3;
+    background-color: #e69c75; /* Темнее при наведении */
 }
 
 input[type="range"] {
-    -webkit-appearance: none; /* Отключаем стандартные стили */
+    -webkit-appearance: none;
     width: 100%;
     height: 5px;
-    background: #FFA500; /* Цвет линии */
-    border-radius: 5px; /* Закругляем края */
+    background: #f3b391; /* Peach */
+    border-radius: 5px;
     outline: none;
 }
 
@@ -273,9 +267,9 @@ input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 15px;
     height: 15px;
-    background: #FFFFFF; /* Цвет бегунка */
-    border: 2px solid #FFA500; /* Обводка бегунка */
-    border-radius: 50%; /* Делаем круглым */
+    background: #FFFFFF;
+    border: 2px solid #f3b391; /* Peach */
+    border-radius: 50%;
     cursor: pointer;
 }
 
@@ -284,14 +278,14 @@ input[type="range"]::-moz-range-thumb {
     width: 15px;
     height: 15px;
     background: #FFFFFF;
-    border: 2px solid #FFA500;
+    border: 2px solid #f3b391; /* Peach */
     border-radius: 50%;
     cursor: pointer;
 }
 
 .play-pause-image {
-    width: 30px; /* Размер изображений play/pause */
+    width: 30px;
     height: 30px;
     cursor: pointer;
-    outline: none; /* Убираем синее обрамление */
+    outline: none;
 }

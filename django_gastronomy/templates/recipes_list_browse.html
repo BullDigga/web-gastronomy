@@ -51,28 +51,27 @@
                     <!-- Информация о рецепте -->
                     <div class="recipe-info">
                         <div class="info-row">
-                            <span class="label">Название:</span>
-                            <span class="value">
+                            <span class="recipe-title">
                                 <a class="recipe-link" href="{% url 'recipe_view' recipe.id %}">{{ recipe.title }}</a>
                             </span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Описание:</span>
-                            <span class="value">{{ recipe.description|truncatewords:13 }}</span>
+                            <span class="recipe-description">{{ recipe.description }}</span>
                         </div>
-                        <div class="info-row">
-                            <span class="label">Автор:</span>
-                            <span class="value">
-                                <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
-                            </span>
-                        </div>
-                        <div class="info-row">
-                            <span class="label">Рейтинг:</span>
-                            <span class="value">
-                                {{ recipe.average_rating|floatformat:1 }}/5
-                                (<span class="rating-count">{{ recipe.ratings_count }}</span>
-                                <img src="{% static 'user_icon.png' %}" alt="Пользователи" class="user-icon">)
-                            </span>
+                        <!-- Блок с рейтингом и автором (опущен вниз) -->
+                        <div class="bottom-info">
+                            <div class="info-row">
+                                <span class="recipe-author">
+                                    <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="recipe-rating">
+                                    {{ recipe.average_rating|floatformat:1 }}/5
+                                    (<span class="rating-count">{{ recipe.ratings_count }}</span>
+                                    <img src="{% static 'user_icon.png' %}" alt="Пользователи" class="user-icon">)
+                                </span>
+                            </div>
                         </div>
                     </div>
 

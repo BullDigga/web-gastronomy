@@ -10,26 +10,26 @@
         .radio-player {
             position: fixed;
             right: 20px;
-            background-color: #f4f4f4;
-            border: 1px solid #ccc;
+            background-color: white; /* Cornsilk - фон плеера */
+            border: 1px solid #f6d4ba; /* Desert sand - граница */
             border-radius: 10px;
             padding: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             text-align: center;
-            width: 200px; /* Ограничим ширину */
+            width: 200px;
             margin-top: 20px;
         }
 
         .play-volume-controls {
-            display: flex; /* Размещаем элементы в одну строку */
-            align-items: center; /* Выравниваем по центру */
-            gap: 10px; /* Расстояние между кнопкой и ползунком */
-            width: 100%; /* Занимаем всю доступную ширину */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
         }
 
         .radio-player .radio-logo {
-            width: 100px; /* Размер изображения */
+            width: 100px;
             height: auto;
             border-radius: 5px;
         }
@@ -41,16 +41,16 @@
         .radio-player .radio-title {
             font-size: 16px;
             font-weight: bold;
-            color: #333;
+            color: #1c0600cf; /* Dark moss green - заголовок */
             margin-bottom: 5px;
         }
 
         input[type="range"] {
-            -webkit-appearance: none; /* Отключаем стандартные стили */
+            -webkit-appearance: none;
             width: 100%;
             height: 5px;
-            background: #FFA500; /* Цвет линии */
-            border-radius: 5px; /* Закругляем края */
+            background: #f3b391; /* Peach - цвет линии */
+            border-radius: 5px;
             outline: none;
         }
 
@@ -59,9 +59,9 @@
             -webkit-appearance: none;
             width: 15px;
             height: 15px;
-            background: #FFFFFF; /* Цвет бегунка */
-            border: 2px solid #FFA500; /* Обводка бегунка */
-            border-radius: 50%; /* Делаем круглым */
+            background: #FFFFFF; /* Белый бегунок */
+            border: 2px solid #f3b391; /* Peach - обводка */
+            border-radius: 50%;
             cursor: pointer;
         }
 
@@ -70,16 +70,16 @@
             width: 15px;
             height: 15px;
             background: #FFFFFF;
-            border: 2px solid #FFA500;
+            border: 2px solid #f3b391;
             border-radius: 50%;
             cursor: pointer;
         }
 
         .play-pause-image {
-            width: 30px; /* Размер изображений play/pause */
+            width: 30px;
             height: 30px;
             cursor: pointer;
-            outline: none; /* Убираем синее обрамление */
+            outline: none;
         }
     </style>
 </head>
