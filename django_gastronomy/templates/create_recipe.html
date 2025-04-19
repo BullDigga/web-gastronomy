@@ -9,17 +9,18 @@
     <h2>Ингредиенты:</h2>
     <div id="ingredients-list">
         <!-- Первый ингредиент по умолчанию -->
-            <div class="ingredient">
-                <div class="ingredient-fields">
-                    <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
-                    <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
-                    <input type="text" class="ingredient-name" placeholder="Ингредиент" />
-                    <button class="remove-ingredient">➖</button>
-                </div>
-                <div class="ingredient-error" style="color: red; font-size: 12px; display: none;"></div>
+        <div class="ingredient">
+            <div class="ingredient-fields">
+                <input type="text" class="ingredient-quantity" placeholder="Кол-во" />
+                <input type="text" class="ingredient-unit" placeholder="Ед. изм." />
+                <input type="text" class="ingredient-name" placeholder="Ингредиент" />
+                <button class="remove-ingredient">➖</button>
             </div>
+            <div class="ingredient-error" style="color: red; font-size: 12px; display: none;"></div>
+        </div>
     </div>
     <button id="add-ingredient">Добавить ингредиент</button>
+    <div id="ingredients-error" style="color: red; font-size: 12px; display: none;">Добавьте хотя бы один ингредиент.</div>
 </div>
 
 <div class="recipe-container">
@@ -39,17 +40,20 @@
             <div id="photo-error" style="margin-top: 5px; font-size: 12px; color: red; display: none;">
                 Ошибка: Размер файла превышает 10 МБ.
             </div>
+            <div id="main-photo-error" style="color: red; font-size: 12px; display: none;">Добавьте главное изображение.</div>
         </div>
 
         <div class="title-and-description">
             <div class="title-input">
                 <label for="recipe-title">Название рецепта:</label>
                 <input type="text" id="recipe-title" placeholder="Введите название рецепта" />
+                <div id="title-error" style="color: red; font-size: 12px; display: none;">Введите название рецепта.</div>
             </div>
 
             <div class="recipe-description">
                 <label for="recipe-description">Описание рецепта:</label>
                 <textarea id="recipe-description" rows="4" placeholder="Введите описание рецепта"></textarea>
+                <div id="description-error" style="color: red; font-size: 12px; display: none;">Введите описание рецепта.</div>
             </div>
         </div>
     </div>
@@ -59,25 +63,32 @@
         <h2>Рецепт:</h2>
 
         <div id="steps-container">
-            <!-- Первый шаг по умолчанию -->
-            <div class="step">
-                <div class="step-header">
-                    <span>Шаг 1</span>
-                    <button class="remove-step" title="Удалить шаг">➖</button>
-                </div>
-                <div class="step-content">
+        <!-- Первый шаг по умолчанию -->
+        <div class="step">
+            <div class="step-header">
+                <span>Шаг 1</span>
+                <button class="remove-step" title="Удалить шаг">➖</button>
+            </div>
+            <div class="step-content">
+                <div class="step-description-container">
                     <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
+                    <div class="step-description-error" style="color: red; font-size: 12px; display: none;">Добавьте описание шага.</div>
+                </div>
+                <div class="step-photo-container">
                     <label for="step-photo-1" class="step-photo-label">
                         <img id="step-photo-preview-1" src="#" alt="Фото шага" style="display: none;" />
                         <span id="step-photo-placeholder-1">+</span>
                     </label>
                     <input type="file" id="step-photo-1" accept="image/*" class="step-photo" style="display: none;" />
+                    <div class="step-photo-error" style="color: red; font-size: 12px; display: none;">Добавьте изображение для шага.</div>
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Кнопка добавления шага -->
         <button id="add-step">Добавить шаг</button>
+        <div id="steps-error" style="color: red; font-size: 12px; display: none;">Добавьте хотя бы один шаг с описанием и изображением.</div>
     </div>
 
     <!-- Кнопка публикации -->

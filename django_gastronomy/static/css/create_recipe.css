@@ -210,11 +210,22 @@
     display: flex;
     gap: 20px;
     align-items: flex-start;
+    justify-content: space-between;
+}
+
+.step-description-container {
+    flex-grow: 1; /* Описание занимает оставшееся пространство */
+    margin-right: 20px; /* Добавляем отступ между описанием и изображением */
+}
+
+.step-photo-container {
+    flex-shrink: 0; /* Запрещаем сжатие контейнера изображения */
+    text-align: right; /* Выравниваем содержимое по правому краю */
 }
 
 .step-description {
     flex-grow: 1;
-    max-width: 100%;
+    width: 100%;
     height: 200px;
     padding: 12px;
     border: 1px solid #ccc;
@@ -252,7 +263,12 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 12px;
+    display: none; /* Скрываем изображение по умолчанию */
+    border-radius: 12px; /* Сохраняем закругления для изображения */
+}
+
+.step-photo-label.no-border {
+    border-style: none; /* Убираем границу, сохраняя border-radius */
 }
 
 .step-photo-label span {

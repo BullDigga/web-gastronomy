@@ -41,12 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') {
                     event.preventDefault(); // Предотвращаем стандартное поведение
-
-                    // Находим все ингредиенты
                     const allIngredients = document.querySelectorAll('.ingredient');
                     const lastIngredient = allIngredients[allIngredients.length - 1];
-
-                    // Проверяем, является ли текущий элемент полем "Ингредиент" последнего ингредиента
                     if (
                         input.classList.contains('ingredient-name') &&
                         input.closest('.ingredient') === lastIngredient
@@ -57,52 +53,85 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
+
+            // Добавляем обработчик для динамической проверки
+            input.addEventListener('input', () => {
+                validateIngredientField(input, ingredientElement);
+            });
         });
     }
 
     function attachValidationHandlers(ingredientElement) {
         const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
         const unitInput = ingredientElement.querySelector('.ingredient-unit');
-        quantityInput.addEventListener('input', validateIngredients);
-        unitInput.addEventListener('input', validateIngredients);
+
+        [quantityInput, unitInput].forEach((input) => {
+            input.addEventListener('input', () => {
+                validateIngredientField(input, ingredientElement);
+            });
+        });
+    }
+
+    function validateIngredientField(input, ingredientElement) {
+        clearErrors(ingredientElement);
+
+        if (input.classList.contains('ingredient-quantity')) {
+            const value = input.value.trim();
+            if (value && isNaN(value)) {
+                addError(ingredientElement, 'Количество должно быть числом.');
+            }
+        } else if (input.classList.contains('ingredient-unit')) {
+            const value = input.value.trim();
+            if (value && /\d/.test(value)) {
+                addError(ingredientElement, 'Единица измерения не должна содержать цифр.');
+            }
+        }
     }
 
     function clearErrors(ingredientElement) {
         const errorContainer = ingredientElement.querySelector('.ingredient-error');
         if (errorContainer) {
-            errorContainer.innerHTML = ''; // Очищаем все сообщения об ошибках
-            errorContainer.style.display = 'none'; // Скрываем контейнер
+            errorContainer.textContent = '';
+            errorContainer.style.display = 'none';
         }
     }
 
     function addError(ingredientElement, message) {
         const errorContainer = ingredientElement.querySelector('.ingredient-error');
         if (errorContainer) {
-            const errorElement = document.createElement('div'); // Создаем новый элемент для ошибки
-            errorElement.textContent = message;
-            errorElement.style.fontSize = '12px'; // Меньший шрифт
-            errorContainer.appendChild(errorElement); // Добавляем ошибку в контейнер
-            errorContainer.style.display = 'block'; // Показываем контейнер
+            errorContainer.textContent = message;
+            errorContainer.style.display = 'block';
         }
     }
 
     function validateIngredients() {
         let isValid = true;
         document.querySelectorAll('.ingredient').forEach((ingredientElement) => {
-            clearErrors(ingredientElement);
             const quantityInput = ingredientElement.querySelector('.ingredient-quantity');
             const unitInput = ingredientElement.querySelector('.ingredient-unit');
+            const nameInput = ingredientElement.querySelector('.ingredient-name');
+
+            validateIngredientField(quantityInput, ingredientElement);
+            validateIngredientField(unitInput, ingredientElement);
+
             const quantityValue = quantityInput.value.trim();
             const unitValue = unitInput.value.trim();
-            if (quantityValue && isNaN(quantityValue)) {
-                addError(ingredientElement, 'Количество должно быть числом.');
-                isValid = false;
-            }
-            if (unitValue && /\d/.test(unitValue)) {
-                addError(ingredientElement, 'Единица измерения не должна содержать цифр.');
+            const nameValue = nameInput.value.trim();
+
+            if (!quantityValue || !unitValue || !nameValue) {
+                addError(ingredientElement, 'Заполните все поля ингредиента.');
                 isValid = false;
             }
         });
+
+        const ingredientsError = document.getElementById('ingredients-error');
+        if (isValid && document.querySelectorAll('.ingredient').length === 0) {
+            ingredientsError.style.display = 'block';
+            isValid = false;
+        } else {
+            ingredientsError.style.display = 'none';
+        }
+
         return isValid;
     }
 
@@ -123,14 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainPhotoPreview = document.getElementById('main-photo-preview');
     const photoPlaceholder = document.getElementById('photo-placeholder');
     const photoError = document.getElementById('photo-error');
+    const mainPhotoError = document.getElementById('main-photo-error');
+
     mainPhotoInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
             if (file.size > 10 * 1024 * 1024) {
                 photoError.style.display = 'block';
+                mainPhotoError.style.display = 'none';
                 return;
             }
             photoError.style.display = 'none';
+            mainPhotoError.style.display = 'none'; // Убираем ошибку при выборе файла
             const reader = new FileReader();
             reader.onload = (e) => {
                 mainPhotoPreview.src = e.target.result;
@@ -139,18 +172,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('.photo-label').style.border = 'none';
             };
             reader.readAsDataURL(file);
+        } else {
+            mainPhotoError.style.display = 'block';
         }
     });
 
     // Шаги приготовления
     const stepsContainer = document.getElementById('steps-container');
     const addStepButton = document.getElementById('add-step');
+    const stepsError = document.getElementById('steps-error');
 
     function initializeStepHandlers(stepElement) {
         attachRemoveStepHandler(stepElement);
+
         const stepPhotoInput = stepElement.querySelector('.step-photo');
         const stepPhotoPreview = stepElement.querySelector('.step-photo-label img');
         const stepPhotoPlaceholder = stepElement.querySelector('.step-photo-label span');
+        const stepDescriptionError = stepElement.querySelector('.step-description-error');
+        const stepPhotoError = stepElement.querySelector('.step-photo-error');
+        const stepPhotoLabel = stepElement.querySelector('.step-photo-label');
+
+        const descriptionInput = stepElement.querySelector('.step-description');
+        descriptionInput.addEventListener('input', () => {
+            stepDescriptionError.style.display = 'none'; // Убираем ошибку при вводе
+        });
+
         stepPhotoInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -158,14 +204,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Ошибка: Размер файла превышает 10 МБ.');
                     return;
                 }
+                stepPhotoError.style.display = 'none'; // Убираем ошибку при выборе файла
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     stepPhotoPreview.src = e.target.result;
                     stepPhotoPreview.style.display = 'block';
                     stepPhotoPlaceholder.style.display = 'none';
-                    stepElement.querySelector('.step-photo-label').style.border = 'none';
+                    stepPhotoLabel.classList.add('no-border');
                 };
                 reader.readAsDataURL(file);
+            } else {
+                stepPhotoError.style.display = 'block'; // Показываем ошибку, если файл не выбран
+                stepPhotoPreview.style.display = 'none';
+                stepPhotoPlaceholder.style.display = 'block';
+                stepPhotoLabel.classList.remove('no-border');
             }
         });
     }
@@ -192,16 +244,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="remove-step" title="Удалить шаг">➖</button>
             </div>
             <div class="step-content">
-                <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
-                <label for="step-photo-${stepIndex}" class="step-photo-label">
-                    <img id="step-photo-preview-${stepIndex}" src="#" alt="Фото шага" style="display: none;" />
-                    <span id="step-photo-placeholder-${stepIndex}">+</span>
-                </label>
-                <input type="file" id="step-photo-${stepIndex}" accept="image/*" class="step-photo" style="display: none;" />
+                <div class="step-description-container">
+                    <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
+                    <div class="step-description-error" style="color: red; font-size: 12px; display: none;">Добавьте описание шага.</div>
+                </div>
+                <div class="step-photo-container">
+                    <label for="step-photo-${stepIndex}" class="step-photo-label">
+                        <img id="step-photo-preview-${stepIndex}" src="#" alt="Фото шага" style="display: none;" />
+                        <span id="step-photo-placeholder-${stepIndex}">+</span>
+                    </label>
+                    <input type="file" id="step-photo-${stepIndex}" accept="image/*" class="step-photo" style="display: none;" />
+                    <div class="step-photo-error" style="color: red; font-size: 12px; display: none;">Добавьте изображение для шага.</div>
+                </div>
             </div>
         `;
         stepsContainer.appendChild(newStep);
         initializeStepHandlers(newStep);
+
+        // Убираем ошибку "Добавьте хотя бы один шаг с описанием и изображением"
+        stepsError.style.display = 'none';
     }
 
     function renumberSteps() {
@@ -222,61 +283,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Публикация рецепта
     const publishButton = document.getElementById('publish-recipe');
+    const titleInput = document.getElementById('recipe-title');
+    const descriptionInput = document.getElementById('recipe-description');
+    const titleError = document.getElementById('title-error');
+    const descriptionError = document.getElementById('description-error');
+
+    titleInput.addEventListener('input', () => {
+        titleError.style.display = 'none'; // Убираем ошибку при вводе
+    });
+
+    descriptionInput.addEventListener('input', () => {
+        descriptionError.style.display = 'none'; // Убираем ошибку при вводе
+    });
+
     publishButton.addEventListener('click', async () => {
+        let isValid = true;
+
+        // Сброс всех ошибок
+        clearAllErrors();
+
+        // Валидация названия рецепта
+        const title = titleInput.value.trim();
+        if (!title) {
+            titleError.style.display = 'block';
+            isValid = false;
+        }
+
+        // Валидация описания рецепта
+        const description = descriptionInput.value.trim();
+        if (!description) {
+            descriptionError.style.display = 'block';
+            isValid = false;
+        }
+
+        // Валидация ингредиентов
         if (!validateIngredients()) {
-            alert('Пожалуйста, исправьте ошибки в форме.');
+            isValid = false;
+        }
+
+        // Валидация главной фотографии
+        if (!mainPhotoInput.files.length) {
+            mainPhotoError.style.display = 'block';
+            isValid = false;
+        }
+
+        // Валидация шагов
+        const steps = [];
+        document.querySelectorAll('.step').forEach((stepElement) => {
+            const descriptionInput = stepElement.querySelector('.step-description');
+            const photoInput = stepElement.querySelector('.step-photo');
+            const stepDescriptionError = stepElement.querySelector('.step-description-error');
+            const stepPhotoError = stepElement.querySelector('.step-photo-error');
+            const descriptionValue = descriptionInput.value.trim();
+            if (!descriptionValue) {
+                stepDescriptionError.style.display = 'block';
+                isValid = false;
+            }
+            if (!photoInput.files.length) {
+                stepPhotoError.style.display = 'block';
+                isValid = false;
+            }
+            if (descriptionValue && photoInput.files.length > 0) {
+                steps.push({ description: descriptionValue, photo: photoInput.files[0] });
+            }
+        });
+
+        if (steps.length === 0) {
+            stepsError.style.display = 'block';
+            isValid = false;
+        }
+
+        if (!isValid) {
             return;
         }
+
+        // Отправка данных на сервер
         try {
             const formData = new FormData();
-            // Главное изображение
-            if (!mainPhotoInput.files.length) {
-                alert('Пожалуйста, загрузите главное изображение.');
-                return;
-            }
             formData.append('main_photo', mainPhotoInput.files[0]);
-            // Название и описание
-            const title = document.getElementById('recipe-title').value.trim();
-            const description = document.getElementById('recipe-description').value.trim();
-            if (!title || !description) {
-                alert('Пожалуйста, заполните название и описание рецепта.');
-                return;
-            }
             formData.append('title', title);
             formData.append('description', description);
-            // Ингредиенты
+
             const ingredients = [];
             document.querySelectorAll('.ingredient').forEach((ingredientElement) => {
                 const quantity = ingredientElement.querySelector('.ingredient-quantity').value.trim();
                 const unit = ingredientElement.querySelector('.ingredient-unit').value.trim();
                 const name = ingredientElement.querySelector('.ingredient-name').value.trim();
-                if (quantity && unit && name) {
-                    ingredients.push({ quantity, unit, name });
-                }
+                ingredients.push({ quantity, unit, name });
             });
-            if (ingredients.length === 0) {
-                alert('Пожалуйста, добавьте хотя бы один ингредиент.');
-                return;
-            }
             formData.append('ingredients', JSON.stringify(ingredients));
-            // Шаги
-            const steps = [];
-            document.querySelectorAll('.step').forEach((stepElement, index) => {
-                const description = stepElement.querySelector('.step-description').value.trim();
-                const photoInput = stepElement.querySelector('.step-photo');
-                if (description && photoInput.files.length > 0) {
-                    steps.push({ description, photo: photoInput.files[0] });
-                }
-            });
-            if (steps.length === 0) {
-                alert('Пожалуйста, добавьте хотя бы один шаг с описанием и изображением.');
-                return;
-            }
+
             steps.forEach((step, index) => {
                 formData.append(`step_${index}_description`, step.description);
                 formData.append(`step_${index}_photo`, step.photo);
             });
-            // Отправка данных на сервер
+
             const response = await fetch('/create_recipe/', {
                 method: 'POST',
                 body: formData,
@@ -297,7 +398,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Получение CSRF-токена
+    function clearAllErrors() {
+        document.querySelectorAll('.ingredient-error, #ingredients-error, #title-error, #description-error, #main-photo-error, .step-description-error, .step-photo-error, #steps-error').forEach((error) => {
+            error.style.display = 'none';
+        });
+    }
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {

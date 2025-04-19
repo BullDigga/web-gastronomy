@@ -41,7 +41,7 @@ class Recipe(models.Model):
     main_picture = models.ImageField(
         'основное изображение',
         upload_to='recipe_images/main_recipe_images/',
-        max_length=500,  # Увеличиваем лимит до 500 символов
+        max_length=500,
         blank=True,
         null=True,
         help_text="Основное изображение рецепта"
@@ -50,7 +50,7 @@ class Recipe(models.Model):
     main_picture_compressed = models.ImageField(
         'сжатое основное изображение',
         upload_to='recipe_images/main_recipe_images_compressed/',
-        max_length=500,  # Увеличиваем лимит до 500 символов
+        max_length=500,
         blank=True,
         null=True,
         help_text="Сжатая версия основного изображения рецепта"
@@ -76,19 +76,18 @@ class Recipe(models.Model):
 
         if self.main_picture and not self.main_picture_compressed:
             try:
-                # Открываем оригинальное изображение напрямую из медиа-файла
                 img = Image.open(self.main_picture)
 
                 if img.mode != 'RGB':
                     img = img.convert('RGB')
 
                 # Создаем сжатую версию изображения
-                output_size = (300, 225)  # Размер миниатюры (4:3 пропорция)
+                output_size = (600, 450)  # Размер миниатюры (4:3 пропорция)
                 img.thumbnail(output_size, Image.Resampling.LANCZOS)
 
                 # Сохраняем сжатое изображение
                 thumb_io = BytesIO()
-                img.save(thumb_io, format='JPEG', quality=85)  # Качество JPEG: 85%
+                img.save(thumb_io, format='JPEG', quality=85)
 
                 # Генерируем уникальное имя файла
                 compressed_filename = f'compressed_{self.main_picture.name.split("/")[-1]}'
