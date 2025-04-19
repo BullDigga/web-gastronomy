@@ -94,10 +94,6 @@
     margin-bottom: 5px;
 }
 
-.title-input {
-
-}
-
 /* Поле ввода названия */
 .title-input input {
     width: calc(100% - 20px);
@@ -371,11 +367,9 @@
     width: 50px;
 }
 
-
 .ingredients-container .ingredient-unit {
     width: 44px;
 }
-
 
 .ingredient-name {
     flex-basis: 60%; /* Больше места для названия ингредиента */
@@ -417,4 +411,47 @@
 
 .ingredients-container .ingredient-quantity {
     width: 38px;
+}
+
+/* Режим предпросмотра */
+#preview-mode .recipe-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#preview-mode h2 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #333;
+}
+
+#preview-mode ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+#preview-mode img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+#preview-mode .edit-recipe-button {
+    background-color: #ccc;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 20px;
+}
+
+#preview-mode .edit-recipe-button:hover {
+    background-color: #aaa;
 }

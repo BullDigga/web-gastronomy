@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/create_recipe.css' %}">
 <script src="{% static 'js/create_recipe.js' %}"></script>
 
+<!-- Контейнер для ингредиентов -->
 <div class="ingredients-container">
     <h2>Ингредиенты:</h2>
     <div id="ingredients-list">
@@ -23,10 +24,11 @@
     <div id="ingredients-error" style="color: red; font-size: 12px; display: none;">Добавьте хотя бы один ингредиент.</div>
 </div>
 
+<!-- Основной контейнер рецепта -->
 <div class="recipe-container">
     <h1>Создание рецепта</h1>
 
-    <!-- Главная фотография -->
+    <!-- Главная фотография и название -->
     <div class="main-photo-and-title">
         <div class="photo-upload">
             <label for="main-photo" class="photo-label">
@@ -63,28 +65,28 @@
         <h2>Рецепт:</h2>
 
         <div id="steps-container">
-        <!-- Первый шаг по умолчанию -->
-        <div class="step">
-            <div class="step-header">
-                <span>Шаг 1</span>
-                <button class="remove-step" title="Удалить шаг">➖</button>
-            </div>
-            <div class="step-content">
-                <div class="step-description-container">
-                    <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
-                    <div class="step-description-error" style="color: red; font-size: 12px; display: none;">Добавьте описание шага.</div>
+            <!-- Первый шаг по умолчанию -->
+            <div class="step">
+                <div class="step-header">
+                    <span>Шаг 1</span>
+                    <button class="remove-step" title="Удалить шаг">➖</button>
                 </div>
-                <div class="step-photo-container">
-                    <label for="step-photo-1" class="step-photo-label">
-                        <img id="step-photo-preview-1" src="#" alt="Фото шага" style="display: none;" />
-                        <span id="step-photo-placeholder-1">+</span>
-                    </label>
-                    <input type="file" id="step-photo-1" accept="image/*" class="step-photo" style="display: none;" />
-                    <div class="step-photo-error" style="color: red; font-size: 12px; display: none;">Добавьте изображение для шага.</div>
+                <div class="step-content">
+                    <div class="step-description-container">
+                        <textarea class="step-description" rows="3" placeholder="Описание шага"></textarea>
+                        <div class="step-description-error" style="color: red; font-size: 12px; display: none;">Добавьте описание шага.</div>
+                    </div>
+                    <div class="step-photo-container">
+                        <label for="step-photo-1" class="step-photo-label">
+                            <img id="step-photo-preview-1" src="#" alt="Фото шага" style="display: none;" />
+                            <span id="step-photo-placeholder-1">+</span>
+                        </label>
+                        <input type="file" id="step-photo-1" accept="image/*" class="step-photo" style="display: none;" />
+                        <div class="step-photo-error" style="color: red; font-size: 12px; display: none;">Добавьте изображение для шага.</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
         <!-- Кнопка добавления шага -->
         <button id="add-step">Добавить шаг</button>

@@ -40,6 +40,8 @@ urlpatterns = [
     path('radio_player/', views.radio_player, name='radio_player'),
     path('recipes/', views.recipes_list_browse, name='recipes_list_browse'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('comments/create/', views.create_comment, name='create_comment'),
+    path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]
 
 if settings.DEBUG:

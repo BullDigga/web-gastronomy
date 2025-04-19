@@ -418,4 +418,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return cookieValue;
     }
+
 });

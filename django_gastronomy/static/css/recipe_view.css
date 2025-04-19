@@ -138,7 +138,6 @@ body {
 .add-to-favorites {
     background-color: #B5B8B1; /* Серый цвет фона для неавторизованных пользователей */
     border: none;
-
     width: 40px; /* Фиксированная ширина */
     height: 40px; /* Фиксированная высота */
     border-radius: 8px; /* Скругление углов */
@@ -250,59 +249,186 @@ body {
     color: white; /* Белый текст */
 }
 
-/* Стиль контейнера кнопки "Выйти" */
-.logout-button {
+/* Единый контейнер комментария */
+.comment-container {
     display: flex;
-    align-items: center; /* Выравниваем кнопку по центру */
+    align-items: flex-start; /* Выравнивание элементов по верху */
+    gap: 16px; /* Отступ между содержимым и изображениями */
+    margin-bottom: 20px; /* Отступ между комментариями */
+    padding: 12px;
+    background-color: #FAFAFA;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.logout-button form {
-    margin: 0; /* Убираем внешние отступы формы */
-    padding: 0; /* Убираем внутренние отступы формы */
+.comment-content {
+    flex-grow: 1; /* Занимает всё доступное пространство */
+    display: flex;
+    flex-direction: column; /* Элементы идут друг под другом */
+    gap: 8px; /* Отступ между ником и текстом */
 }
 
-.logout-button .auth-button {
-    background-color: #707070; /* Серый цвет фона */
-    color: white; /* Белый текст */
-    padding: 10px 15px; /* Отступы внутри кнопки */
-    border: none; /* Убираем границы */
-    border-radius: 4px; /* Скругляем углы */
-    font-size: 14px; /* Размер текста */
-    cursor: pointer; /* Указатель мыши */
-    transition: background-color 0.3s ease; /* Плавное изменение цвета */
+.comment-container textarea {
+    flex: 1; /* Занимает доступное пространство */
+    height: 180px; /* Высота текстового поля равна высоте двух изображений */
+    padding: 8px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
 }
 
-.logout-button .auth-button:hover {
-    background-color: #5A5A5A; /* Темнее при наведении */
+.comment-author {
+    font-size: 14px; /* Размер шрифта */
+    color: #666; /* Серый цвет текста */
+    margin-bottom: 8px; /* Отступ снизу */
+    display: flex; /* Размещаем элементы в строку */
+    align-items: center; /* Выравнивание по вертикали */
+    gap: 5px; /* Расстояние между "Автор:" и ссылкой */
 }
 
-.delete-rating-button {
-    background-color: #DD6031; /* Цвет кнопки */
-    color: white; /* Цвет текста */
+.comment-author span {
+    font-weight: normal; /* Убираем жирный шрифт */
+    color: #666; /* Серый цвет текста */
+}
+
+/* Стиль ссылки на профиль автора */
+.comment-author .author-link {
+    color: #337ab7; /* Синий цвет ссылки */
+    text-decoration: none; /* Убираем подчеркивание */
+    transition: color 0.3s ease; /* Плавное изменение цвета при наведении */
+}
+
+.comment-author .author-link:hover {
+    color: #23527c; /* Темнее оттенок синего */
+}
+
+
+.comment-text {
+    font-size: 18px;
+    line-height: 1.5;
+    color: #444;
+}
+
+.comment-images {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Отступ между изображениями */
+}
+
+.comment {
+    position: relative; /* Делаем контейнер точкой отсчета для дочерних элементов */
+    padding: 16px; /* Внутренние отступы */
+    border: 1px solid #ddd; /* Граница вокруг комментария */
+    border-radius: 8px; /* Скругление углов */
+    margin-bottom: 16px; /* Отступ между комментариями */
+    background-color: #fff; /* Фон комментария */
+}
+
+.comment-image {
+    width: 240px; /* Ширина миниатюры */
+    height: 180px; /* Высота миниатюры */
+    object-fit: cover; /* Сохранение пропорций */
+    border-radius: 8px;
+    cursor: pointer; /* Указатель мыши меняется при наведении */
+    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+.comment-image:hover {
+    transform: scale(1.05); /* Небольшое увеличение при наведении */
+}
+
+.photo-label.has-image {
+    border: none; /* Убираем обводку, если изображение загружено */
+}
+
+.image-upload-container {
+    display: flex; /* Размещаем элементы в строку */
+    flex-direction: column;
+    gap: 16px; /* Расстояние между изображениями */
+    margin-bottom: 16px; /* Отступ снизу */
+}
+
+.publish-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #FFA726; /* Нежно-оранжевый цвет */
     border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-left: 10px; /* Отступ слева от звёзд */
-}
-
-.delete-rating-button:hover {
-    background-color: #c74d22; /* Темнее при наведении */
-}
-
-.rating-info {
-    margin-bottom: 5px; /* Отступ между информацией о рейтингах и автором */
+    white-space: nowrap; /* Предотвращаем перенос текста на новую строку */
+    align-self: center; /* Центрируем кнопку по вертикали */
 }
 
 
-.rating-info p {
-    font-size: 14px; /* Меньший размер шрифта */
-    color: #666; /* Цвет текста такой же, как у "Средняя оценка" */
-    margin: 5px 0; /* Отступы между строками */
+.photo-upload {
+    width: 120px; /* Ширина миниатюры */
+    height: 90px; /* Высота миниатюры */
+    border-radius: 8px; /* Скругление углов */
+    cursor: pointer; /* Указатель мыши */
+    position: relative; /* Для позиционирования внутренних элементов */
 }
 
-.rating-info strong {
-    font-weight: bold; /* Жирный шрифт для заголовков */
+.photo-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.photo-label:hover {
+    border-color: #FFA726; /* Нежно-оранжевый цвет при наведении */
+}
+
+.photo-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+#comment-image1-placeholder,
+#comment-image2-placeholder {
+    font-size: 24px;
+    color: #ccc;
+    font-weight: bold;
+}
+
+.photo-instructions {
+    margin-top: 8px;
+    font-size: 12px;
+    color: gray;
+    text-align: center;
+}
+
+.photo-error {
+    margin-top: 8px;
+    font-size: 12px;
+    color: red;
+    text-align: center;
+    display: none;
+}
+
+/* Стиль кнопки "Опубликовать" */
+.comment-editor button {
+    margin-top: 16px; /* Отступ сверху */
+    padding: 8px 16px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #FFA726; /* Нежно-оранжевый цвет */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-editor button:hover {
+    background-color: #E69520; /* Темнее оттенок оранжевого */
 }
 
 /* Контейнер для ингредиентов */
@@ -445,4 +571,77 @@ body {
     font-size: 14px;
     color: #888;
     text-align: center;
-}}
+}
+
+/* Стиль кнопки удаления */
+.delete-comment-button-container {
+    top: 8px; /* Отступ сверху */
+    right: 8px; /* Отступ справа */
+    cursor: pointer; /* Указатель мыши */
+    z-index: 10; /* Чтобы кнопка была поверх других элементов */
+}
+
+.delete-comment-button {
+    width: 32px; /* Ширина иконки */
+    height: 32px; /* Высота иконки */
+    object-fit: cover; /* Сохранение пропорций */
+    opacity: 0.7; /* Полупрозрачность */
+    transition: opacity 0.3s ease; /* Плавное изменение прозрачности */
+}
+
+
+.delete-comment-button:hover {
+    opacity: 1; /* Появляется при наведении */
+}
+
+/* Стиль модального окна */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.modal-button {
+    margin: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-button#confirm-delete-comment {
+    background-color: #DD6031; /* Красный цвет */
+    color: white;
+}
+
+.modal-button#confirm-delete-comment:hover {
+    background-color: #c74d22; /* Темнее при наведении */
+}
+
+.modal-button#cancel-delete-comment {
+    background-color: #ccc;
+    color: black;
+}
+
+.modal-button#cancel-delete-comment:hover {
+    background-color: #bbb;
+}

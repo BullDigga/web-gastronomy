@@ -1,186 +1,251 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Просмотр рецепта: {{ recipe.title }}{% endblock %}
-
 {% block content %}
-    <link rel="stylesheet" href="{% static 'css/recipe_view.css' %}">
-    <script src="{% static 'js/recipe_view.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/recipe_view.css' %}">
+<script src="{% static 'js/recipe_view.js' %}"></script>
 
-    <!-- Контейнер для ингредиентов -->
-    <div class="ingredients-container">
-        <h2>Ингредиенты:</h2>
-        <ul class="ingredients-list">
-            {% for recipe_ingredient in recipe.ingredients.all %}
-                <li class="ingredient-item">
-                    <span class="quantity-unit">
-                        {{ recipe_ingredient.quantity|floatformat }} {{ recipe_ingredient.unit }}
-                    </span>
-                    <span class="separator">—</span>
-                    <span class="name">{{ recipe_ingredient.ingredient.name }}</span>
-                </li>
-            {% empty %}
-                <p>Ингредиенты не указаны.</p>
-            {% endfor %}
-        </ul>
+<!-- Контейнер для ингредиентов -->
+<div class="ingredients-container">
+    <h2>Ингредиенты:</h2>
+    <ul class="ingredients-list">
+        {% for recipe_ingredient in recipe.ingredients.all %}
+            <li class="ingredient-item">
+                <span class="quantity-unit">
+                    {{ recipe_ingredient.quantity|floatformat }} {{ recipe_ingredient.unit }}
+                </span>
+                <span class="separator">—</span>
+                <span class="name">{{ recipe_ingredient.ingredient.name }}</span>
+            </li>
+        {% empty %}
+            <p>Ингредиенты не указаны.</p>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Основной контейнер рецепта -->
+<div class="recipe-container">
+    <!-- Кнопка "Добавить в избранное" (в правом верхнем углу) -->
+    <div class="favorite-button-container">
+        <button class="add-to-favorites
+                       {% if user.is_authenticated %}authenticated{% endif %}
+                       {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
+                data-recipe-id="{{ recipe.id }}">
+            <img src="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
+                          {% static 'favorited.png' %}
+                      {% else %}
+                          {% static 'add_to_favorited.png' %}
+                      {% endif %}"
+                 alt="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
+                          Убрать из избранного
+                      {% else %}
+                          Добавить в избранное
+                      {% endif %}"
+                 class="favorite-icon">
+        </button>
     </div>
 
-    <!-- Основной контейнер рецепта -->
-    <div class="recipe-container">
-        <!-- Кнопка "Добавить в избранное" (в правом верхнем углу) -->
-        <div class="favorite-button-container">
-            <button class="add-to-favorites
-                           {% if user.is_authenticated %}authenticated{% endif %}
-                           {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
-                    data-recipe-id="{{ recipe.id }}">
-                <img src="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
-                              {% static 'favorited.png' %}
-                          {% else %}
-                              {% static 'add_to_favorited.png' %}
-                          {% endif %}"
-                     alt="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
-                              Убрать из избранного
-                          {% else %}
-                              Добавить в избранное
-                          {% endif %}"
-                     class="favorite-icon">
-            </button>
+    <!-- Верхняя секция -->
+    <div class="top-section">
+        <!-- Главное изображение -->
+        <div class="recipe-main-image">
+            {% if recipe.main_picture_compressed %}
+                <a href="{{ recipe.main_picture.url }}" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ recipe.main_picture_compressed.url }}"
+                         alt="Главное изображение рецепта: {{ recipe.title }}"
+                         class="main-image">
+                </a>
+            {% else %}
+                <a href="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}" target="_blank" rel="noopener noreferrer">
+                    <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
+                         alt="Главное изображение рецепта: {{ recipe.title }}"
+                         class="main-image">
+                </a>
+            {% endif %}
         </div>
 
-        <!-- Верхняя секция -->
-        <div class="top-section">
-            <!-- Главное изображение -->
-            <div class="recipe-main-image">
-                {% if recipe.main_picture_compressed %}
-                    <a href="{{ recipe.main_picture.url }}" target="_blank" rel="noopener noreferrer">
-                        <img src="{{ recipe.main_picture_compressed.url }}"
-                             alt="Главное изображение рецепта: {{ recipe.title }}"
-                             class="main-image">
-                    </a>
-                {% else %}
-                    <a href="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}" target="_blank" rel="noopener noreferrer">
-                        <img src="{% static 'recipe_images/main_recipe_images/default_recipe_image.png' %}"
-                             alt="Главное изображение рецепта: {{ recipe.title }}"
-                             class="main-image">
-                    </a>
-                {% endif %}
-            </div>
+        <!-- Информация справа от изображения -->
+        <div class="info-right">
+            <!-- Название рецепта -->
+            <h2 class="recipe-title">{{ recipe.title }}</h2>
 
-            <!-- Информация справа от изображения -->
-            <div class="info-right">
-                <!-- Название рецепта -->
-                <h2 class="recipe-title">{{ recipe.title }}</h2>
-
-                <!-- Контейнер с оценкой -->
-                <div class="rating-and-favorites">
-                    <div class="rating-section">
-                        <!-- Звёзды и кнопка "Оценить" -->
-                        <div class="stars-and-rate">
-                            <div class="stars-slider" data-current-rating="{{ user_rating }}">
-                                {% for i in "12345" %}
-                                    <span class="star {% if user_rating and user_rating >= forloop.counter %}active{% endif %}" data-value="{{ forloop.counter }}">★</span>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Кнопка "Оценить" -->
-                            <button id="rate-button" class="rate-button {% if is_authenticated %}authenticated{% endif %}"
-                                    style="display: {% if not user_rating %}inline-block{% else %}none{% endif %};">
-                                Оценить
-                            </button>
-
-                            <img id="delete-rating-button"
-                                 src="{% static 'cross.png' %}"
-                                 alt="Удалить оценку"
-                                 style="display: {% if user_rating %}inline-block{% else %}none{% endif %};
-                                        cursor: pointer;
-                                        width: 1.5em;
-                                        height: 1.5em;
-                                        margin-left: 8px;
-                                        vertical-align: middle;
-                                        padding-top: 0.35em;">
+            <!-- Контейнер с оценкой -->
+            <div class="rating-and-favorites">
+                <div class="rating-section">
+                    <!-- Звёзды и кнопка "Оценить" -->
+                    <div class="stars-and-rate">
+                        <div class="stars-slider" data-current-rating="{{ user_rating }}">
+                            {% for i in "12345" %}
+                                <span class="star {% if user_rating and user_rating >= forloop.counter %}active{% endif %}"
+                                      data-value="{{ forloop.counter }}">★</span>
+                            {% endfor %}
                         </div>
-
-                        <div class="rating-info">
-                            <p class="average-rating">
-                                <strong>Средняя оценка:</strong> {{ average_rating|floatformat:1 }}/5
-                            </p>
-                            <p class="ratings-count">
-                                <strong>Количество оценок:</strong> {{ ratings_count }}
-                            </p>
-                            <p class="favorites-count">
-                                <strong>Добавили в избранное:</strong> {{ favorites_count }}
-                            </p>
-                        </div>
-
-                        <!-- Автор -->
-                        <div class="recipe-author">
-                            <strong>Автор:</strong>
-                            <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
-                        </div>
+                        <!-- Кнопка "Оценить" -->
+                        <button id="rate-button" class="rate-button {% if is_authenticated %}authenticated{% endif %}"
+                                style="display: {% if not user_rating %}inline-block{% else %}none{% endif %};">
+                            Оценить
+                        </button>
+                        <img id="delete-rating-button"
+                             src="{% static 'cross.png' %}"
+                             alt="Удалить оценку"
+                             style="display: {% if user_rating %}inline-block{% else %}none{% endif %};
+                                    cursor: pointer;
+                                    width: 1.5em;
+                                    height: 1.5em;
+                                    margin-left: 8px;
+                                    vertical-align: middle;
+                                    padding-top: 0.35em;">
+                    </div>
+                    <div class="rating-info">
+                        <p class="average-rating">
+                            <strong>Средняя оценка:</strong> {{ average_rating|floatformat:1 }}/5
+                        </p>
+                        <p class="ratings-count">
+                            <strong>Количество оценок:</strong> {{ ratings_count }}
+                        </p>
+                        <p class="favorites-count">
+                            <strong>Добавили в избранное:</strong> {{ favorites_count }}
+                        </p>
+                    </div>
+                    <!-- Автор -->
+                    <div class="recipe-author">
+                        <strong>Автор:</strong>
+                        <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Нижняя секция -->
-        <div class="bottom-section">
-            <!-- Описание рецепта -->
-            <div class="recipe-description">
-                <p class="recipe-text"><strong>Описание:</strong> {{ recipe.description }}</p>
-            </div>
+    <!-- Нижняя секция -->
+    <div class="bottom-section">
+        <!-- Описание рецепта -->
+        <div class="recipe-description">
+            <p class="recipe-text"><strong>Описание:</strong> {{ recipe.description }}</p>
+        </div>
 
-            <!-- Шаги приготовления -->
-            <div class="steps-section">
-                <div class="steps-container">
-                    {% for step in recipe.instructions.all %}
-                        <div class="step {% cycle 'odd-step' 'even-step' %}">
-                            <div class="step-content">
-                                <!-- Описание шага -->
-                                <div class="step-description-container">
-                                    <span class="step-number">Шаг {{ step.step_number }}</span>
-                                    <p class="step-description">{{ step.instruction_text }}</p>
-                                </div>
-
-                                <!-- Изображение шага -->
-                                <div class="step-photo-container">
-                                    {% if step.image_compressed %}
-                                        <a href="{{ step.image.url }}" target="_blank" rel="noopener noreferrer">
-                                            <img src="{{ step.image_compressed.url }}"
-                                                 alt="Изображение для шага {{ step.step_number }}"
-                                                 class="step-image">
-                                        </a>
-                                    {% else %}
-                                        <p class="no-image">Изображение отсутствует</p>
-                                    {% endif %}
-                                </div>
+        <!-- Шаги приготовления -->
+        <div class="steps-section">
+            <h2 class="steps-title">Шаги приготовления:</h2>
+            <div class="steps-container">
+                {% for step in recipe.instructions.all %}
+                    <div class="step {% cycle 'odd-step' 'even-step' %}">
+                        <div class="step-content">
+                            <!-- Описание шага -->
+                            <div class="step-description-container">
+                                <span class="step-number">Шаг {{ step.step_number }}</span>
+                                <p class="step-description">{{ step.instruction_text }}</p>
+                            </div>
+                            <!-- Изображение шага -->
+                            <div class="step-photo-container">
+                                {% if step.image_compressed %}
+                                    <a href="{{ step.image.url }}" target="_blank" rel="noopener noreferrer">
+                                        <img src="{{ step.image_compressed.url }}"
+                                             alt="Изображение для шага {{ step.step_number }}"
+                                             class="step-image">
+                                    </a>
+                                {% else %}
+                                    <p class="no-image">Изображение отсутствует</p>
+                                {% endif %}
                             </div>
                         </div>
-                    {% empty %}
-                        <p>Шаги приготовления не указаны.</p>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% empty %}
+                    <p>Шаги приготовления не указаны.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Комментарии -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <h3 class="comments-title">Комментарии <span class="comments-count">({{ comments_count }})</span></h3>
+                <button class="add-comment-button {% if is_authenticated %}authenticated{% endif %}">
+                    Оставить комментарий
+                </button>
+                <!-- Контейнер для ошибки комментария -->
+                <span id="error-comment" class="error-message"></span>
             </div>
 
-            <!-- Комментарии -->
-            <div class="comments-section">
-                <div class="comments-header">
-                    <h3 class="comments-title">Комментарии <span class="comments-count">({{ comments_count }})</span></h3>
-                    <button class="add-comment-button {% if is_authenticated %}authenticated{% endif %}">
-                        Оставить комментарий
-                    </button>
-                    <!-- Контейнер для ошибки комментария -->
-                    <span id="error-comment" class="error-message"></span>
-                </div>
-                <div class="comments-list">
-                    {% for comment in recipe.comments.all %}
-                        <div class="comment">
-                            <strong>{{ comment.author.username }}:</strong> {{ comment.text }}
+            <!-- Форма для добавления комментария (изначально скрыта) -->
+            <div class="comment-editor" style="display: none;">
+                <form id="comment-form" enctype="multipart/form-data">
+                    <!-- Контейнер для текстового поля, изображений и кнопки -->
+                    <div class="comment-container">
+                        <!-- Текстовое поле -->
+                        <textarea id="comment-text" name="text" placeholder="Введите ваш комментарий..."></textarea>
+                        <!-- Контейнер для загрузки изображений -->
+                        <div class="image-upload-container">
+                            <div class="photo-upload">
+                                <label for="comment-image1" class="photo-label">
+                                    <img id="comment-image1-preview" src="#" alt="Изображение 1" style="display: none;" />
+                                    <span id="comment-image1-placeholder">+</span>
+                                </label>
+                                <input type="file" id="comment-image1" name="image1" accept="image/*" style="display: none;" />
+                            </div>
+                            <div class="photo-upload">
+                                <label for="comment-image2" class="photo-label">
+                                    <img id="comment-image2-preview" src="#" alt="Изображение 2" style="display: none;" />
+                                    <span id="comment-image2-placeholder">+</span>
+                                </label>
+                                <input type="file" id="comment-image2" name="image2" accept="image/*" style="display: none;" />
+                            </div>
                         </div>
-                    {% empty %}
-                        <p>Нет комментариев.</p>
-                    {% endfor %}
-                </div>
+                        <!-- Кнопка "Опубликовать" -->
+                        <button type="submit" class="publish-button">Опубликовать</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Список комментариев -->
+            <div class="comments-list">
+                {% for comment in recipe.comments.all %}
+                    <div class="comment-container" data-comment-id="{{ comment.id }}">
+                        <!-- Содержимое комментария -->
+                        <div class="comment-content">
+                            <!-- Псевдоним автора -->
+                            <div class="comment-author">
+                                <a class="author-link" href="{% url 'profile' comment.user.id %}">{{ comment.user.username }}</a>
+                            </div>
+                            <!-- Текст комментария -->
+                            <div class="comment-text">
+                                {{ comment.text }}
+                            </div>
+                        </div>
+                        <!-- Прикрепленные изображения -->
+                        <div class="comment-images">
+                            {% if comment.image1 %}
+                                <a href="{{ comment.image1.url }}" target="_blank" rel="noopener noreferrer">
+                                    <img src="{{ comment.image1_compressed.url }}" alt="Изображение 1" class="comment-image">
+                                </a>
+                            {% endif %}
+                            {% if comment.image2 %}
+                                <a href="{{ comment.image2.url }}" target="_blank" rel="noopener noreferrer">
+                                    <img src="{{ comment.image2_compressed.url }}" alt="Изображение 2" class="comment-image">
+                                </a>
+                            {% endif %}
+                        </div>
+                        {% if user == comment.user %}
+                            <div class="delete-comment-button-container">
+                                <img src="{% static 'trashbox.png' %}" alt="Удалить комментарий" class="delete-comment-button" />
+                            </div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p>Нет комментариев.</p>
+                {% endfor %}
+            </div>
+
+
+        </div>
+        <!-- Модальное окно для подтверждения удаления -->
+        <div id="delete-comment-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <p>Вы уверены, что хотите удалить этот комментарий?</p>
+                <button id="confirm-delete-comment" class="modal-button">Да</button>
+                <button id="cancel-delete-comment" class="modal-button">Отмена</button>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
