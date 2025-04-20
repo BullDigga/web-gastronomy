@@ -8,7 +8,11 @@ from models.favorites.models import Favorite
 
 
 
+@login_required
 def favorites_view(request):
+    """
+    View для просмотра списка избранных рецептов пользователя.
+    """
     # Получаем текущего пользователя
     user = request.user
 
@@ -16,13 +20,29 @@ def favorites_view(request):
     if not user.is_authenticated:
         return redirect('login')  # Перенаправляем на страницу входа
 
-    # Получаем список избранных рецептов пользователя
-    favorite_recipes = Recipe.objects.filter(favorited_by__user=user)
+    # Получаем список ID избранных рецептов пользователя
+    favorite_recipe_ids = Favorite.objects.filter(
+        user=user
+    ).values_list('recipe_id', flat=True)
 
+    # Преобразуем все ID в строки для совместимости с шаблоном
+    favorite_recipe_ids = [recipe_id for recipe_id in favorite_recipe_ids]
+
+    # Получаем список избранных рецептов пользователя
+    favorite_recipes = Recipe.objects.filter(
+        id__in=favorite_recipe_ids,
+        status='published'
+    ).order_by('-id')  # Сортируем рецепты по дате создания (новые первыми)
+
+    # Контекст для передачи данных в шаблон
     context = {
-        'recipes': favorite_recipes,  # Передаем избранные рецепты как recipes
+        'recipes': favorite_recipes,  # Список избранных рецептов
         'favorites': True,           # Флаг для отображения заголовка "Ваши избранные рецепты"
+        'favorite_recipe_ids': favorite_recipe_ids,  # Список ID избранных рецептов
     }
+
+    print('context: ', context)
+
     return render(request, 'recipes_list_view.html', context)
 
 
