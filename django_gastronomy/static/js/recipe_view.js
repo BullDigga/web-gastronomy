@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             try {
-                const response = await fetch(`/rate_recipe/${recipeId}/`, {
+                const response = await fetch(`/ratings/rate_recipe/${recipeId}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             try {
-                const response = await fetch(`/delete_rating/${recipeId}/`, {
+                const response = await fetch(`/ratings/delete_rating/${recipeId}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Отключаем кнопку, чтобы предотвратить повторные клики
             favoriteButton.disabled = true;
             try {
-                const response = await fetch(`/favorites/${recipeId}/`, {
+                const response = await fetch(`/favorites/toggle_favorite/${recipeId}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             // Отправляем данные на сервер через AJAX
-            const response = await fetch('/comments/create/', {
+            const response = await fetch('/comments/comments/create/', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Обработка клика на кнопку "Да" (подтверждение удаления)
     confirmButton.addEventListener('click', async function () {
         try {
-            const response = await fetch(`/delete_comment/${currentCommentId}/`, {
+            const response = await fetch(`/comments/delete/${currentCommentId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

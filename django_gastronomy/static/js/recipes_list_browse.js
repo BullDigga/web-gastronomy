@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const favoriteButtons = document.querySelectorAll('.add-to-favorites');
 
     favoriteButtons.forEach(button => {
+
         button.addEventListener('click', function () {
             // Если пользователь не авторизован, ничего не делаем
             if (!isAuthenticated) {
@@ -18,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            fetch(`/favorites/${recipeId}/`, { // Отправляем запрос на новый маршрут
+            console.log("Я здесь!");
+            fetch(`/favorites/toggle_favorite/${recipeId}/`, { // Отправляем запрос на новый маршрут
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

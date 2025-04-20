@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const password = passwordInput.value;
 
             try {
-                const response = await fetch('/delete_account/', {
+                const response = await fetch('/users/delete_account/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

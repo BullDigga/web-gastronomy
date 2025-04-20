@@ -42,9 +42,9 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(_('admin status'), default=False)
 
     # Новые поля для ФИО
-    first_name = models.CharField(_('first name'), max_length=150, blank=True)
-    last_name = models.CharField(_('last name'), max_length=150, blank=True)
-    middle_name = models.CharField(_('middle name'), max_length=150, blank=True)
+    first_name = models.CharField(_('first name'), max_length=150, blank=True, null=True)  # Добавлено null=True
+    last_name = models.CharField(_('last name'), max_length=150, blank=True, null=True)    # Добавлено null=True
+    middle_name = models.CharField(_('middle name'), max_length=150, blank=True, null=True)  # Добавлено null=True
 
     # Поле для даты регистрации
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
@@ -68,6 +68,7 @@ class User(AbstractBaseUser):
         _('country'),
         max_length=100,
         blank=True,
+        null=True,  # Добавлено null=True
         help_text=_('The country where the user resides.')
     )
 

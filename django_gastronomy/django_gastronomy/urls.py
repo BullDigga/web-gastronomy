@@ -16,32 +16,46 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views  # Импортируем модуль views
+from . import views
 
 urlpatterns = [
+    # Администрирование
     path('admin/', admin.site.urls),
+
+    # Главная страница и общие маршруты
     path('', views.recipes_list_browse, name='recipes_list_browse'),
+    path('recipes/', views.recipes_list_browse, name='recipes_list_browse'),
+
+    # Избранное
+    path('favorites/', include('favorites.urls')),
+
+    # Аутентификация
     path('register/', views.registration_view, name='registration'),
     path('authorization/', views.authorization_view, name='authorization'),
-    path('profile/<int:user_id>/', views.profile_view, name='profile'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+
+    # Профиль пользователя
+    path('profile/<int:user_id>/', views.profile_view, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('confirm_delete_account/', views.confirm_delete_account, name='confirm_delete_account'),
+    path('users/', include('users.urls')),
+
+    # Рецепты
     path('recipes/<int:recipe_id>/', views.recipe_view, name='recipe_view'),
     path('user/<int:user_id>/recipes/', views.recipes_list_browse, name='user_recipes'),
-    path('favorites/', views.recipes_list_browse, {'favorites': True}, name='favorites'),
-    path('favorites/<int:recipe_id>/', views.toggle_favorite, name='toggle_favorite'),
-    path('confirm_delete_account/', views.confirm_delete_account, name='confirm_delete_account'),
-    path('delete_account/', views.delete_account, name='delete_account'),
-    path('rate_recipe/<int:recipe_id>/', views.rate_recipe, name='rate_recipe'),
-    path('delete_rating/<int:recipe_id>/', views.delete_rating, name='delete_rating'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
+
+    # Рейтинги
+    path('ratings/', include('ratings.urls')),
+
+    # Комментарии
+    path('comments/', include('comments.urls')),
+
+    # Дополнительный функционал
     path('radio_player/', views.radio_player, name='radio_player'),
-    path('recipes/', views.recipes_list_browse, name='recipes_list_browse'),
-    path('profile/edit/', views.edit_profile, name='edit_profile'),
-    path('comments/create/', views.create_comment, name='create_comment'),
-    path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
 ]
 
 if settings.DEBUG:
