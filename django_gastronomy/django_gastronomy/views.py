@@ -34,7 +34,7 @@ from django.contrib.auth.decorators import login_required
 import json
 
 
-def recipes_list_browse(request, user_id=None, favorites=False):
+def recipes_list_view(request, user_id=None, favorites=False):
     """
     View для просмотра списка рецептов.
     Поддерживает фильтрацию по автору, избранным рецептам или показ всех опубликованных рецептов.
@@ -122,7 +122,7 @@ def recipes_list_browse(request, user_id=None, favorites=False):
         'query': query,  # Поисковый запрос для отображения в шаблоне
     }
 
-    return render(request, 'recipes_list_browse.html', context)
+    return render(request, 'recipes_list_view.html', context)
 
 
 

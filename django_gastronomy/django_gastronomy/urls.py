@@ -26,8 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Главная страница и общие маршруты
-    path('', views.recipes_list_browse, name='recipes_list_browse'),
-    path('recipes/', views.recipes_list_browse, name='recipes_list_browse'),
+    path('', views.recipes_list_view, name='recipes_list_view'),
+    path('recipes/', views.recipes_list_view, name='recipes_list_view'),
 
     # Избранное
     path('favorites/', include('models.favorites.urls')),
@@ -45,7 +45,7 @@ urlpatterns = [
 
     # Рецепты
     path('recipes/<int:recipe_id>/', views.recipe_view, name='recipe_view'),
-    path('user/<int:user_id>/recipes/', views.recipes_list_browse, name='user_recipes'),
+    path('user/<int:user_id>/recipes/', views.recipes_list_view, name='user_recipes'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
 
     # Рейтинги

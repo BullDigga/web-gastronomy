@@ -22,7 +22,7 @@ def favorites_view(request):
     context = {
         'favorite_recipes': favorite_recipes,
     }
-    return render(request, 'recipes_list_browse.html', context)
+    return render(request, 'recipes_list_view.html', context)
 
 
 @login_required

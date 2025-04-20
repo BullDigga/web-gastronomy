@@ -10,8 +10,8 @@
 {% endblock %}
 
 {% block content %}
-    <link rel="stylesheet" href="{% static 'css/recipes_list_browse.css' %}">
-    <script src="{% static 'js/recipes_list_browse.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/recipes_list_view.css' %}">
+    <script src="{% static 'js/recipes_list_view.js' %}" defer></script>
 
     <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
         <div class="recipes-container">
