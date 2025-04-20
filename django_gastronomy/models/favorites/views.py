@@ -20,7 +20,8 @@ def favorites_view(request):
     favorite_recipes = Recipe.objects.filter(favorited_by__user=user)
 
     context = {
-        'favorite_recipes': favorite_recipes,
+        'recipes': favorite_recipes,  # Передаем избранные рецепты как recipes
+        'favorites': True,           # Флаг для отображения заголовка "Ваши избранные рецепты"
     }
     return render(request, 'recipes_list_view.html', context)
 
