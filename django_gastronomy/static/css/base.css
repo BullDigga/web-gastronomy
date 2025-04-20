@@ -51,7 +51,7 @@ header .search-bar {
     top: 50%;
     transform: translateY(-50%);
     padding: 5px 10px;
-    background-color: #3f612d; /* Dark moss green - цвет кнопки */
+    background-color: #bd4a2787; /* Dark moss green - цвет кнопки */
     color: white;
     border: none;
     border-radius: 4px;
@@ -101,9 +101,6 @@ header .search-bar .search-input {
     box-sizing: border-box;
 }
 
-header .search-bar .search-input:focus {
-    background-color: #f6d4ba; /* Desert sand - фон при фокусе */
-}
 
 /* Стиль контейнера с кнопками */
 .actor-content {
