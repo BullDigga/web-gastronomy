@@ -175,10 +175,19 @@ header .search-bar .search-input:focus {
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s ease;
+    outline: none;
+    border: none;
+    background-color: transparent;
 }
 
 .username:hover {
     color: #f3b391; /* Peach */
+    background-color: transparent;
+}
+
+.username:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(243, 179, 145, 0.5); /* Peach с прозрачностью */
 }
 
 /* Стиль для иконки "Избранное" */

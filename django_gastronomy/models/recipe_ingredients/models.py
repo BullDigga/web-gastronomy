@@ -1,7 +1,7 @@
 from django.db import models
-from recipes.models import Recipe
-from ingredients.models import Ingredient
-from units.models import Unit
+from models.recipes.models import Recipe
+from models.ingredients.models import Ingredient
+from models.units.models import Unit
 
 class RecipeIngredient(models.Model):
     # Связь с рецептом (ForeignKey на модель Recipe)

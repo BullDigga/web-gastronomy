@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import Comment
-from recipes.models import Recipe
+from models.recipes.models import Recipe
 
 
 @login_required  # Только авторизованные пользователи могут удалять комментарии

@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
-from recipes.models import Recipe
-from favorites.models import Favorite
+from models.recipes.models import Recipe
+from models.favorites.models import Favorite
 
 
 

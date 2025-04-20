@@ -4,8 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count
 from django.core.exceptions import ObjectDoesNotExist
-from recipes.models import Recipe  # Модель рецептов
-from ratings.models import Rate  # Модель оценок
+from models.recipes.models import Recipe  # Модель рецептов
+from models.ratings.models import Rate  # Модель оценок
 
 
 

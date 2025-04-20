@@ -3,8 +3,8 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from users.models import User
-from recipes.models import Recipe
+from models.users.models import User
+from models.recipes.models import Recipe
 
 
 class Comment(models.Model):

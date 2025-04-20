@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from recipes.models import Recipe
-from recipe_ingredients.models import RecipeIngredient
-from instructions.models import Instruction
-from ingredients.models import Ingredient
-from units.models import Unit
-from comments.models import Comment
-from favorites.models import Favorite
-from ratings.models import Rate
+from models.recipes.models import Recipe
+from models.recipe_ingredients.models import RecipeIngredient
+from models.instructions.models import Instruction
+from models.ingredients.models import Ingredient
+from models.units.models import Unit
+from models.comments.models import Comment
+from models.favorites.models import Favorite
+from models.ratings.models import Rate
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib import messages

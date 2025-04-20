@@ -30,7 +30,7 @@ urlpatterns = [
     path('recipes/', views.recipes_list_browse, name='recipes_list_browse'),
 
     # Избранное
-    path('favorites/', include('favorites.urls')),
+    path('favorites/', include('models.favorites.urls')),
 
     # Аутентификация
     path('register/', views.registration_view, name='registration'),
@@ -41,7 +41,7 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.profile_view, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('confirm_delete_account/', views.confirm_delete_account, name='confirm_delete_account'),
-    path('users/', include('users.urls')),
+    path('users/', include('models.users.urls')),
 
     # Рецепты
     path('recipes/<int:recipe_id>/', views.recipe_view, name='recipe_view'),
@@ -49,10 +49,10 @@ urlpatterns = [
     path('create_recipe/', views.create_recipe, name='create_recipe'),
 
     # Рейтинги
-    path('ratings/', include('ratings.urls')),
+    path('ratings/', include('models.ratings.urls')),
 
     # Комментарии
-    path('comments/', include('comments.urls')),
+    path('comments/', include('models.comments.urls')),
 
     # Дополнительный функционал
     path('radio_player/', views.radio_player, name='radio_player'),

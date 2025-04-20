@@ -32,15 +32,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Мои приложения
-    'users',
-    'recipes',
-    'comments',
-    'favorites',
-    'ratings',
-    'instructions',
-    'ingredients',
-    'units',
-    'recipe_ingredients',
+    'models.users',
+    'models.recipes',
+    'models.comments',
+    'models.favorites',
+    'models.ratings',
+    'models.instructions',
+    'models.ingredients',
+    'models.units',
+    'models.recipe_ingredients',
 ]
 
 MIDDLEWARE = [

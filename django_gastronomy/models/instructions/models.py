@@ -1,5 +1,5 @@
 from django.db import models
-from recipes.models import Recipe
+from models.recipes.models import Recipe
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
