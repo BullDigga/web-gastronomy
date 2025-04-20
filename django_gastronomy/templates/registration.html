@@ -9,7 +9,7 @@
 
     <div class="registration-container">
         <h1>Регистрация</h1>
-        <form method="POST" class="registration-form" id="registration-form">
+        <form method="POST" class="registration-form" id="registration-form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Псевдоним:<span class="required-indicator">*</span></label>
@@ -58,6 +58,18 @@
 
             <!-- Дополнительные поля (изначально скрыты) -->
             <div id="optional-fields" style="display: none">
+                <!-- Блок загрузки аватара -->
+                <div class="avatar-upload-container">
+                    <div class="photo-upload">
+                        <label for="id_avatar" class="photo-label">
+                            <img id="avatar-preview" src="#" alt="Аватар пользователя" style="display: none;" />
+                            <span id="avatar-placeholder">+</span>
+                        </label>
+                        <input type="file" id="id_avatar" name="avatar" accept="image/*" style="display: none;" />
+                    </div>
+                    <p class="avatar-hint">Загрузите аватар (не более 10 МБ)</p>
+                </div>
+
                 <div class="form-group">
                     <label for="last_name">Фамилия:</label>
                     <div class="input-wrapper">

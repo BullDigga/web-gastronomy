@@ -1,9 +1,14 @@
+import uuid
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from models.recipes.models import Recipe
 from models.recipe_ingredients.models import RecipeIngredient
 from models.instructions.models import Instruction
 from models.ingredients.models import Ingredient
 from models.units.models import Unit
+from models.users.models import User
 from models.comments.models import Comment
 from models.favorites.models import Favorite
 from models.ratings.models import Rate
@@ -17,7 +22,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 import os
 from django.conf import settings
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 from django.core.files.base import ContentFile
 from django.db.models import Q
@@ -120,34 +125,26 @@ def recipes_list_browse(request, user_id=None, favorites=False):
     return render(request, 'recipes_list_browse.html', context)
 
 
+
 def registration_view(request):
     if request.method == 'POST':
         try:
-            # Логируем сырое тело запроса
-            print("Raw body:", request.body)
-
-            # Пытаемся распарсить JSON
-            try:
-                data = json.loads(request.body)
-            except json.JSONDecodeError as e:
-                print("Ошибка при парсинге JSON:", e)
-                return JsonResponse({'error': 'Невалидный JSON.'}, status=400)
-
-            # Логируем распарсенные данные
-            print("Parsed data:", data)
+            # Логируем данные запроса
+            print("Request POST:", request.POST)
+            print("Request FILES:", request.FILES)
 
             # Обязательные поля
-            username = data.get('username')
-            email = data.get('email')
-            password = data.get('password')
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
 
             # Необязательные поля
-            first_name = data.get('first_name', '')  # Новое поле
-            last_name = data.get('last_name', '')    # Новое поле
-            middle_name = data.get('middle_name', '')  # Новое поле
-            gender = data.get('gender', None)        # Новое поле (необязательное)
-            date_of_birth = data.get('date_of_birth', None)  # Новое поле (необязательное)
-            country = data.get('country', '')        # Новое поле (необязательное)
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            middle_name = request.POST.get('middle_name', '').strip()
+            gender = request.POST.get('gender', '').strip() or None
+            date_of_birth = request.POST.get('date_of_birth', '').strip() or None
+            country = request.POST.get('country', '').strip()
 
             # Проверяем обязательные поля
             if not username or not email or not password:
@@ -156,15 +153,15 @@ def registration_view(request):
             # Получаем модель пользователя
             User = get_user_model()
 
-            # Проверяем, существует ли пользователь с таким именем
+            # Проверяем уникальность псевдонима
             if User.objects.filter(username=username).exists():
                 return JsonResponse({'error': 'Пользователь с данным псевдонимом уже зарегистрирован.'}, status=400)
 
-            # Проверяем, существует ли пользователь с таким email
+            # Проверяем уникальность email
             if User.objects.filter(email=email).exists():
                 return JsonResponse({'error': 'Пользователь с данным email уже зарегистрирован.'}, status=400)
 
-            # Создаём нового пользователя
+            # Создаем нового пользователя
             user = User.objects.create_user(
                 username=username,
                 email=email,
@@ -176,7 +173,41 @@ def registration_view(request):
                 date_of_birth=date_of_birth,
                 country=country
             )
-            print("Пользователь успешно зарегистрирован:", user.username)
+
+            # Обработка загрузки аватара
+            avatar = request.FILES.get('avatar')
+            if avatar:
+                # Проверяем размер файла (не более 10 МБ)
+                if avatar.size > 10 * 1024 * 1024:
+                    return JsonResponse({'error': 'Размер файла аватара не должен превышать 10 МБ.'}, status=400)
+
+                try:
+                    # Открываем изображение
+                    img = Image.open(avatar)
+                    if img.mode != 'RGB':
+                        img = img.convert('RGB')
+
+                    # Создаем сжатую версию аватара
+                    output_size = (300, 300)
+                    img.thumbnail(output_size, Image.Resampling.LANCZOS)
+
+                    # Сохраняем сжатое изображение
+                    thumb_io = BytesIO()
+                    img.save(thumb_io, format='JPEG', quality=85)
+
+                    # Генерируем уникальное имя файла
+                    compressed_filename = f'compressed_{user.id}_{os.path.splitext(avatar.name)[0]}.jpg'
+                    user.avatar_compressed.save(compressed_filename, ContentFile(thumb_io.getvalue()), save=False)
+
+                    # Сохраняем оригинальный аватар
+                    user.avatar = avatar
+
+                except Exception as e:
+                    print("Ошибка при обработке аватара:", e)
+                    return JsonResponse({'error': 'Ошибка при обработке аватара.'}, status=400)
+
+            # Сохраняем пользователя
+            user.save()
 
             # Авторизуем пользователя
             login(request, user)
@@ -449,6 +480,7 @@ def radio_player(request):
 
 
 @login_required
+@transaction.atomic
 def edit_profile(request):
     """
     View для редактирования профиля пользователя.
@@ -471,23 +503,68 @@ def edit_profile(request):
             messages.error(request, 'Псевдоним должен содержать минимум 6 символов.')
             return redirect('edit_profile')
 
+        # Проверяем, что псевдоним уникален
+        if User.objects.filter(username=username).exclude(id=user.id).exists():
+            messages.error(request, 'Этот псевдоним уже занят.')
+            return redirect('edit_profile')
+
+        # Валидация даты рождения
+        try:
+            date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date() if date_of_birth else None
+        except ValueError:
+            messages.error(request, 'Некорректная дата рождения.')
+            return redirect('edit_profile')
+
+        # Обработка загрузки аватара
+        avatar = request.FILES.get('avatar')
+        if avatar and avatar.size > 0:
+            # Проверяем размер файла (не более 10 МБ)
+            if avatar.size > 10 * 1024 * 1024:
+                messages.error(request, 'Размер файла аватара не должен превышать 10 МБ.')
+                return redirect('edit_profile')
+
+            try:
+                # Открываем изображение
+                img = Image.open(avatar)
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+
+                # Создаем сжатую версию аватара
+                output_size = (300, 300)
+                img.thumbnail(output_size, Image.Resampling.LANCZOS)
+
+                # Сохраняем сжатое изображение
+                thumb_io = BytesIO()
+                img.save(thumb_io, format='JPEG', quality=85)
+
+                # Генерируем уникальное имя файла
+                compressed_filename = f'compressed_{uuid.uuid4()}.jpg'
+
+                # Сохраняем сжатое изображение
+                user.avatar_compressed.save(compressed_filename, ContentFile(thumb_io.getvalue()), save=False)
+                user.avatar = avatar
+
+            except (UnidentifiedImageError, IOError) as e:
+                messages.error(request, f'Ошибка при обработке аватара: {e}')
+                return redirect('edit_profile')
+
         # Обновляем данные пользователя
         user.username = username
         user.first_name = first_name
         user.last_name = last_name
         user.middle_name = middle_name
         user.gender = gender
-        user.date_of_birth = date_of_birth if date_of_birth else None
+        user.date_of_birth = date_of_birth
         user.country = country
 
         # Сохраняем изменения
         user.save()
 
-        # Добавляем сообщение об успехе
-        messages.success(request, 'Профиль успешно обновлен!')
-
         # Перенаправляем на страницу просмотра профиля
-        return redirect('profile', user_id=user.id)  # Используем именованный маршрут
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'redirect_url': reverse('profile', args=[user.id])})
+        else:
+            return redirect('profile', user_id=user.id)
 
     # Если GET-запрос, отображаем страницу с текущими данными пользователя
     context = {

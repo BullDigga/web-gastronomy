@@ -5,23 +5,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Получаем все элементы формы
+    // Получаем элементы формы
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const repeatPasswordInput = document.getElementById('repeat_password'); // Поле подтверждения пароля
+    const repeatPasswordInput = document.getElementById('repeat_password');
     const firstNameInput = document.getElementById('first_name');
     const lastNameInput = document.getElementById('last_name');
     const middleNameInput = document.getElementById('middle_name');
-    const genderSelect = document.getElementById('gender'); // Пол
-    const dateOfBirthInput = document.getElementById('date_of_birth'); // Дата рождения
-    const countryInput = document.getElementById('country'); // Страна
+    const genderSelect = document.getElementById('gender');
+    const dateOfBirthInput = document.getElementById('date_of_birth');
+    const countryInput = document.getElementById('country');
+    const avatarInput = document.getElementById('id_avatar');
 
     // Элементы для отображения эмодзи
     const usernameEmoji = document.getElementById('username-emoji');
     const emailEmoji = document.getElementById('email-emoji');
     const passwordEmoji = document.getElementById('password-emoji');
-    const repeatPasswordEmoji = document.getElementById('repeat-password-emoji'); // Эмодзи для подтверждения пароля
+    const repeatPasswordEmoji = document.getElementById('repeat-password-emoji');
     const firstNameEmoji = document.getElementById('first_name-emoji');
     const lastNameEmoji = document.getElementById('last_name-emoji');
     const middleNameEmoji = document.getElementById('middle_name-emoji');
@@ -30,36 +31,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const usernameError = document.getElementById('username-error');
     const emailError = document.getElementById('email-error');
     const passwordError = document.getElementById('password-error');
-    const repeatPasswordError = document.getElementById('repeat-password-error'); // Ошибки для подтверждения пароля
+    const repeatPasswordError = document.getElementById('repeat-password-error');
     const firstNameError = document.getElementById('first_name-error');
     const lastNameError = document.getElementById('last_name-error');
     const middleNameError = document.getElementById('middle_name-error');
 
     let isServerError = false;
 
-    // Валидация имени пользователя
+    // Валидация псевдонима
     usernameInput.addEventListener('input', function () {
         if (isServerError) return;
-        const value = usernameInput.value.trim();
-        if (value.length < 6) {
-            setError(usernameEmoji, usernameError, '❌', 'Псевдоним должен содержать минимум 6 символов.');
-        } else {
-            clearError(usernameEmoji, usernameError, '✅');
-        }
+        validateField(usernameInput, usernameEmoji, usernameError, 6, 'Псевдоним должен содержать минимум 6 символов.');
     });
 
     // Валидация email
     emailInput.addEventListener('input', function () {
         if (isServerError) return;
         const value = emailInput.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Регулярное выражение для email
-        const cyrillicRegex = /[а-яА-ЯЁё]/; // Регулярное выражение для кириллицы
-        if (!value) {
-            setError(emailEmoji, emailError, '❌', 'Email обязателен для заполнения.');
-        } else if (cyrillicRegex.test(value)) {
-            setError(emailEmoji, emailError, '❌', 'Некорректный email.');
-        } else if (!emailRegex.test(value)) {
-            setError(emailEmoji, emailError, '❌', 'Некорректный email.');
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        if (!isValid) {
+            setError(emailEmoji, emailError, '❌', 'Введите корректный email.');
         } else {
             clearError(emailEmoji, emailError, '✅');
         }
@@ -68,100 +59,81 @@ document.addEventListener('DOMContentLoaded', function () {
     // Валидация пароля
     passwordInput.addEventListener('input', function () {
         if (isServerError) return;
-        const value = passwordInput.value.trim();
-        if (value.length < 6) {
-            setError(passwordEmoji, passwordError, '❌', 'Пароль должен содержать минимум 6 символов.');
-        } else {
-            clearError(passwordEmoji, passwordError, '✅');
-        }
-        // Проверяем совпадение паролей
-        validateRepeatPassword();
+        validateField(passwordInput, passwordEmoji, passwordError, 6, 'Пароль должен содержать минимум 6 символов.');
     });
 
-    // Валидация повторения пароля
+    // Валидация повторного пароля
     repeatPasswordInput.addEventListener('input', function () {
-        validateRepeatPassword();
-    });
-
-    // Функция для проверки совпадения паролей
-    function validateRepeatPassword() {
+        if (isServerError) return;
         const passwordValue = passwordInput.value.trim();
         const repeatPasswordValue = repeatPasswordInput.value.trim();
-        if (repeatPasswordValue && repeatPasswordValue !== passwordValue) {
+        if (repeatPasswordValue !== passwordValue) {
             setError(repeatPasswordEmoji, repeatPasswordError, '❌', 'Пароли не совпадают.');
-        } else if (repeatPasswordValue && repeatPasswordValue === passwordValue) {
-            clearError(repeatPasswordEmoji, repeatPasswordError, '✅');
         } else {
-            clearError(repeatPasswordEmoji, repeatPasswordError);
+            clearError(repeatPasswordEmoji, repeatPasswordError, '✅');
         }
-    }
-
-    // Переключение видимости дополнительных полей
-    const toggleOptionalFields = document.getElementById('toggle-optional-fields');
-    const optionalFields = document.getElementById('optional-fields');
-    if (toggleOptionalFields && optionalFields) {
-        toggleOptionalFields.addEventListener('click', function (event) {
-            event.preventDefault(); // Предотвращаем переход по ссылке
-            const computedStyle = window.getComputedStyle(optionalFields);
-            if (computedStyle.display === 'none') {
-                optionalFields.style.display = 'flex'; // Показываем блок
-                toggleOptionalFields.textContent = 'Скрыть дополнительные данные';
-            } else {
-                optionalFields.style.display = 'none'; // Скрываем блок
-                toggleOptionalFields.textContent = 'Дополнительные данные (опционально)';
-            }
-        });
-    } else {
-        console.error('Элементы toggle-optional-fields или optional-fields не найдены.');
-    }
+    });
 
     // Валидация имени (необязательное поле)
     firstNameInput.addEventListener('input', function () {
         if (isServerError) return;
-        const value = firstNameInput.value.trim();
-        if (value) {
-            clearError(firstNameEmoji, firstNameError, '✅');
-        } else {
-            clearError(firstNameEmoji, firstNameError);
-        }
+        validateOptionalField(firstNameInput, firstNameEmoji, firstNameError, 2, 'Имя должно содержать минимум 2 символа.');
     });
 
     // Валидация фамилии (необязательное поле)
     lastNameInput.addEventListener('input', function () {
         if (isServerError) return;
-        const value = lastNameInput.value.trim();
-        if (value) {
-            clearError(lastNameEmoji, lastNameError, '✅');
-        } else {
-            clearError(lastNameEmoji, lastNameError);
-        }
+        validateOptionalField(lastNameInput, lastNameEmoji, lastNameError, 2, 'Фамилия должна содержать минимум 2 символа.');
     });
 
     // Валидация отчества (необязательное поле)
     middleNameInput.addEventListener('input', function () {
         if (isServerError) return;
-        const value = middleNameInput.value.trim();
-        if (value) {
-            clearError(middleNameEmoji, middleNameError, '✅');
-        } else {
-            clearError(middleNameEmoji, middleNameError);
-        }
+        validateOptionalField(middleNameInput, middleNameEmoji, middleNameError, 2, 'Отчество должно содержать минимум 2 символа.');
     });
 
-    // Отправка формы через AJAX
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
+    const avatarPreview = document.getElementById('avatar-preview');
+    const avatarPlaceholder = document.getElementById('avatar-placeholder');
+    const photoUpload = document.querySelector('.photo-upload');
 
-        const usernameValue = usernameInput.value.trim();
-        const emailValue = emailInput.value.trim();
-        const passwordValue = passwordInput.value.trim();
-        const repeatPasswordValue = repeatPasswordInput.value.trim();
-        const firstNameValue = firstNameInput.value.trim();
-        const lastNameValue = lastNameInput.value.trim();
-        const middleNameValue = middleNameInput.value.trim();
-        const genderValue = genderSelect.value; // Значение поля "Пол"
-        const dateOfBirthValue = dateOfBirthInput.value; // Значение поля "Дата рождения"
-        const countryValue = countryInput.value.trim(); // Значение поля "Страна"
+    if (avatarInput && photoUpload) {
+        // Делаем весь блок .photo-upload кликабельным
+        photoUpload.addEventListener('click', function () {
+            avatarInput.click(); // Триггерим клик на скрытом input[type="file"]
+        });
+
+        // Обработка выбора файла
+        avatarInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Проверяем размер файла (не более 10 МБ)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Размер файла аватара не должен превышать 10 МБ.');
+                    avatarInput.value = ''; // Очищаем поле выбора файла
+                    return;
+                }
+
+                // Создаем URL для предварительного просмотра изображения
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    avatarPreview.src = e.target.result; // Устанавливаем источник изображения
+                    avatarPreview.style.display = 'block'; // Показываем изображение
+                    avatarPlaceholder.style.display = 'none'; // Скрываем placeholder
+                    photoUpload.classList.add('has-image'); // Убираем пунктирную границу
+                };
+                reader.readAsDataURL(file); // Читаем файл как Data URL
+            } else {
+                // Если файл не выбран, возвращаем placeholder
+                avatarPreview.style.display = 'none';
+                avatarPlaceholder.style.display = 'block';
+                photoUpload.classList.remove('has-image'); // Возвращаем пунктирную границу
+            }
+        });
+    }
+
+    // Отправка формы через AJAX
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
 
         // Проверяем совпадение паролей перед отправкой
         validateRepeatPassword();
@@ -170,55 +142,51 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Логируем отправляемые данные
-        console.log('Отправляемые данные:', {
-            username: usernameValue,
-            email: emailValue,
-            password: passwordValue,
-            first_name: firstNameValue || null,
-            last_name: lastNameValue || null,
-            middle_name: middleNameValue || null,
-            gender: genderValue || null,
-            date_of_birth: dateOfBirthValue || null,
-            country: countryValue || null
-        });
+        // Собираем данные из формы
+        const formData = new FormData();
+        formData.append('username', usernameInput.value.trim());
+        formData.append('email', emailInput.value.trim());
+        formData.append('password', passwordInput.value.trim());
 
-        // Отправляем данные на сервер
-        fetch('/register/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({
-                username: usernameValue,
-                email: emailValue,
-                password: passwordValue,
-                first_name: firstNameValue || null,
-                last_name: lastNameValue || null,
-                middle_name: middleNameValue || null,
-                gender: genderValue || null,
-                date_of_birth: dateOfBirthValue || null,
-                country: countryValue || null
-            })
-        })
-        .then(response => {
+        // Добавляем необязательные поля, только если они заполнены
+        if (firstNameInput.value.trim()) formData.append('first_name', firstNameInput.value.trim());
+        if (lastNameInput.value.trim()) formData.append('last_name', lastNameInput.value.trim());
+        if (middleNameInput.value.trim()) formData.append('middle_name', middleNameInput.value.trim());
+        if (genderSelect.value) formData.append('gender', genderSelect.value);
+        if (dateOfBirthInput.value) formData.append('date_of_birth', dateOfBirthInput.value);
+        if (countryInput.value.trim()) formData.append('country', countryInput.value.trim());
+
+        // Добавляем аватар, если он выбран
+        if (avatarInput && avatarInput.files.length > 0) {
+            formData.append('avatar', avatarInput.files[0]);
+        }
+
+        // Логируем отправляемые данные
+        console.log('Отправляемые данные:', Object.fromEntries(formData.entries()));
+
+        try {
+            // Отправляем данные на сервер через AJAX
+            const response = await fetch('/register/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
             if (!response.ok) {
-                return response.json().then(data => {
-                    throw new Error(data.error || 'Произошла ошибка при обработке запроса.');
-                });
+                const data = await response.json();
+                throw new Error(data.error || 'Произошла ошибка при обработке запроса.');
             }
-            return response.json();
-        })
-        .then(data => {
+
+            const data = await response.json();
             if (data.success) {
                 // Перенаправляем пользователя на страницу профиля
                 console.log('Redirect URL from server:', data.redirect_url);
                 window.location.href = data.redirect_url;
             }
-        })
-        .catch(error => {
+        } catch (error) {
             isServerError = true;
             console.error('Ошибка:', error.message);
 
@@ -229,18 +197,49 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Обработанная ошибка:', errorMessage);
 
             // Проверяем текст ошибки
-            if (errorMessage.includes('уже зарегистрирован')) {
-                setError(emailEmoji, emailError, '❌', 'Данный email уже зарегистрирован.');
+            if (errorMessage.includes('уже используется')) {
+                setError(usernameEmoji, usernameError, '❌', 'Этот псевдоним уже занят.');
             } else if (errorMessage.includes('email')) {
                 setError(emailEmoji, emailError, '❌', 'Некорректный email.');
-            } else if (errorMessage.includes('пароль')) {
-                setError(passwordEmoji, passwordError, '❌', error.message);
             } else {
                 alert(error.message); // Общая ошибка
             }
             isServerError = false;
-        });
+        }
     });
+
+    // Вспомогательная функция для валидации обязательных полей
+    function validateField(input, emojiElement, errorElement, minLength, errorMessage) {
+        const value = input.value.trim();
+        if (value.length < minLength) {
+            setError(emojiElement, errorElement, '❌', errorMessage);
+        } else {
+            clearError(emojiElement, errorElement, '✅');
+        }
+    }
+
+    // Вспомогательная функция для валидации необязательных полей
+    function validateOptionalField(input, emojiElement, errorElement, minLength = 0, errorMessage = '') {
+        const value = input.value.trim();
+        if (value && value.length < minLength) {
+            setError(emojiElement, errorElement, '❌', errorMessage);
+        } else if (value) {
+            clearError(emojiElement, errorElement, '✅');
+        } else {
+            clearError(emojiElement, errorElement);
+        }
+    }
+
+    // Вспомогательная функция для проверки совпадения паролей
+    function validateRepeatPassword() {
+        const passwordValue = passwordInput.value.trim();
+        const repeatPasswordValue = repeatPasswordInput.value.trim();
+        if (repeatPasswordValue !== passwordValue) {
+            setError(repeatPasswordEmoji, repeatPasswordError, '❌', 'Пароли не совпадают.');
+        } else {
+            clearError(repeatPasswordEmoji, repeatPasswordError, '✅');
+        }
+    }
 
     // Вспомогательная функция для установки ошибки
     function setError(emojiElement, errorElement, emoji, message = '') {
@@ -271,4 +270,25 @@ document.addEventListener('DOMContentLoaded', function () {
         clearError(lastNameEmoji, lastNameError);
         clearError(middleNameEmoji, middleNameError);
     }
+
+    const toggleOptionalFields = document.getElementById('toggle-optional-fields');
+    const optionalFields = document.getElementById('optional-fields');
+
+    if (toggleOptionalFields && optionalFields) {
+        toggleOptionalFields.addEventListener('click', function (event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+
+            const computedStyle = window.getComputedStyle(optionalFields);
+            if (computedStyle.display === 'none') {
+                optionalFields.style.display = 'flex'; // Показываем блок
+                toggleOptionalFields.textContent = 'Скрыть дополнительные данные';
+            } else {
+                optionalFields.style.display = 'none'; // Скрываем блок
+                toggleOptionalFields.textContent = 'Дополнительные данные (опционально)';
+            }
+        });
+    } else {
+        console.error('Элементы toggle-optional-fields или optional-fields не найдены.');
+    }
+
 });

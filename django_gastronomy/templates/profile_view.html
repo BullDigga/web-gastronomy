@@ -18,6 +18,18 @@
         {% endif %}
 
         <h1>Профиль</h1>
+
+        <!-- Блок аватара -->
+        <div class="avatar-container">
+            {% if profile_user.avatar_compressed %}
+                <a href="{{ profile_user.avatar.url }}" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ profile_user.avatar_compressed.url }}" alt="Аватар пользователя: {{ profile_user.username }}" class="profile-avatar">
+                </a>
+            {% else %}
+                <img src="{% static 'default_avatar.png' %}" alt="Аватар по умолчанию" class="profile-avatar">
+            {% endif %}
+        </div>
+
         <div class="profile-info">
             <!-- Псевдоним -->
             <div class="info-row">

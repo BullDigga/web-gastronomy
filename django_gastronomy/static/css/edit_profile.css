@@ -61,3 +61,76 @@
 .save-button:hover {
     background-color: #528C29;
 }
+
+
+.avatar-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.photo-upload {
+    width: 120px; /* Ширина миниатюры */
+    height: 120px; /* Высота миниатюры */
+    border-radius: 50%; /* Круглая форма */
+    cursor: pointer; /* Указатель мыши */
+    position: relative; /* Для позиционирования внутренних элементов */
+    overflow: hidden; /* Обрезаем содержимое за границами */
+}
+
+.photo-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0; /* Цвет фона по умолчанию */
+    border: 2px dashed #ccc; /* Пунктирная граница */
+    border-radius: 50%;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    cursor: pointer; /* Изменение курсора при наведении */
+
+}
+
+.photo-label:hover {
+    border-color: #FFA726; /* Нежно-оранжевый цвет при наведении */
+}
+
+.photo-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Сохраняем пропорции изображения */
+}
+
+#avatar-placeholder {
+    font-size: 48px;
+    color: #ccc;
+    font-weight: bold;
+}
+
+.avatar-hint {
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+}
+
+/* Стиль для аватара */
+#avatar-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%; /* Круглая форма */
+    cursor: pointer; /* Изменение курсора при наведении */
+    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+/* Эффект увеличения при наведении (опционально) */
+#avatar-preview:hover {
+    transform: scale(1.05); /* Небольшое увеличение */
+}
+
+.photo-label.has-image {
+    border: none; /* Убираем границу */
+}

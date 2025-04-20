@@ -128,3 +128,26 @@
     display: flex;
     gap: 10px; /* Отступ между кнопками */
 }
+
+/* Контейнер аватара */
+.avatar-container {
+    display: flex;
+    justify-content: center; /* Центрирование по горизонтали */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+/* Стиль аватара */
+.profile-avatar {
+    width: 150px; /* Ширина аватара */
+    height: 150px; /* Высота аватара */
+    border-radius: 50%; /* Круглая форма */
+    object-fit: cover; /* Корректное масштабирование изображения */
+    border: 2px solid #ccc; /* Граница вокруг аватара */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Легкая тень для эффекта объема */
+    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+/* Эффект увеличения при наведении */
+.profile-avatar:hover {
+    transform: scale(1.05); /* Небольшое увеличение */
+}
