@@ -4,7 +4,6 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/recipe_view.css' %}">
 <script src="{% static 'js/recipe_view.js' %}"></script>
-
 <!-- Контейнер для ингредиентов -->
 <div class="ingredients-container">
     <h2>Ингредиенты:</h2>
@@ -21,6 +20,14 @@
             <p>Ингредиенты не указаны.</p>
         {% endfor %}
     </ul>
+</div>
+
+<div id="delete-recipe-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <p>Вы уверены, что хотите удалить рецепт "<span id="recipe-title-to-delete"></span>"?</p>
+        <button id="confirm-delete-recipe" class="modal-button">Да</button>
+        <button id="cancel-delete-recipe" class="modal-button">Отмена</button>
+    </div>
 </div>
 
 <!-- Основной контейнер рецепта -->
@@ -45,6 +52,13 @@
         </button>
     </div>
 
+    {% if user == recipe.author %}
+    <button class="delete-recipe-button" data-recipe-id="{{ recipe.id }}" data-recipe-title="{{ recipe.title }}">
+        <img src="{% static 'trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
+    </button>
+    {% endif %}
+
+
     <!-- Верхняя секция -->
     <div class="top-section">
         <!-- Главное изображение -->
@@ -63,12 +77,10 @@
                 </a>
             {% endif %}
         </div>
-
         <!-- Информация справа от изображения -->
         <div class="info-right">
             <!-- Название рецепта -->
             <h2 class="recipe-title">{{ recipe.title }}</h2>
-
             <!-- Контейнер с оценкой -->
             <div class="rating-and-favorites">
                 <div class="rating-section">
@@ -116,14 +128,12 @@
             </div>
         </div>
     </div>
-
     <!-- Нижняя секция -->
     <div class="bottom-section">
         <!-- Описание рецепта -->
         <div class="recipe-description">
             <p class="recipe-text"><strong>Описание:</strong> {{ recipe.description }}</p>
         </div>
-
         <!-- Шаги приготовления -->
         <div class="steps-section">
             <h2 class="steps-title">Шаги приготовления:</h2>
@@ -155,7 +165,6 @@
                 {% endfor %}
             </div>
         </div>
-
         <!-- Комментарии -->
         <div class="comments-section">
             <div class="comments-header">
@@ -166,7 +175,6 @@
                 <!-- Контейнер для ошибки комментария -->
                 <span id="error-comment" class="error-message"></span>
             </div>
-
             <!-- Форма для добавления комментария (изначально скрыта) -->
             <div class="comment-editor" style="display: none;">
                 <form id="comment-form" enctype="multipart/form-data">
@@ -196,7 +204,6 @@
                     </div>
                 </form>
             </div>
-
             <!-- Список комментариев -->
             <div class="comments-list">
                 {% for comment in recipe.comments.all %}
@@ -235,8 +242,6 @@
                     <p>Нет комментариев.</p>
                 {% endfor %}
             </div>
-
-
         </div>
         <!-- Модальное окно для подтверждения удаления -->
         <div id="delete-comment-modal" class="modal" style="display: none;">

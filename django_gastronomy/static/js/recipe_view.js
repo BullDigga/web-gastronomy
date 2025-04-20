@@ -461,4 +461,69 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+
+    const deleteRecipeButtons = document.querySelectorAll('.delete-recipe-button');
+    const deleteRecipeModal = document.getElementById('delete-recipe-modal');
+    const confirmDeleteButton = document.getElementById('confirm-delete-recipe');
+    const cancelDeleteButton = document.getElementById('cancel-delete-recipe');
+    const recipeTitleToDelete = document.getElementById('recipe-title-to-delete');
+
+    let recipeIdToDelete = null;
+
+    // Открытие модального окна при клике на кнопку "Удалить рецепт"
+    deleteRecipeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const recipeId = this.getAttribute('data-recipe-id');
+            const recipeTitle = this.getAttribute('data-recipe-title');
+            recipeIdToDelete = recipeId;
+            recipeTitleToDelete.textContent = recipeTitle;
+            deleteRecipeModal.style.display = 'flex';
+        });
+    });
+
+    // Закрытие модального окна при нажатии "Отмена"
+    cancelDeleteButton.addEventListener('click', function () {
+        deleteRecipeModal.style.display = 'none';
+        recipeIdToDelete = null;
+    });
+
+    // Удаление рецепта при нажатии "Да"
+    confirmDeleteButton.addEventListener('click', function () {
+        if (recipeIdToDelete) {
+            fetch(`/recipes/${recipeIdToDelete}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken') // Получаем CSRF-токен
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/'; // Перенаправляем на главную страницу
+                } else {
+                    alert('Ошибка при удалении рецепта.');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при удалении рецепта.');
+            });
+        }
+        deleteRecipeModal.style.display = 'none';
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 });

@@ -47,6 +47,7 @@ urlpatterns = [
     path('recipes/<int:recipe_id>/', views.recipe_view, name='recipe_view'),
     path('user/<int:user_id>/recipes/', views.recipes_list_view, name='user_recipes'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
+    path('recipes/', include('models.recipes.urls')),
 
     # Рейтинги
     path('ratings/', include('models.ratings.urls')),

@@ -89,6 +89,12 @@
                                 <span class="tooltip">Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное</span>
                             {% endif %}
                         </button>
+
+                        {% if author %}
+                        <button class="delete-recipe-button" data-recipe-id="{{ recipe.id }}" data-recipe-title="{{ recipe.title }}">
+                            <img src="{% static 'trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
+                        </button>
+                        {% endif %}
                     </div>
                 </div>
             {% empty %}
@@ -96,4 +102,13 @@
             {% endfor %}
         </div>
     </body>
+
+    <!-- Модальное окно для подтверждения удаления рецепта -->
+    <div id="delete-recipe-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p>Вы уверены, что хотите удалить рецепт "<span id="recipe-title-to-delete"></span>"?</p>
+            <button id="confirm-delete-recipe" class="modal-button">Да</button>
+            <button id="cancel-delete-recipe" class="modal-button">Отмена</button>
+        </div>
+    </div>
 {% endblock %}
