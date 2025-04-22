@@ -81,6 +81,12 @@
                     <span class="value">{{ profile_user.country }}</span>
                 </div>
             {% endif %}
+            <div class="info-row">
+                <span class="label">Дата регистрации:</span>
+                <span class="value">
+                    {{ profile_user.date_joined|date:"d.m.Y H:i" }}
+                </span>
+            </div>
         </div>
         <div class="profile-actions">
             <a href="{% url 'user_recipes' profile_user.id %}" class="profile-button">
