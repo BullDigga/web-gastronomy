@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <script src="{% static 'js/base.js' %}"></script>
-    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'icons/favicon.ico' %}" type="image/x-icon">
 
     <style>
         /* Стили для iframe */
@@ -53,7 +53,7 @@
             {% else %}
                 <a href="{% url 'create_recipe' %}" class="auth-button create-recipe">✍️ Создать рецепт</a>
                 <a href="{% url 'favorites' %}" class="favorites-icon">
-                    <img src="{% static 'favorites.png' %}" alt="Избранное" class="favorites-image">
+                    <img src="{% static 'icons/favorites.png' %}" alt="Избранное" class="favorites-image">
                 </a>
                 <div class="user-profile">
                     <a href="{% url 'profile' user.id %}" class="username">{{ user.username }}</a>

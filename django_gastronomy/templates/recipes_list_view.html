@@ -69,7 +69,7 @@
                                 <span class="recipe-rating">
                                     {{ recipe.average_rating|floatformat:1 }}/5
                                     (<span class="rating-count">{{ recipe.ratings_count }}</span>
-                                    <img src="{% static 'user_icon.png' %}" alt="Пользователи" class="user-icon">)
+                                    <img src="{% static 'icons/user_icon.png' %}" alt="Пользователи" class="user-icon">)
                                 </span>
                             </div>
                         </div>
@@ -81,9 +81,9 @@
                         <button class="add-to-favorites {% if user.is_authenticated %}authenticated{% endif %} {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
                                 data-recipe-id="{{ recipe.id }}">
                             {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
-                                <img src="{% static 'favorited.png' %}" alt="Убрать из избранного" class="favorite-icon">
+                                <img src="{% static 'icons/favorited.png' %}" alt="Убрать из избранного" class="favorite-icon">
                             {% else %}
-                                <img src="{% static 'add_to_favorited.png' %}" alt="Добавить в избранное" class="favorite-icon">
+                                <img src="{% static 'icons/add_to_favorited.png' %}" alt="Добавить в избранное" class="favorite-icon">
                             {% endif %}
                             {% if not user.is_authenticated %}
                                 <span class="tooltip">Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное</span>
@@ -92,7 +92,7 @@
 
                         {% if author %}
                         <button class="delete-recipe-button" data-recipe-id="{{ recipe.id }}" data-recipe-title="{{ recipe.title }}">
-                            <img src="{% static 'trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
+                            <img src="{% static 'icons/trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
                         </button>
                         {% endif %}
                     </div>

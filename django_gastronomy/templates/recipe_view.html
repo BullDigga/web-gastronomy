@@ -39,9 +39,9 @@
                        {% if user.is_authenticated and recipe.id in favorite_recipe_ids %}favorited{% endif %}"
                 data-recipe-id="{{ recipe.id }}">
             <img src="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
-                          {% static 'favorited.png' %}
+                          {% static 'icons/favorited.png' %}
                       {% else %}
-                          {% static 'add_to_favorited.png' %}
+                          {% static 'icons/add_to_favorited.png' %}
                       {% endif %}"
                  alt="{% if user.is_authenticated and recipe.id in favorite_recipe_ids %}
                           Убрать из избранного
@@ -54,7 +54,7 @@
 
     {% if user == recipe.author %}
     <button class="delete-recipe-button" data-recipe-id="{{ recipe.id }}" data-recipe-title="{{ recipe.title }}">
-        <img src="{% static 'trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
+        <img src="{% static 'icons/trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
     </button>
     {% endif %}
 
@@ -98,7 +98,7 @@
                             Оценить
                         </button>
                         <img id="delete-rating-button"
-                             src="{% static 'cross.png' %}"
+                             src="{% static 'icons/cross.png' %}"
                              alt="Удалить оценку"
                              style="display: {% if user_rating %}inline-block{% else %}none{% endif %};
                                     cursor: pointer;
@@ -234,7 +234,7 @@
                         </div>
                         {% if user == comment.user %}
                             <div class="delete-comment-button-container">
-                                <img src="{% static 'trashbox.png' %}" alt="Удалить комментарий" class="delete-comment-button" />
+                                <img src="{% static 'icons/trashbox.png' %}" alt="Удалить комментарий" class="delete-comment-button" />
                             </div>
                         {% endif %}
                     </div>

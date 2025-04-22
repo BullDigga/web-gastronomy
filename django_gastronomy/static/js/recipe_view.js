@@ -249,10 +249,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Обновляем изображение и стиль кнопки
                     if (data.action === 'added') {
-                        img.src = "/static/favorited.png"; // Изменяем на "favorited.png"
+                        img.src = "/static/icons/favorited.png"; // Изменяем на "icons/favorited.png"
                         favoriteButton.classList.add('favorited');
                     } else if (data.action === 'removed') {
-                        img.src = "/static/add_to_favorited.png"; // Изменяем на "add_to_favorited.png"
+                        img.src = "/static/icons/add_to_favorited.png"; // Изменяем на "icons/add_to_favorited.png"
                         favoriteButton.classList.remove('favorited');
                     }
 

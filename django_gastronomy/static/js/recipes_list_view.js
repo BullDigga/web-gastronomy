@@ -46,10 +46,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Обновляем изображение и стиль кнопки
                     if (data.action === 'added') {
-                        img.src = "/static/favorited.png";
+                        img.src = "/static/icons/favorited.png";
                         button.classList.add('favorited');
                     } else if (data.action === 'removed') {
-                        img.src = "/static/add_to_favorited.png";
+                        img.src = "/static/icons/add_to_favorited.png";
                         button.classList.remove('favorited');
                     }
                 }
