@@ -57,6 +57,22 @@ class Comment(models.Model):
         verbose_name='сжатое изображение 2'
     )
 
+    # Поле для времени публикации
+    created_at = models.DateTimeField(
+        auto_now_add=True,  # Автоматически устанавливается при создании объекта
+        verbose_name='время публикации'
+    )
+
+    # Поле для связи с родительским комментарием (ответ на комментарий)
+    parent_comment = models.ForeignKey(
+        'self',  # Рекурсивная связь: ссылка на ту же модель
+        on_delete=models.SET_NULL,  # Если родительский комментарий удален, поле становится NULL
+        null=True,
+        blank=True,
+        related_name='replies',  # Используется для доступа к ответам через родительский комментарий
+        verbose_name='родительский комментарий'
+    )
+
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'комментарии'
@@ -140,7 +156,6 @@ class Comment(models.Model):
             except Exception as e:
                 # Логирование ошибок, если изображение не удалось обработать
                 print(f"Ошибка при обработке изображения 2: {e}")
-
 
         # Всегда вызываем родительский метод save
         super().save(*args, **kwargs)
