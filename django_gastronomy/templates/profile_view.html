@@ -12,7 +12,7 @@
         {% if request.user == profile_user %}
             <div class="edit-profile-button">
                 <a href="{% url 'edit_profile' %}" class="profile-button edit">
-                    Редактировать
+                    <img src="{% static 'icons/edit.png' %}" alt="Редактировать профиль">
                 </a>
             </div>
         {% endif %}

@@ -24,17 +24,24 @@
 
 .edit-profile-button a {
     display: inline-block;
-    padding: 8px 16px;
-    background-color: #007bff; /* Синий цвет фона */
-    color: white; /* Белый текст */
+    padding: 8px; /* Уменьшаем padding, так как внутри теперь иконка */
+    background-color: #f7d3a9; /* Цвет фона */
     text-decoration: none;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    transition:
+        background-color 0.3s ease,
+        transform 0.3s ease; /* Анимация увеличения размера */
 }
 
 .edit-profile-button a:hover {
-    background-color: #0056b3; /* Темнее при наведении */
+    background-color: #e6b87c; /* Темнее при наведении */
+    transform: scale(1.1); /* Кнопка становится чуть больше */
+}
+
+.edit-profile-button img {
+    width: 24px; /* Размер иконки */
+    height: 24px;
+    display: block; /* Устраняет лишние отступы */
 }
 
 /* Стиль строки с информацией */
@@ -87,15 +94,6 @@
 
 .profile-button:hover {
     background-color: #528C29;
-}
-
-/* Стиль для кнопки "Рецепты пользователя" */
-.profile-button:not(.danger):not(.logout) {
-    background-color: #66A932; /* Зелёный цвет */
-}
-
-.profile-button:not(.danger):not(.logout):hover {
-    background-color: #528C29; /* Темнее при наведении */
 }
 
 /* Стиль для кнопки "Удалить аккаунт" */

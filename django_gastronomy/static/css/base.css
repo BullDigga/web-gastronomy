@@ -61,9 +61,6 @@ header .search-bar {
     z-index: 1;
 }
 
-.search-button:hover {
-    background-color: #2a411e; /* Темнее при наведении */
-}
 
 /* Скрытие кнопки по умолчанию */
 .hidden {
