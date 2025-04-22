@@ -195,10 +195,27 @@ body {
     margin-bottom: 20px;
 }
 
+
+
 .recipe-author {
-    margin-top: auto; /* Перемещаем автора вниз */
-    font-size: 14px; /* Меньший шрифт */
-    color: #666; /* Серый цвет */
+    font-size: 14px;
+    color: #666; /* Зеленый цвет псевдонима */
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Отступ между текстом и иконкой */
+}
+
+.recipe-author a {
+    color: #1c0600cf; /* Зеленый цвет ссылки */
+    text-decoration: none;
+}
+
+.recipe-author a:hover {
+    text-decoration: underline;
+}
+
+.recipe-author a:visited {
+    color: #1c0600cf; /* Сохраняем цвет для посещенных ссылок */
 }
 
 .recipe-text,

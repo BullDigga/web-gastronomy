@@ -119,10 +119,19 @@
                             <strong>Добавили в избранное:</strong> {{ favorites_count }}
                         </p>
                     </div>
-                    <!-- Автор -->
+                    <!-- Автор и дата публикации -->
                     <div class="recipe-author">
                         <strong>Автор:</strong>
                         <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
+                        <!-- Дата публикации -->
+                        <span class="publish-date" style="margin-left: 20px;">
+                            <strong>Дата публикации:</strong>
+                            {% if recipe.publish_date %}
+                                {{ recipe.publish_date|date:"d.m.Y H:i" }}
+                            {% else %}
+                                Не опубликовано
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
             </div>
