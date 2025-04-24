@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'models.ingredients',
     'models.units',
     'models.recipe_ingredients',
+    'models.subscriptions'
 ]
 
 MIDDLEWARE = [

@@ -8,16 +8,27 @@
     <script src="{% static 'js/profile_view.js' %}"></script>
 
     <div class="profile-container">
-        <!-- Добавляем кнопку "Редактировать" -->
-        {% if request.user == profile_user %}
-            <div class="edit-profile-button">
+        <!-- Кнопка "Редактировать" или "Подписаться/Отписаться" -->
+        <div class="action-button">
+            {% if request.user == profile_user %}
+                <!-- Кнопка "Редактировать" для владельца профиля -->
                 <a href="{% url 'edit_profile' %}" class="profile-button edit">
                     <img src="{% static 'icons/edit.png' %}" alt="Редактировать профиль">
                 </a>
-            </div>
-        {% endif %}
+            {% else %}
+                <!-- Форма для кнопки "Подписаться/Отписаться" -->
+                <form id="subscription-form" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="profile-button {% if is_subscribed %}unsubscribe{% else %}subscribe{% endif %}">
+                        <img src="{% static 'icons/' %}{% if is_subscribed %}subscribed.png{% else %}subscribe.png{% endif %}"
+                             alt="{% if is_subscribed %}Отписаться{% else %}Подписаться{% endif %}">
+                    </button>
+                </form>
+            {% endif %}
+        </div>
 
-        <h1>Профиль</h1>
+        <!-- Заголовок с псевдонимом пользователя -->
+        <h1>{{ profile_user.username }}</h1>
 
         <!-- Блок аватара -->
         <div class="avatar-container">
@@ -26,7 +37,7 @@
                     <img src="{{ profile_user.avatar_compressed.url }}" alt="Аватар пользователя: {{ profile_user.username }}" class="profile-avatar">
                 </a>
             {% else %}
-                <img src="{% static 'default_avatar.png' %}" alt="Аватар по умолчанию" class="profile-avatar">
+                <img src="{% static 'icons/default_avatar.png' %}" alt="Аватар по умолчанию" class="profile-avatar">
             {% endif %}
         </div>
 

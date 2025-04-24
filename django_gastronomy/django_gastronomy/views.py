@@ -12,6 +12,8 @@ from models.users.models import User
 from models.comments.models import Comment
 from models.favorites.models import Favorite
 from models.ratings.models import Rate
+from models.subscriptions.models import Subscription
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib import messages
@@ -276,6 +278,7 @@ def authorization_view(request):
     return render(request, 'authorization.html')
 
 
+@login_required
 def profile_view(request, user_id):
     # Получаем модель пользователя
     User = get_user_model()
@@ -286,10 +289,38 @@ def profile_view(request, user_id):
     # Подсчитываем количество рецептов пользователя
     recipe_count = Recipe.objects.filter(author=profile_user).count()
 
+    # Проверяем, подписан ли текущий пользователь на profile_user
+    is_subscribed = False
+    if request.user != profile_user:
+        is_subscribed = request.user.subscriptions.filter(user_author=profile_user).exists()
+
+    # Обработка POST-запроса для подписки/отписки
+    if request.method == 'POST' and request.user != profile_user:
+        action = request.POST.get('action')
+        if action == 'toggle_subscription':
+            if is_subscribed:
+                # Отписка
+                Subscription.objects.filter(
+                    user_subscriber=request.user,
+                    user_author=profile_user
+                ).delete()
+                is_subscribed = False
+            else:
+                # Подписка
+                Subscription.objects.create(
+                    user_subscriber=request.user,
+                    user_author=profile_user
+                )
+                is_subscribed = True
+
+            # Возвращаем JSON-ответ для AJAX
+            return JsonResponse({'is_subscribed': is_subscribed})
+
     context = {
         'profile_user': profile_user,  # Просматриваемый пользователь
-        'recipe_count': recipe_count,
+        'recipe_count': recipe_count,  # Количество рецептов
         'current_user': request.user,  # Текущий пользователь (может быть анонимным)
+        'is_subscribed': is_subscribed,  # Статус подписки
     }
     return render(request, 'profile_view.html', context)
 

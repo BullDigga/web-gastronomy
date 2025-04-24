@@ -15,30 +15,62 @@
     color: #333;
 }
 
-/* Кнопка "Редактировать" */
-.edit-profile-button {
+/* Контейнер для кнопки "Редактировать" или "Подписаться/Отписаться" */
+.action-button {
     position: absolute; /* Абсолютное позиционирование внутри контейнера */
     top: 10px; /* Отступ сверху */
     right: 10px; /* Отступ справа */
 }
 
-.edit-profile-button a {
-    display: inline-block;
-    padding: 8px; /* Уменьшаем padding, так как внутри теперь иконка */
+/* Общие стили для кнопок "Edit" и "Sub" */
+.profile-button.edit,
+.profile-button.subscribe,
+.profile-button.unsubscribe {
+    display: inline-flex; /* Используем flexbox для центрирования иконки */
+    justify-content: center; /* Горизонтальное центрирование */
+    align-items: center; /* Вертикальное центрирование */
+    width: 48px; /* Фиксированная ширина */
+    height: 48px; /* Фиксированная высота */
     background-color: #f7d3a9; /* Цвет фона */
-    text-decoration: none;
-    border-radius: 8px;
-    transition:
-        background-color 0.3s ease,
-        transform 0.3s ease; /* Анимация увеличения размера */
+    text-decoration: none; /* Убираем подчеркивание текста */
+    border: none; /* Убираем границу */
+    border-radius: 8px; /* Легкое скругление углов */
+    cursor: pointer; /* Изменение курсора при наведении */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Плавные переходы */
+    box-sizing: border-box; /* Учитываем padding и border в размерах */
+    padding: 0; /* Убираем padding */
+    margin: 0; /* Убираем margin */
 }
 
-.edit-profile-button a:hover {
+.profile-button.edit:hover,
+.profile-button.subscribe:hover {
     background-color: #e6b87c; /* Темнее при наведении */
-    transform: scale(1.1); /* Кнопка становится чуть больше */
+    transform: scale(1.1); /* Эффект увеличения */
 }
 
-.edit-profile-button img {
+/* Стиль для кнопки "Отписаться" */
+.profile-button.unsubscribe {
+    background-color: transparent !important; /* Прозрачный фон (важно!) */
+    border: none !important; /* Убираем границу (важно!) */
+    padding: 0; /* Убираем внутренние отступы */
+    transition: transform 0.3s ease; /* Плавная анимация увеличения */
+}
+
+.profile-button.unsubscribe:hover {
+    transform: scale(1.2); /* Кнопка увеличивается при наведении */
+    background-color: transparent !important; /* Прозрачный фон при наведении (важно!) */
+}
+
+/* Стили для иконок внутри кнопки "Отписаться" */
+.profile-button.unsubscribe img {
+    width: 24px; /* Размер иконки */
+    height: 24px;
+    display: block; /* Устраняет лишние отступы */
+    transition: transform 0.3s ease; /* Плавная анимация для иконки */
+}
+
+/* Стили для иконок */
+.profile-button img {
     width: 24px; /* Размер иконки */
     height: 24px;
     display: block; /* Устраняет лишние отступы */
@@ -127,22 +159,32 @@
     gap: 10px; /* Отступ между кнопками */
 }
 
-/* Контейнер аватара */
 .avatar-container {
     display: flex;
-    justify-content: center; /* Центрирование по горизонтали */
+    justify-content: center; /* Центрируем аватар по горизонтали */
+    align-items: center; /* Центрируем аватар по вертикали */
     margin-bottom: 20px; /* Отступ снизу */
 }
 
-/* Стиль аватара */
 .profile-avatar {
-    width: 150px; /* Ширина аватара */
-    height: 150px; /* Высота аватара */
+    width: 150px; /* Размер контейнера */
+    height: 150px; /* Размер контейнера */
     border-radius: 50%; /* Круглая форма */
-    object-fit: cover; /* Корректное масштабирование изображения */
     border: 2px solid #ccc; /* Граница вокруг аватара */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Легкая тень для эффекта объема */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    overflow: hidden; /* Скрываем всё, что выходит за пределы круга */
+    display: flex; /* Используем Flexbox для центрирования */
+    justify-content: center; /* Горизонтальное центрирование */
+    align-items: center; /* Вертикальное центрирование */
+    background-color: #f7f7f7; /* Фоновый цвет (если изображение меньше) */
     transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+.profile-avatar img {
+    max-width: 80%; /* Уменьшаем ширину изображения до 80% от контейнера */
+    max-height: 80%; /* Уменьшаем высоту изображения до 80% от контейнера */
+    object-fit: cover; /* Корректное масштабирование изображения */
+    border-radius: 50%; /* Делаем изображение круглым (опционально) */
 }
 
 /* Эффект увеличения при наведении */
