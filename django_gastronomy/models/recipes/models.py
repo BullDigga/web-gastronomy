@@ -113,7 +113,8 @@ class Recipe(models.Model):
 
     def average_rating(self):
         """Средний рейтинг рецепта (UC-7)"""
-        return self.rates.aggregate(models.Avg('value'))['value__avg'] or 0
+        avg = self.rates.aggregate(models.Avg('value'))['value__avg']
+        return float(avg) if avg is not None else 0.0
 
     def comments_count(self):
         """Количество комментариев (UC-6)"""

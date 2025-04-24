@@ -13,13 +13,16 @@ from models.comments.models import Comment
 from models.favorites.models import Favorite
 from models.ratings.models import Rate
 from models.subscriptions.models import Subscription
+from django.db.models import Avg, Count, Value, Case, When
+from django.db.models.functions import Coalesce
+from django.db import models
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db import transaction
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 import os
@@ -27,7 +30,6 @@ from django.conf import settings
 from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 from django.core.files.base import ContentFile
-from django.db.models import Q
 from django.db.models.functions import Lower
 
 
@@ -39,69 +41,70 @@ import json
 def recipes_list_view(request, user_id=None, favorites=False):
     """
     View для просмотра списка рецептов.
-    Поддерживает фильтрацию по автору, избранным рецептам или показ всех опубликованных рецептов.
+    Поддерживает фильтрацию по автору, избранным рецептам, поисковому запросу,
+    а также сортировку по различным критериям.
     """
     User = get_user_model()
     current_user = request.user  # Текущий пользователь
 
-    # Если передан user_id, фильтруем рецепты по конкретному автору
+    # Фильтрация по автору
     if user_id:
-        author = get_object_or_404(User, id=user_id)  # Находим автора по ID
-        recipes = Recipe.objects.filter(
-            author=author,
-            status='published'
-        ).order_by('-id')  # Сортируем рецепты по дате создания (новые первыми)
-
-    # Если запрошены избранные рецепты и пользователь аутентифицирован
+        author = get_object_or_404(User, id=user_id)
+        recipes = Recipe.objects.filter(author=author, status='published')
+    # Фильтрация по избранным рецептам
     elif favorites and current_user.is_authenticated:
         favorite_recipe_ids = Favorite.objects.filter(
             user=current_user
-        ).values_list('recipe_id', flat=True)  # Получаем ID избранных рецептов
+        ).values_list('recipe_id', flat=True)
         recipes = Recipe.objects.filter(
             id__in=favorite_recipe_ids,
             status='published'
-        ).order_by('-id')  # Фильтруем рецепты по ID и сортируем
-        author = None  # Нет конкретного автора
-
-    # Если ничего не передано, показываем все опубликованные рецепты
-    else:
-        author = None  # Нет конкретного автора
-        recipes = Recipe.objects.filter(
-            status='published'
-        ).order_by('-id')  # Показываем все опубликованные рецепты
-
-    # Фильтрация по поисковому запросу
-    query = request.GET.get('q', '').strip()
-    if query:
-        # Преобразуем запрос в нижний регистр
-        normalized_query = query.lower()
-        print(f"Нормализованный запрос: {normalized_query}")  # Отладочная информация
-
-        # Аннотируем данные из базы, приводя их к нижнему регистру
-        recipes = recipes.annotate(
-            lower_title=Lower('title'),  # Преобразуем название в нижний регистр
-            lower_description=Lower('description')  # Преобразуем описание в нижний регистр
         )
+        author = None
+    # Все опубликованные рецепты
+    else:
+        author = None
+        recipes = Recipe.objects.filter(status='published')
 
-        # Выводим отладочную информацию о данных из базы
-        for recipe in recipes:
-            original_title = recipe.title  # Исходное название рецепта
-            python_lower_title = recipe.title.lower()  # Применяем .lower() в Python
-            db_lower_title = recipe.lower_title  # Название, преобразованное в базе данных через LOWER
-            print(
-                f"ID: {recipe.id}, "
-                f"Original Title: {original_title}, "
-                f"Python Lower Title: {python_lower_title}, "
-                f"DB Lower Title: {db_lower_title}"
-            )
+    # Поиск по запросу
+    recipes = recipes.annotate(
+        average_rating_annotation=Case(
+            When(rates__isnull=False, then=Avg('rates__value')),
+            default=Value(0.0),
+            output_field=models.FloatField()
+        ),
+        ratings_count=Count('rates')
+    )
 
-        # Фильтруем рецепты
-        recipes = recipes.filter(
-            Q(lower_title__contains=normalized_query) |  # Поиск по названию рецепта
-            Q(lower_description__contains=normalized_query) |  # Поиск по описанию
-            Q(author__username__icontains=normalized_query) |  # Поиск по имени автора
-            Q(ingredients__ingredient__name__icontains=normalized_query)  # Поиск по названию ингредиента
-        ).distinct()  # Используем distinct(), чтобы избежать дубликатов при поиске по связанным полям
+    # Сортировка
+    sort_by = request.GET.get('sort_by', 'publish_date')  # По умолчанию дата добавления
+    order = request.GET.get('order', 'desc')  # По умолчанию убывание
+
+    # Аннотации для сортировки
+    if sort_by == 'rating':
+        recipes = recipes.annotate(average_rating=Avg('rates__value'))
+    elif sort_by == 'favorites_count':
+        recipes = recipes.annotate(favorites_count=Count('favorited_by'))
+
+    # Формируем параметр сортировки
+    order_prefix = '-' if order == 'desc' else ''
+    if sort_by == 'rating':
+        # Сначала сортируем по количеству оценок, затем по среднему рейтингу
+        recipes = recipes.order_by(
+            f'{order_prefix}ratings_count',  # Первый критерий: количество оценок
+            f'{order_prefix}average_rating',  # Второй критерий: средний рейтинг
+            '-id'  # Дополнительный критерий: ID (для стабильности сортировки)
+        )
+    elif sort_by == 'favorites_count':
+        recipes = recipes.order_by(
+            f'{order_prefix}favorites_count',
+            '-id'
+        )
+    else:
+        recipes = recipes.order_by(
+            f'{order_prefix}{sort_by}',
+            '-id'
+        )
 
     # Получаем ID избранных рецептов для текущего пользователя
     if current_user.is_authenticated:
@@ -109,19 +112,16 @@ def recipes_list_view(request, user_id=None, favorites=False):
             user=current_user
         ).values_list('recipe_id', flat=True)
     else:
-        favorite_recipe_ids = []  # Если пользователь не аутентифицирован, список пустой
-
-    # Отладочная информация
-    print(f"Поисковый запрос: {query}")
-    print(f"Количество найденных рецептов: {recipes.count()}")
+        favorite_recipe_ids = []
 
     # Контекст для передачи данных в шаблон
     context = {
-        'recipes': recipes,  # Список рецептов
-        'author': author,  # Автор рецептов (если есть)
-        'favorites': favorites,  # Флаг для избранных рецептов
-        'favorite_recipe_ids': list(favorite_recipe_ids),  # Список ID избранных рецептов
-        'query': query,  # Поисковый запрос для отображения в шаблоне
+        'recipes': recipes,
+        'author': author,
+        'favorites': favorites,
+        'favorite_recipe_ids': list(favorite_recipe_ids),
+        'current_sort_by': sort_by,  # Текущий параметр сортировки
+        'current_order': order,      # Текущий порядок сортировки
     }
 
     return render(request, 'recipes_list_view.html', context)

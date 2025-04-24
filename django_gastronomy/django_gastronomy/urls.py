@@ -27,6 +27,7 @@ urlpatterns = [
 
     # Главная страница и общие маршруты
     path('', views.recipes_list_view, name='recipes_list_view'),
+    path('recipes_list_view/', views.recipes_list_view, name='recipes_list_view'),
     path('recipes/', views.recipes_list_view, name='recipes_list_view'),
 
     # Избранное

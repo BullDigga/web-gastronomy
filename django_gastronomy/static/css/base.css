@@ -96,6 +96,7 @@ header .search-bar .search-input {
     outline: none;
     transition: background-color 0.3s ease;
     box-sizing: border-box;
+    color: 4a4a4a;
 }
 
 

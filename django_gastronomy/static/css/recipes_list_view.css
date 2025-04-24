@@ -3,30 +3,34 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #ffffff; /* Белый фон страницы */
-    color: #333333; /* Темно-серый текст для лучшей читаемости */
+    background-color: #ffffff;
+    color: #333333;
 }
 
 /* Стиль большого контейнера с рецептами */
 .recipes-container {
-    background-color: #f9f9f9; /* Очень светло-серый фон контейнера */
+    background-color: #f9f9f9;
     max-width: 900px;
     margin: 20px auto;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .header {
     text-align: left;
-    font-size: 28px;
+    font-size: 26px;
     margin-bottom: 20px;
-    color: #4a4a4a; /* Темно-серый заголовок */
+    color: #4a4a4a;
     font-weight: bold;
+    margin: 0;
+    max-width: 500px; /* Ограничиваем ширину заголовка */
+    word-wrap: break-word; /* Переносим длинные слова */
+    text-align: left; /* Выравнивание текста по левому краю */
 }
 
 .recipe-card {
-    background-color: #ffffff; /* Белый фон карточки */
+    background-color: #ffffff;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 12px;
@@ -34,15 +38,8 @@ body {
     align-items: stretch;
     position: relative;
     overflow: visible;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Очень легкая тень */
-    height: 190px; /* Фиксированная высота карточки */
-}
-
-.favorite-icon {
-    width: 32px; /* Ширина изображения */
-    height: 32px; /* Высота изображения */
-    object-fit: cover; /* Обеспечиваем сохранение пропорций (квадратное изображение) */
-    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    height: 190px;
 }
 
 /* Стиль блока с изображением */
@@ -53,18 +50,18 @@ body {
     margin-right: 25px;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05); /* Легкая тень */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
 }
 
 .recipe-thumbnail {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Сохраняем пропорции изображения */
-    transition: transform 0.3s ease; /* Плавный эффект при наведении */
+    object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
 .recipe-thumbnail:hover {
-    transform: scale(1.1); /* Небольшое увеличение при наведении */
+    transform: scale(1.1);
 }
 
 /* Информация о рецепте */
@@ -73,8 +70,8 @@ body {
     margin-right: 25px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Прижимаем элементы к верху и низу */
-    height: 100%; /* Растягиваем на всю высоту карточки */
+    justify-content: space-between;
+    height: 100%;
 }
 
 .info-row {
@@ -89,7 +86,7 @@ body {
 }
 
 .recipe-title a {
-    color: #1c0600cf; /* Приятный зеленый цвет ссылок */
+    color: #1c0600cf;
     text-decoration: none;
 }
 
@@ -100,11 +97,11 @@ body {
 /* Описание рецепта */
 .recipe-description {
     font-size: 16px;
-    flex-grow: 1; /* Занимает всё доступное пространство */
+    flex-grow: 1;
     margin-bottom: 8px;
-    color: #4a4a4a; /* Темно-серый текст */
+    color: #4a4a4a;
     display: -webkit-box;
-    -webkit-line-clamp: 4; /* Максимум 3 строки */
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -114,36 +111,34 @@ body {
 .bottom-info {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Отступ между элементами */
-    margin-top: auto; /* Прижимаем вниз */
-    align-self: flex-start; /* Размещаем слева */
+    gap: 8px;
+    margin-top: auto;
+    align-self: flex-start;
 }
 
-/* Оценка */
 .recipe-rating {
     font-size: 16px;
-    color: #4a4a4a; /* Темно-серый текст */
+    color: #4a4a4a;
     display: flex;
     align-items: center;
-    gap: 5px; /* Отступ между текстом и иконкой */
+    gap: 5px;
 }
 
 .rating-count {
     font-size: 16px;
-    color: #888888; /* Серый счетчик голосов */
+    color: #888888;
 }
 
-/* Автор */
 .recipe-author {
     font-size: 14px;
-    color: #1c0600cf; /* Зеленый цвет псевдонима */
+    color: #1c0600cf;
     display: flex;
     align-items: center;
-    gap: 5px; /* Отступ между текстом и иконкой */
+    gap: 5px;
 }
 
 .recipe-author a {
-    color: #1c0600cf; /* Зеленый цвет ссылки */
+    color: #1c0600cf;
     text-decoration: none;
 }
 
@@ -151,14 +146,10 @@ body {
     text-decoration: underline;
 }
 
-.recipe-author a:visited {
-    color: #1c0600cf; /* Сохраняем цвет для посещенных ссылок */
-}
-
 .user-icon {
-    width: 1em; /* Размер иконки равен размеру текущего шрифта */
-    height: 1em; /* Сохраняем пропорции */
-    vertical-align: middle; /* Выравниваем по центру относительно текста */
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
 }
 
 /* Кнопки */
@@ -176,16 +167,16 @@ button {
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    color: #000000; /* Черный цвет текста кнопки */
+    color: #000000;
 }
 
 .view-recipe {
-    background-color: #5b8c5a; /* Зеленый фон кнопки */
-    color: #ffffff; /* Белый текст */
+    background-color: #5b8c5a;
+    color: #ffffff;
 }
 
 .view-recipe:hover {
-    background-color: #4a7549; /* Темнее при наведении */
+    background-color: #4a7549;
     transform: scale(1.05);
 }
 
@@ -205,26 +196,26 @@ button {
     transition: transform 0.3s ease, background-color 0.3s ease;
     float: right;
     margin-left: auto;
-    color: #ffffff; /* Белый текст */
+    color: #ffffff;
 }
 
 .add-to-favorites:not(.authenticated) {
-    background-color: #f0f0f0; /* Очень светло-серый для неавторизованных */
-    border: 2px solid #e0e0e0; /* Легкая граница */
+    background-color: #f0f0f0;
+    border: 2px solid #e0e0e0;
 }
 
 .add-to-favorites:not(.authenticated):hover {
-    background-color: #e0e0e0; /* Темнее при наведении */
+    background-color: #e0e0e0;
     border-color: #d0d0d0;
     transform: scale(1.05);
 }
 
 .add-to-favorites.favorited {
-    background-color: #f7d3a9; /* Мягкий коралловый для добавленных в избранное */
+    background-color: #f7d3a9;
 }
 
 .add-to-favorites.favorited:hover {
-    background-color: #f4c28b; /* Темнее при наведении */
+    background-color: #f4c28b;
     transform: scale(1.05);
 }
 
@@ -238,9 +229,9 @@ button {
     margin-top: 10px;
     padding: 8px 12px;
     font-size: 14px;
-    color: #000000; /* Черный цвет текста */
-    background-color: #fefadc; /* Cornsilk */
-    border: 2px solid #f6d4ba; /* Desert sand */
+    color: #000000;
+    background-color: #fefadc;
+    border: 2px solid #f6d4ba;
     border-radius: 8px;
     white-space: normal;
     word-wrap: break-word;
@@ -254,104 +245,6 @@ button {
     display: block;
 }
 
-/* Секция шагов приготовления */
-.steps-section {
-    margin-top: 20px;
-}
-
-.steps-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333; /* Чёрный цвет заголовка */
-}
-
-.steps-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Отступ между шагами */
-}
-
-.step {
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: row; /* Расположение элементов шага горизонтально */
-    align-items: flex-start; /* Выравнивание по верху */
-    gap: 20px; /* Отступ между описанием и изображением */
-    background-color: #FAFAFA; /* Более нейтральный светлый фон */
-}
-
-.step-content {
-    display: flex;
-    flex: 1; /* Занимает всё доступное пространство */
-    gap: 2em;
-}
-
-.step-description-container {
-    flex: 2; /* Описание занимает больше места */
-    display: flex;
-    flex-direction: column;
-}
-
-.step-number {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333; /* Чёрный цвет номера шага */
-    margin-bottom: 5px;
-}
-
-.step-description {
-    font-size: 18px;
-    line-height: 1.5;
-}
-
-.step-photo-container {
-    flex: 1.5; /* Изображение занимает меньше места */
-    display: flex;
-    justify-content: center; /* Центрирование изображения по горизонтали */
-    align-items: center; /* Центрирование изображения по вертикали */
-}
-
-.step-image {
-    max-width: 100%;
-    max-height: 300px; /* Увеличенная высота изображения */
-    border-radius: 8px;
-    object-fit: cover; /* Сохранение пропорций изображения */
-    cursor: pointer; /* Указатель мыши меняется при наведении */
-    transition: transform 0.2s ease; /* Плавный эффект при наведении */
-}
-
-.step-image:hover {
-    transform: scale(1.05); /* Небольшое увеличение при наведении */
-}
-
-/* Стили для кнопки удаления */
-.delete-recipe-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 35px; /* Размер иконки */
-    height: 35px;
-    margin-left: 27px;
-}
-
-/* Стили для иконки удаления */
-.delete-recipe-icon {
-    width: 35px; /* Размер иконки */
-    height: 35px;
-    opacity: 0.7; /* Полупрозрачность */
-    transition: opacity 0.3s ease; /* Плавный переход при наведении */
-}
-
-/* Эффект при наведении на иконку */
-.delete-recipe-icon:hover {
-    opacity: 1; /* Полная видимость */
-}
-
-
 /* Стиль модального окна */
 .modal {
     position: fixed;
@@ -359,11 +252,11 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Затемненный фон */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center; /* Центрирование по горизонтали */
-    align-items: center; /* Центрирование по вертикали */
-    z-index: 1000; /* Модальное окно должно быть поверх всех элементов */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
@@ -382,5 +275,81 @@ button {
 }
 
 #confirm-delete-recipe:hover {
-    background-color: #c74d22; /* Темнее при наведении */
+    background-color: #c74d22;
+}
+
+/* Контейнер заголовка и панели управления */
+.header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.sorting-panel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #444;
+}
+
+.sort-select {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.sort-select:focus {
+    border-color: #66A932;
+    outline: none;
+}
+
+.toggle-order-button {
+    background: none; /* Убираем фон */
+    border: none; /* Убираем границу */
+    color: black; /* Черный цвет символа */
+    font-size: 18px; /* Размер символа */
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Плавный эффект увеличения */
+    opacity: 0.4;
+}
+
+.toggle-order-button:hover {
+    transform: scale(1.1); /* Увеличиваем при наведении */
+}
+
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Отступ между строками */
+}
+
+.favorite-icon {
+    width: 32px; /* Ширина изображения */
+    height: 32px; /* Высота изображения */
+    object-fit: cover; /* Обеспечиваем сохранение пропорций (квадратное изображение) */
+    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+.label-and-control {
+    display: flex;
+    align-items: baseline; /* Выравнивание по базовой линии (по двоеточию) */
+    gap: 10px; /* Отступ между меткой и элементами управления */
+}
+
+.label {
+    font-size: 14px;
+    color: #444;
+    min-width: 150px; /* Фиксированная ширина метки для выравнивания */
+    text-align: right; /* Прижимаем текст к правому краю */
+}
+
+
+.controls {
+    display: flex;
+    align-items: center;
 }

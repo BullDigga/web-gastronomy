@@ -18,7 +18,8 @@ class Rate(models.Model):
     )
     value = models.PositiveSmallIntegerField(
         'оценка',
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        default=1  # Значение по умолчанию
     )
 
     class Meta:

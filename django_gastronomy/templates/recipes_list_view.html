@@ -15,18 +15,37 @@
 
     <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
         <div class="recipes-container">
-            <!-- Заголовок -->
-            <h1 class="header">
-                {% if query %}
-                    Рецепты по запросу «{{ query }}»
-                {% elif author %}
-                    Рецепты пользователя <a class="author-link" href="{% url 'profile' author.id %}">{{ author.username }}</a>
-                {% elif favorites %}
-                    Ваши избранные рецепты
-                {% else %}
-                    Последние опубликованные рецепты
-                {% endif %}
-            </h1>
+            <!-- Заголовок и панель управления -->
+            <div class="header-controls">
+                <h1 class="header">
+                    {% if query %}
+                        Рецепты по запросу «{{ query }}»
+                    {% elif author %}
+                        Рецепты пользователя <a class="author-link" href="{% url 'profile' author.id %}">{{ author.username }}</a>
+                    {% elif favorites %}
+                        Ваши избранные рецепты
+                    {% else %}
+                        Последние опубликованные рецепты
+                    {% endif %}
+                </h1>
+
+                <!-- Панель сортировки и фильтрации -->
+                <div class="sorting-panel">
+                    <div class="label-and-control">
+                        <span class="label">Сортировать по:</span>
+                        <div class="controls">
+                            <select class="sort-select" id="sort-by">
+                                <option value="publish_date" {% if current_sort_by == 'publish_date' %}selected{% endif %}>Дата добавления</option>
+                                <option value="rating" {% if current_sort_by == 'rating' %}selected{% endif %}>Рейтинг</option>
+                                <option value="favorites_count" {% if current_sort_by == 'favorites_count' %}selected{% endif %}>Добавления в избранное</option>
+                            </select>
+                            <button class="toggle-order-button" id="toggle-order" data-current-order="{{ current_order }}">
+                                {% if current_order == 'desc' %}▼{% else %}▲{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Список рецептов -->
             {% for recipe in recipes %}
@@ -67,7 +86,7 @@
                             </div>
                             <div class="info-row">
                                 <span class="recipe-rating">
-                                    {{ recipe.average_rating|floatformat:1 }}/5
+                                    {{ recipe.average_rating_annotation|floatformat:1 }}/5
                                     (<span class="rating-count">{{ recipe.ratings_count }}</span>
                                     <img src="{% static 'icons/user_icon.png' %}" alt="Пользователи" class="user-icon">)
                                 </span>
