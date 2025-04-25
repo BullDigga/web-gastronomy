@@ -189,6 +189,10 @@
                 <form id="comment-form" enctype="multipart/form-data">
                     <!-- Контейнер для текстового поля, изображений и кнопки -->
                     <div class="comment-container">
+                        <!-- Кнопка закрытия -->
+                        <div class="close-editor-button">
+                            <img src="{% static 'icons/cross.png' %}" alt="Закрыть редактор" class="close-icon">
+                        </div>
                         <!-- Текстовое поле -->
                         <textarea id="comment-text" name="text" placeholder="Введите ваш комментарий..."></textarea>
                         <!-- Контейнер для загрузки изображений -->
@@ -213,44 +217,46 @@
                     </div>
                 </form>
             </div>
-            <!-- Список комментариев -->
-            <div class="comments-list">
-                {% for comment in recipe.comments.all %}
-                    <div class="comment-container" data-comment-id="{{ comment.id }}">
-                        <!-- Содержимое комментария -->
+        <!-- Список комментариев -->
+        <div class="comments-list">
+            {% for comment in comments_in_dfs_order %}
+                <!-- Определение уровня вложенности -->
+                {% with level=comment.get_level %}
+                    <div class="comment-container level-{{ level }}" data-comment-id="{{ comment.id }}" data-level="{{ level }}">
                         <div class="comment-content">
-                            <!-- Псевдоним автора -->
                             <div class="comment-author">
-                                <a class="author-link" href="{% url 'profile' comment.user.id %}">{{ comment.user.username }}</a>
+                                <a href="{% url 'profile' comment.user.id %}">{{ comment.user.username }}</a>
                             </div>
-                            <!-- Текст комментария -->
-                            <div class="comment-text">
-                                {{ comment.text }}
-                            </div>
+                            <div class="comment-text">{{ comment.text }}</div>
                         </div>
-                        <!-- Прикрепленные изображения -->
                         <div class="comment-images">
                             {% if comment.image1 %}
-                                <a href="{{ comment.image1.url }}" target="_blank" rel="noopener noreferrer">
-                                    <img src="{{ comment.image1_compressed.url }}" alt="Изображение 1" class="comment-image">
-                                </a>
+                                <img src="{{ comment.image1_compressed.url }}" alt="Изображение 1" class="comment-image">
                             {% endif %}
                             {% if comment.image2 %}
-                                <a href="{{ comment.image2.url }}" target="_blank" rel="noopener noreferrer">
-                                    <img src="{{ comment.image2_compressed.url }}" alt="Изображение 2" class="comment-image">
-                                </a>
+                                <img src="{{ comment.image2_compressed.url }}" alt="Изображение 2" class="comment-image">
                             {% endif %}
                         </div>
+                        <div class="reply-button-container">
+                            <button class="reply-button {% if not is_authenticated %}disabled{% endif %}" data-comment-id="{{ comment.id }}">
+                                Ответить
+                            </button>
+                            <!-- Контейнер для текста ошибки -->
+                            <span class="error-message reply-error"></span>
+                        </div>
+                        <!-- Кнопка удаления комментария -->
                         {% if user == comment.user %}
-                            <div class="delete-comment-button-container">
-                                <img src="{% static 'icons/trashbox.png' %}" alt="Удалить комментарий" class="delete-comment-button" />
+                            <div class="delete-comment-container">
+                                <button class="delete-comment-button" data-comment-id="{{ comment.id }}">
+                                    <img src="{% static 'icons/trashbox.png' %}" alt="Удалить комментарий" class="delete-comment-icon">
+                                </button>
                             </div>
                         {% endif %}
                     </div>
-                {% empty %}
-                    <p>Нет комментариев.</p>
-                {% endfor %}
-            </div>
+                {% endwith %}
+            {% empty %}
+                <p>Нет комментариев.</p>
+            {% endfor %}
         </div>
         <!-- Модальное окно для подтверждения удаления -->
         <div id="delete-comment-modal" class="modal" style="display: none;">

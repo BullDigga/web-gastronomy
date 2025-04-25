@@ -325,10 +325,15 @@ def profile_view(request, user_id):
     return render(request, 'profile_view.html', context)
 
 
+
 def recipe_view(request, recipe_id):
     # Получаем рецепт из БД по ID, но только если его статус "published"
     try:
-        recipe = Recipe.objects.select_related('author').get(id=recipe_id, status='published')
+        recipe = Recipe.objects.select_related('author').prefetch_related(
+            'comments',  # Подгружаем все комментарии
+            'comments__user',  # Подгружаем связанных пользователей
+            'comments__replies'  # Подгружаем вложенные комментарии
+        ).get(id=recipe_id, status='published')
     except Recipe.DoesNotExist:
         # Если рецепт не найден или его статус не "published"
         return render(request, 'error.html', {'message': 'Рецепт не найден или недоступен.'}, status=404)
@@ -337,14 +342,31 @@ def recipe_view(request, recipe_id):
     if request.method == 'POST' and request.POST.get('action') == 'delete_comment':
         comment_id = request.POST.get('comment_id')
         if request.user.is_authenticated:
-            comment = get_object_or_404(Comment, id=comment_id, author=request.user)
+            comment = get_object_or_404(Comment, id=comment_id, user=request.user)
             comment.delete()
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'error': 'Необходимо войти в аккаунт.'})
 
+    # Функция для получения комментариев в порядке DFS
+    def get_comments_in_dfs_order(comments, parent=None):
+        """
+        Рекурсивно собирает комментарии в порядке глубокого обхода (DFS).
+        """
+        result = []
+        for comment in comments.filter(parent_comment=parent).order_by('created_at'):
+            result.append(comment)
+            result.extend(get_comments_in_dfs_order(comments, parent=comment))
+        return result
+
+    # Получаем все комментарии рецепта
+    all_comments = recipe.comments.all()
+
+    # Собираем комментарии в порядке DFS
+    comments_in_dfs_order = get_comments_in_dfs_order(all_comments)
+
     # Получаем количество комментариев
-    comments_count = recipe.comments.count()
+    comments_count = all_comments.count()
 
     # Получаем средний рейтинг и количество оценок
     ratings_data = recipe.rates.aggregate(
@@ -381,6 +403,7 @@ def recipe_view(request, recipe_id):
         'is_authenticated': is_authenticated,  # Флаг авторизации
         'favorite_recipe_ids': favorite_recipe_ids,  # Список ID избранных рецептов
         'user_rating': user_rating,  # Текущая оценка пользователя
+        'comments_in_dfs_order': comments_in_dfs_order,  # Комментарии в порядке DFS
     }
 
     return render(request, 'recipe_view.html', context)

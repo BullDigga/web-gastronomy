@@ -81,6 +81,14 @@ class Comment(models.Model):
     def __str__(self):
         return f"Комментарий от {self.user.email} к {self.recipe.title}"
 
+    def get_level(self):
+        level = 0
+        current = self
+        while current.parent_comment:
+            level += 1
+            current = current.parent_comment
+        return level
+
     def save(self, *args, **kwargs):
         """
         Переопределенный метод save для обработки и сжатия изображений.

@@ -296,6 +296,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function showErrorNearButton(button, message) {
+        const errorContainer = button.nextElementSibling; // Находим контейнер для ошибки
+        if (errorContainer && errorContainer.classList.contains('reply-error')) {
+            errorContainer.textContent = message; // Устанавливаем текст ошибки
+            errorContainer.classList.add('visible'); // Показываем текст
+
+            // Через 5 секунд скрываем сообщение
+            setTimeout(() => {
+                errorContainer.classList.remove('visible');
+            }, 5000);
+        }
+    }
+
+    const closeCommentEditorButton = commentEditor.querySelector('.close-editor-button');
+    if (closeCommentEditorButton) {
+        closeCommentEditorButton.addEventListener('click', function () {
+            // Скрываем редактор комментария
+            commentEditor.style.display = 'none';
+            // Показываем кнопку "Оставить комментарий"
+            commentButton.style.display = 'inline-block';
+        });
+    }
+
     // Функция для отображения миниатюры
     function handleImageUpload(inputId, previewId, placeholderId) {
         const input = document.getElementById(inputId);
@@ -526,4 +549,146 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return cookieValue;
     }
+
+
+    // Находим все кнопки "Ответить"
+    const replyButtons = document.querySelectorAll('.reply-button');
+
+    // Функция для создания редактора комментариев
+    function createCommentEditor(parentCommentId, level) {
+        // Создаем контейнер для редактора комментариев
+        const editorContainer = document.createElement('div');
+        editorContainer.classList.add('comment-editor', 'reply-editor');
+        editorContainer.setAttribute('data-parent-comment-id', parentCommentId);
+        console.log("level: ", level)
+        editorContainer.style.marginLeft = `${level * 20}px`;
+
+        // HTML-структура редактора комментариев
+        editorContainer.innerHTML = `
+            <form class="reply-form" enctype="multipart/form-data">
+                <div class="comment-container">
+                    <div class="close-editor-button">
+                        <img src="/static/icons/cross.png" alt="Закрыть редактор" class="close-icon">
+                    </div>
+                    <!-- Текстовое поле -->
+                    <textarea id="reply-text-${parentCommentId}" name="text" placeholder="Введите ваш ответ..."></textarea>
+                    <!-- Контейнер для загрузки изображений -->
+                    <div class="image-upload-container">
+                        <div class="photo-upload">
+                            <label for="reply-image1-${parentCommentId}" class="photo-label">
+                                <img id="reply-image1-preview-${parentCommentId}" src="#" alt="Изображение 1" style="display: none;" />
+                                <span id="reply-image1-placeholder-${parentCommentId}">+</span>
+                            </label>
+                            <input type="file" id="reply-image1-${parentCommentId}" name="image1" accept="image/*" style="display: none;" />
+                        </div>
+                        <div class="photo-upload">
+                            <label for="reply-image2-${parentCommentId}" class="photo-label">
+                                <img id="reply-image2-preview-${parentCommentId}" src="#" alt="Изображение 2" style="display: none;" />
+                                <span id="reply-image2-placeholder-${parentCommentId}">+</span>
+                            </label>
+                            <input type="file" id="reply-image2-${parentCommentId}" name="image2" accept="image/*" style="display: none;" />
+                        </div>
+                    </div>
+                    <!-- Кнопка "Опубликовать" -->
+                    <button type="submit" class="publish-button">Опубликовать</button>
+                </div>
+            </form>
+        `;
+
+        return editorContainer;
+    }
+
+    // Обработчик для кнопок "Ответить"
+    replyButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            if (!isAuthenticated) {
+                // Показываем ошибку рядом с кнопкой
+                showErrorNearButton(button, 'Войдите в аккаунт, чтобы оставить комментарий.');
+                return;
+            }
+
+            const commentContainer = button.closest('.comment-container');
+            const parentCommentId = commentContainer.dataset.commentId;
+            const level = parseInt(commentContainer.dataset.level || 0)
+
+            // Проверяем, есть ли уже открытый редактор для этого комментария
+            const existingEditor = commentContainer.querySelector('.reply-editor');
+            if (existingEditor) {
+                existingEditor.remove(); // Удаляем, если уже открыт
+                button.style.display = 'inline-block'; // Показываем кнопку "Ответить"
+                return;
+            }
+
+            // Создаем новый редактор комментариев
+            const editor = createCommentEditor(parentCommentId, level);
+            console.log('Созданный редактор:', editor); // Отладочный вывод
+
+            // Добавляем редактор после контейнера комментария
+            commentContainer.after(editor);
+
+            // Скрываем кнопку "Ответить"
+            button.style.display = 'none';
+
+            const closeButton = editor.querySelector('.close-editor-button');
+            if (closeButton) {
+                closeButton.addEventListener('click', function () {
+                    editor.remove(); // Удаляем редактор
+                    button.style.display = 'inline-block'; // Показываем кнопку "Ответить"
+                });
+            }
+
+            // Инициализация обработчиков для изображений
+            handleImageUpload(`reply-image1-${parentCommentId}`, `reply-image1-preview-${parentCommentId}`, `reply-image1-placeholder-${parentCommentId}`);
+            handleImageUpload(`reply-image2-${parentCommentId}`, `reply-image2-preview-${parentCommentId}`, `reply-image2-placeholder-${parentCommentId}`);
+
+            // Обработка отправки формы
+            const replyForm = editor.querySelector('.reply-form');
+            replyForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                // Собираем данные из формы
+                const formData = new FormData();
+                const text = editor.querySelector(`#reply-text-${parentCommentId}`).value.trim();
+                const image1 = editor.querySelector(`#reply-image1-${parentCommentId}`).files[0];
+                const image2 = editor.querySelector(`#reply-image2-${parentCommentId}`).files[0];
+
+                // Проверяем, что текст комментария не пустой
+                if (!text) {
+                    alert('Текст комментария не может быть пустым.');
+                    return;
+                }
+
+                // Добавляем данные в FormData
+                formData.append('recipe_id', recipeId);
+                formData.append('text', text);
+                formData.append('parent_comment_id', parentCommentId); // ID родительского комментария
+                if (image1) formData.append('image1', image1);
+                if (image2) formData.append('image2', image2);
+
+                try {
+                    // Отправляем данные на сервер через AJAX
+                    const response = await fetch('/comments/comments/create/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        },
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        // Если комментарий успешно добавлен, очищаем форму
+                        replyForm.reset();
+                        editor.remove(); // Удаляем редактор
+                        location.reload(); // Перезагружаем страницу для обновления комментариев
+                    } else {
+                        alert(`Ошибка: ${data.error || 'Не удалось опубликовать комментарий.'}`);
+                    }
+                } catch (error) {
+                    console.error('Ошибка:', error.message);
+                    alert('Произошла ошибка. Попробуйте позже.');
+                }
+            });
+        });
+    });
 });
