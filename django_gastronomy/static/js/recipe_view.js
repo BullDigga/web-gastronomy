@@ -297,16 +297,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function showErrorNearButton(button, message) {
-        const errorContainer = button.nextElementSibling; // Находим контейнер для ошибки
-        if (errorContainer && errorContainer.classList.contains('reply-error')) {
-            errorContainer.textContent = message; // Устанавливаем текст ошибки
-            errorContainer.classList.add('visible'); // Показываем текст
-
-            // Через 5 секунд скрываем сообщение
-            setTimeout(() => {
-                errorContainer.classList.remove('visible');
-            }, 5000);
+        // Находим родительский контейнер кнопки
+        const container = button.closest('.reply-button-container');
+        if (!container) {
+            console.error('Контейнер для кнопки не найден.');
+            return;
         }
+
+        // Находим контейнер для ошибки внутри родительского контейнера
+        const errorContainer = container.querySelector('.reply-error');
+        if (!errorContainer) {
+            console.error('Контейнер для ошибки не найден.');
+            return;
+        }
+
+        // Устанавливаем текст ошибки и показываем её
+        errorContainer.textContent = message;
+        errorContainer.classList.add('visible');
+
+        // Через 5 секунд скрываем сообщение
+        setTimeout(() => {
+            errorContainer.classList.remove('visible');
+        }, 5000);
     }
 
     const closeCommentEditorButton = commentEditor.querySelector('.close-editor-button');

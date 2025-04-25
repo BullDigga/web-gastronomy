@@ -241,6 +241,16 @@ button {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+
+.reply-error {
+    color: #ссс; /* Цвет текста ошибки */
+    font-size: 12px; /* Размер шрифта */
+    display: none; /* Скрываем по умолчанию */
+}
+
+.reply-error.visible {
+    display: inline-block !important; /* Показываем ошибку */
+}
 .add-to-favorites:hover .tooltip {
     display: block;
 }

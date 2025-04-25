@@ -760,23 +760,20 @@ body {
     left: 10px; /* Отступ слева */
 }
 
-
-
+/* Общие стили для всех кнопок "Ответить" */
 .reply-button {
-    background-color: #87C756; /* Цвет фона */
+    background-color: #87C756; /* Цвет фона для активной кнопки */
     color: white; /* Цвет текста */
     border: none;
-    padding: 5px 10px; /* Уменьшенный размер */
-    font-size: 12px; /* Меньший шрифт */
+    padding: 5px 10px;
+    font-size: 12px;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.reply-button:hover {
-    background-color: #7bb34e; /* Темнее при наведении */
+.reply-button.disabled {
+    background-color: #ccc; /* Серый цвет для неактивной кнопки */
 }
-
-
 
 .nested-comments {
     margin-left: 30px; /* Отступ слева для создания иерархии */

@@ -278,7 +278,7 @@ def authorization_view(request):
     return render(request, 'authorization.html')
 
 
-@login_required
+
 def profile_view(request, user_id):
     # Получаем модель пользователя
     User = get_user_model()
@@ -291,11 +291,19 @@ def profile_view(request, user_id):
 
     # Проверяем, подписан ли текущий пользователь на profile_user
     is_subscribed = False
-    if request.user != profile_user:
+    if request.user.is_authenticated and request.user != profile_user:
         is_subscribed = request.user.subscriptions.filter(user_author=profile_user).exists()
 
     # Обработка POST-запроса для подписки/отписки
-    if request.method == 'POST' and request.user != profile_user:
+    if request.method == 'POST':
+        # Проверяем, что пользователь авторизован
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': 'Требуется авторизация'}, status=401)
+
+        # Проверяем, что пользователь не пытается подписаться на самого себя
+        if request.user == profile_user:
+            return JsonResponse({'error': 'Нельзя подписаться на самого себя'}, status=400)
+
         action = request.POST.get('action')
         if action == 'toggle_subscription':
             if is_subscribed:
