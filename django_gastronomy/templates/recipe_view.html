@@ -228,7 +228,13 @@
                             <!-- Аватар пользователя -->
                             <div class="avatar-container">
                                 <a href="{% url 'profile' comment.user.id %}" class="user-profile-link">
-                                    <img src="{{ comment.user.avatar.url }}" alt="Аватар пользователя" class="user-avatar">
+                                    {% if comment.user.avatar %}
+                                        <!-- Если у пользователя есть аватар -->
+                                        <img src="{{ comment.user.avatar.url }}" alt="Аватар пользователя" class="user-avatar">
+                                    {% else %}
+                                        <!-- Если аватара нет, используем запасное изображение -->
+                                        <img src="{% static 'icons/default_avatar.png' %}" alt="Запасной аватар" class="user-avatar">
+                                    {% endif %}
                                 </a>
                             </div>
                             <!-- Информация о пользователе и звёзды -->
