@@ -223,36 +223,62 @@
                 <!-- Определение уровня вложенности -->
                 {% with level=comment.get_level %}
                     <div class="comment-container level-{{ level }}" data-comment-id="{{ comment.id }}" data-level="{{ level }}">
-                        <div class="comment-content">
-                            <div class="comment-author">
-                                <a href="{% url 'profile' comment.user.id %}">{{ comment.user.username }}</a>
+                        <!-- Верхняя часть комментария -->
+                        <div class="comment-header">
+                            <!-- Аватар пользователя -->
+                            <div class="avatar-container">
+                                <a href="{% url 'profile' comment.user.id %}" class="user-profile-link">
+                                    <img src="{{ comment.user.avatar.url }}" alt="Аватар пользователя" class="user-avatar">
+                                </a>
                             </div>
+                            <!-- Информация о пользователе и звёзды -->
+                            <div class="user-info">
+                                <a href="{% url 'profile' comment.user.id %}" class="user-profile-link username">
+                                    {{ comment.user.username }}
+                                </a>
+                                <div class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</div>
+                            </div>
+                            <!-- Звёзды (оценка рецепта) -->
+                            <div class="comment-rating-stars">
+                                {% if comment.rating %}
+                                    {% for i in "12345" %}
+                                        <span class="comment-star {% if comment.rating >= forloop.counter %}comment-star-active{% endif %}">★</span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <!-- Кнопка удаления комментария -->
+                            {% if user == comment.user %}
+                                <div class="delete-comment-container">
+                                    <button class="delete-comment-button" data-comment-id="{{ comment.id }}">
+                                        <img src="{% static 'icons/trashbox.png' %}" alt="Удалить комментарий" class="delete-comment-icon">
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <!-- Текст комментария и изображения -->
+                        <div class="comment-body">
                             <div class="comment-text">{{ comment.text }}</div>
-                        </div>
-                        <div class="comment-images">
-                            {% if comment.image1 %}
-                                <img src="{{ comment.image1_compressed.url }}" alt="Изображение 1" class="comment-image">
+                            {% if comment.image1 or comment.image2 %}
+                                <div class="comment-images">
+                                    {% if comment.image1 %}
+                                        <a href="{{ comment.image1.url }}" target="_blank" rel="noopener noreferrer">
+                                            <img src="{{ comment.image1_compressed.url }}" alt="Изображение 1" class="comment-image">
+                                        </a>
+                                    {% endif %}
+                                    {% if comment.image2 %}
+                                        <a href="{{ comment.image2.url }}" target="_blank" rel="noopener noreferrer">
+                                            <img src="{{ comment.image2_compressed.url }}" alt="Изображение 2" class="comment-image">
+                                        </a>
+                                    {% endif %}
+                                </div>
                             {% endif %}
-                            {% if comment.image2 %}
-                                <img src="{{ comment.image2_compressed.url }}" alt="Изображение 2" class="comment-image">
-                            {% endif %}
                         </div>
+                        <!-- Нижняя часть комментария -->
                         <div class="reply-button-container">
-                            <button class="reply-button {% if not is_authenticated %}disabled{% endif %}"
-                                    data-comment-id="{{ comment.id }}">
+                            <button class="reply-button {% if not is_authenticated %}disabled{% endif %}" data-comment-id="{{ comment.id }}">
                                 Ответить
                             </button>
-                            <!-- Контейнер для текста ошибки -->
-                            <span class="error-message reply-error"></span>
                         </div>
-                        <!-- Кнопка удаления комментария -->
-                        {% if user == comment.user %}
-                            <div class="delete-comment-container">
-                                <button class="delete-comment-button" data-comment-id="{{ comment.id }}">
-                                    <img src="{% static 'icons/trashbox.png' %}" alt="Удалить комментарий" class="delete-comment-icon">
-                                </button>
-                            </div>
-                        {% endif %}
                     </div>
                 {% endwith %}
             {% empty %}

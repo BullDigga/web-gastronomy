@@ -280,20 +280,109 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     min-height: 90px;
+    flex-direction: row;
 }
 
-.level-0 { margin-left: 0; }
-.level-1 { margin-left: 20px; }
-.level-2 { margin-left: 40px; }
-.level-3 { margin-left: 60px; }
-.level-4 { margin-left: 80px; }
-.level-5 { margin-left: 80px; }
-.level-6 { margin-left: 80px; }
-.level-7 { margin-left: 80px; }
-.level-8 { margin-left: 80px; }
-.level-9 { margin-left: 80px; }
+.reply-form {
+    flex-direction: row;
+}
 
+.level-0 { margin-left: 0; flex-direction: column;}
+.level-1 { margin-left: 20px; flex-direction: column;}
+.level-2 { margin-left: 40px; flex-direction: column;}
+.level-3 { margin-left: 60px; flex-direction: column;}
+.level-4 { margin-left: 80px; flex-direction: column;}
+.level-5 { margin-left: 80px; flex-direction: column;}
+.level-6 { margin-left: 80px; flex-direction: column;}
+.level-7 { margin-left: 80px; flex-direction: column;}
+.level-8 { margin-left: 80px; flex-direction: column;}
+.level-9 { margin-left: 80px; flex-direction: column;}
 
+.comment-header {
+    display: flex;
+    align-items: flex-start;
+}
+
+.avatar-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Информация о пользователе */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: auto;
+}
+
+.username {
+    font-size: 16px;
+    color: #444444;
+    font-weight: bold;
+}
+
+.username:hover {
+    color: #444444
+}
+
+.comment-date {
+    font-size: 14px;
+    color: #444444;
+    white-space: nowrap; /* Предотвращает перенос текста */
+    padding-top: 5px;
+}
+
+/* Звёзды (оценка рецепта) */
+.rating-stars {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+/* Стиль для контейнера звёзд комментария */
+.comment-rating-stars {
+    display: flex;
+    align-items: center;
+    margin-left: 10px; /* Отступ от других элементов */
+}
+
+/* Стиль для звёзд комментария */
+.comment-rating-stars .comment-star {
+    font-size: 30px;
+    color: #D9D9D9; /* Цвет неактивных звёзд */
+    cursor: default; /* Убираем возможность кликать на звёзды */
+    margin-right: -5px; /* Прижимаем звёзды друг к другу */
+    transition: color 0.3s ease; /* Плавное изменение цвета */
+}
+
+/* Активные звёзды */
+.comment-rating-stars .comment-star.comment-star-active {
+    color: #FFD700; /* Цвет активных звёзд */
+}
+
+/* Тело комментария */
+.comment-body {
+    display: flex;
+    padding-bottom: 30px;
+}
+
+.comment-text {
+    flex: 3;
+    line-height: 1.5;
+    font-size: 14px;
+    color: #333;
+    width: 35em;
+}
 
 .comment-content {
     margin-bottom: 10px; /* Отступ между текстом и кнопкой "Ответить" */
@@ -352,6 +441,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px; /* Отступ между изображениями */
+    align-items: flex-end;
 }
 
 .comment {
@@ -364,8 +454,8 @@ body {
 }
 
 .comment-image {
-    width: 240px; /* Ширина миниатюры */
-    height: 180px; /* Высота миниатюры */
+    width: 252px; /* Ширина миниатюры */
+    height: 189px; /* Высота миниатюры */
     object-fit: cover; /* Сохранение пропорций */
     border-radius: 8px;
     cursor: pointer; /* Указатель мыши меняется при наведении */
@@ -468,6 +558,7 @@ body {
 .comment-editor {
     margin-top: 10px;
     display: block; /* По умолчанию скрыт */
+    flex-direction: row;
 }
 
 .comment-editor button:hover {
@@ -617,11 +708,13 @@ body {
 }
 
 .delete-comment-container {
-    display: inline-block; /* Контейнер будет располагаться рядом с другими элементами */
-    margin-left: 10px; /* Отступ слева для разделения от других кнопок */
     background-color: transparent; /* Прозрачный фон */
     border: none; /* Убираем границу, если она есть */
     padding: 0; /* Убираем внутренние отступы */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
 }
 
 .delete-comment-button {
@@ -648,8 +741,8 @@ body {
 }
 
 .delete-comment-icon {
-    width: 2em; /* Ширина иконки */
-    height: 2em; /* Высота иконки */
+    width: 2.5em; /* Ширина иконки */
+    height: 2.5em; /* Высота иконки */
     opacity: 0.9; /* Прозрачность */
     transition: opacity 0.3s ease; /* Плавный переход при наведении */
 }
@@ -766,7 +859,7 @@ body {
     color: white; /* Цвет текста */
     border: none;
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: 13px;
     border-radius: 4px;
     cursor: pointer;
 }

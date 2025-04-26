@@ -332,7 +332,7 @@ def profile_view(request, user_id):
     }
     return render(request, 'profile_view.html', context)
 
-
+from django.db.models import Avg, Count, OuterRef, Subquery
 
 def recipe_view(request, recipe_id):
     # Получаем рецепт из БД по ID, но только если его статус "published"
@@ -370,9 +370,6 @@ def recipe_view(request, recipe_id):
     # Получаем все комментарии рецепта
     all_comments = recipe.comments.all()
 
-    # Собираем комментарии в порядке DFS
-    comments_in_dfs_order = get_comments_in_dfs_order(all_comments)
-
     # Получаем количество комментариев
     comments_count = all_comments.count()
 
@@ -395,7 +392,22 @@ def recipe_view(request, recipe_id):
     if is_authenticated:
         favorite_recipe_ids = list(Favorite.objects.filter(user=request.user).values_list('recipe_id', flat=True))
 
-    # Получаем текущую оценку пользователя (если авторизован)
+    user_rating_subquery = Rate.objects.filter(
+        recipe=recipe,
+        user=OuterRef('user')  # Связываем с пользователем комментария
+    ).values('value')[:1]  # Берем только одну оценку (последнюю)
+
+    all_comments = recipe.comments.annotate(
+        rating=Subquery(user_rating_subquery)  # Добавляем рейтинг к комментариям
+    )
+
+    for comment in all_comments:
+        comment.rating = 5
+
+    comments_in_dfs_order = get_comments_in_dfs_order(all_comments)
+
+
+
     user_rating = None
     if is_authenticated:
         user_rating_obj = recipe.rates.filter(user=request.user).first()
