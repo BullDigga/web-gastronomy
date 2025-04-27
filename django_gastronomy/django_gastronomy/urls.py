@@ -33,6 +33,7 @@ urlpatterns = [
     # Избранное
     path('favorites/', include('models.favorites.urls')),
 
+
     # Аутентификация
     path('register/', views.registration_view, name='registration'),
     path('authorization/', views.authorization_view, name='authorization'),

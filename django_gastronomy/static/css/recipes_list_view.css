@@ -339,8 +339,8 @@ button {
 }
 
 .favorite-icon {
-    width: 32px; /* Ширина изображения */
-    height: 32px; /* Высота изображения */
+    width: 35px; /* Ширина изображения */
+    height: 35px; /* Высота изображения */
     object-fit: cover; /* Обеспечиваем сохранение пропорций (квадратное изображение) */
     transition: transform 0.2s ease; /* Плавный эффект при наведении */
 }
@@ -362,4 +362,26 @@ button {
 .controls {
     display: flex;
     align-items: center;
+}
+
+.delete-recipe-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: absolute;
+    top: 80px;
+    right: 27.5px;
+}
+
+.delete-recipe-icon {
+    width: 35px; /* Размер иконки */
+    height: 35px;
+    opacity: 0.7; /* Полупрозрачность */
+    transition: opacity 0.3s ease; /* Плавный переход при наведении */
+}
+
+/* Эффект при наведении на иконку */
+.delete-recipe-icon:hover {
+    opacity: 1; /* Полная видимость */
 }

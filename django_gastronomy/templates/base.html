@@ -52,7 +52,7 @@
                 </div>
             {% else %}
                 <a href="{% url 'create_recipe' %}" class="auth-button create-recipe">✍️ Создать рецепт</a>
-                <a href="{% url 'favorites' %}" class="favorites-icon">
+                <a href="{% url 'favorites' %}?favorites=true" class="favorites-icon">
                     <img src="{% static 'icons/favorites.png' %}" alt="Избранное" class="favorites-image">
                 </a>
                 <div class="user-profile">

@@ -13,7 +13,11 @@
     <link rel="stylesheet" href="{% static 'css/recipes_list_view.css' %}">
     <script src="{% static 'js/recipes_list_view.js' %}" defer></script>
 
-    <body data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}">
+    <body
+        data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}"
+        {% if favorites %}data-is-favorites="true"{% endif %}
+        {% if author %}data-is-user-recipes="true" data-user-id="{{ author.id }}"{% endif %}
+        data-search-query="{{ query }}">
         <div class="recipes-container">
             <!-- Заголовок и панель управления -->
             <div class="header-controls">

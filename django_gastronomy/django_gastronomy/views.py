@@ -38,7 +38,7 @@ from django.contrib.auth.decorators import login_required
 import json
 
 
-def recipes_list_view(request, user_id=None, favorites=False):
+def recipes_list_view(request, user_id=None):
     """
     View для просмотра списка рецептов.
     Поддерживает фильтрацию по автору, избранным рецептам, поисковому запросу,
@@ -50,23 +50,27 @@ def recipes_list_view(request, user_id=None, favorites=False):
     # Фильтрация по автору
     if user_id:
         author = get_object_or_404(User, id=user_id)
+        print(f"user_id: {user_id}")
+        print(f"Author: {author}")
         recipes = Recipe.objects.filter(author=author, status='published')
-    # Фильтрация по избранным рецептам
-    elif favorites and current_user.is_authenticated:
-        favorite_recipe_ids = Favorite.objects.filter(
-            user=current_user
-        ).values_list('recipe_id', flat=True)
-        recipes = Recipe.objects.filter(
-            id__in=favorite_recipe_ids,
-            status='published'
-        )
-        author = None
-    # Все опубликованные рецепты
     else:
         author = None
         recipes = Recipe.objects.filter(status='published')
 
+    # Фильтрация по избранным рецептам
+    favorites = request.GET.get('favorites') == 'true'
+    if favorites and current_user.is_authenticated:
+        favorite_recipe_ids = Favorite.objects.filter(
+            user=current_user
+        ).values_list('recipe_id', flat=True)
+        recipes = recipes.filter(id__in=favorite_recipe_ids)
+
     # Поиск по запросу
+    query = request.GET.get('q')
+    if query:
+        recipes = recipes.filter(title__icontains=query)
+
+    # Аннотации для рейтинга и количества оценок
     recipes = recipes.annotate(
         average_rating_annotation=Case(
             When(rates__isnull=False, then=Avg('rates__value')),
@@ -89,11 +93,10 @@ def recipes_list_view(request, user_id=None, favorites=False):
     # Формируем параметр сортировки
     order_prefix = '-' if order == 'desc' else ''
     if sort_by == 'rating':
-        # Сначала сортируем по количеству оценок, затем по среднему рейтингу
         recipes = recipes.order_by(
-            f'{order_prefix}ratings_count',  # Первый критерий: количество оценок
-            f'{order_prefix}average_rating',  # Второй критерий: средний рейтинг
-            '-id'  # Дополнительный критерий: ID (для стабильности сортировки)
+            f'{order_prefix}ratings_count',
+            f'{order_prefix}average_rating',
+            '-id'
         )
     elif sort_by == 'favorites_count':
         recipes = recipes.order_by(
@@ -114,14 +117,21 @@ def recipes_list_view(request, user_id=None, favorites=False):
     else:
         favorite_recipe_ids = []
 
+    print(f"GET-параметры: {request.GET}")
+    print(f"Фильтрация избранных: {favorites}")
+    print(f"user_id: {request.GET.get('user_id')}")
+    print(f"favorites: {request.GET.get('favorites')}")
+    print(f"query: {request.GET.get('q')}")
+
     # Контекст для передачи данных в шаблон
     context = {
         'recipes': recipes,
         'author': author,
         'favorites': favorites,
         'favorite_recipe_ids': list(favorite_recipe_ids),
-        'current_sort_by': sort_by,  # Текущий параметр сортировки
-        'current_order': order,      # Текущий порядок сортировки
+        'current_sort_by': sort_by,
+        'current_order': order,
+        'query': query,
     }
 
     return render(request, 'recipes_list_view.html', context)
