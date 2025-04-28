@@ -37,6 +37,7 @@ class User(AbstractBaseUser):
         ('F', _('Female')),
     )
 
+    # Основные поля
     email = models.EmailField(
         _('email address'),
         unique=True,
@@ -49,14 +50,14 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(_('admin status'), default=False)
 
     # Новые поля для ФИО
-    first_name = models.CharField(_('first name'), max_length=150, blank=True, null=True)  # Добавлено null=True
-    last_name = models.CharField(_('last name'), max_length=150, blank=True, null=True)    # Добавлено null=True
-    middle_name = models.CharField(_('middle name'), max_length=150, blank=True, null=True)  # Добавлено null=True
+    first_name = models.CharField(_('first name'), max_length=150, blank=True, null=True)
+    last_name = models.CharField(_('last name'), max_length=150, blank=True, null=True)
+    middle_name = models.CharField(_('middle name'), max_length=150, blank=True, null=True)
 
     # Поле для даты регистрации
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-    # Добавляем новые поля
+    # Другие поля
     gender = models.CharField(
         _('gender'),
         max_length=1,
@@ -75,7 +76,7 @@ class User(AbstractBaseUser):
         _('country'),
         max_length=100,
         blank=True,
-        null=True,  # Добавлено null=True
+        null=True,
         help_text=_('The country where the user resides.')
     )
 
@@ -98,6 +99,25 @@ class User(AbstractBaseUser):
         help_text=_('Compressed version of the user avatar.')
     )
 
+    # Поля для миниатюры
+    thumbnail = models.ImageField(
+        _('thumbnail'),
+        upload_to='user_thumbnails/',
+        max_length=500,
+        blank=True,
+        null=True,
+        help_text=_('Thumbnail version of the user avatar.')
+    )
+
+    thumbnail_compressed = models.ImageField(
+        _('compressed thumbnail'),
+        upload_to='user_thumbnails/compressed/',
+        max_length=500,
+        blank=True,
+        null=True,
+        help_text=_('Compressed version of the thumbnail.')
+    )
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -113,11 +133,11 @@ class User(AbstractBaseUser):
 
     def save(self, *args, **kwargs):
         """
-        Автоматическая генерация сжатой версии аватара.
+        Автоматическая генерация сжатых версий аватара и миниатюры.
         """
-        # Флаг для отслеживания, нужно ли сохранять объект после обработки изображения
         needs_save = False
 
+        # Генерация сжатого аватара
         if self.avatar and not self.avatar_compressed:
             try:
                 img = Image.open(self.avatar)
@@ -125,40 +145,77 @@ class User(AbstractBaseUser):
                 if img.mode != 'RGB':
                     img = img.convert('RGB')
 
-                # Создаем сжатую версию изображения
-                output_size = (300, 300)  # Размер миниатюры (квадратное изображение)
-                img.thumbnail(output_size, Image.Resampling.LANCZOS)
+                # Создаем сжатую версию аватара
+                output_size_avatar = (300, 300)  # Размер сжатого аватара
+                img.thumbnail(output_size_avatar, Image.Resampling.LANCZOS)
 
-                # Сохраняем сжатое изображение
-                thumb_io = BytesIO()
-                img.save(thumb_io, format='JPEG', quality=85)
+                thumb_io_avatar = BytesIO()
+                img.save(thumb_io_avatar, format='JPEG', quality=85)
 
-                # Генерируем уникальное имя файла
-                compressed_filename = f'compressed_{self.avatar.name.split("/")[-1]}'
+                compressed_filename_avatar = f'compressed_{self.avatar.name.split("/")[-1]}'
 
-                # Сохраняем сжатое изображение в медиа-директорию
-                file_path = default_storage.save(
-                    f'user_avatars/compressed/{compressed_filename}',
-                    ContentFile(thumb_io.getvalue())
+                file_path_avatar = default_storage.save(
+                    f'user_avatars/compressed/{compressed_filename_avatar}',
+                    ContentFile(thumb_io_avatar.getvalue())
                 )
 
-                # Сохраняем путь к сжатому изображению
-                self.avatar_compressed = file_path
-
-                # Устанавливаем флаг, чтобы сохранить объект после обработки изображения
+                self.avatar_compressed = file_path_avatar
                 needs_save = True
 
             except Exception as e:
-                # Логирование ошибок, если изображение не удалось обработать
                 print(f"Ошибка при обработке аватара: {e}")
 
-        # Сначала сохраняем объект (или обновляем его, если изображение было обработано)
+        # Генерация миниатюры и её сжатой версии
+        if self.avatar and not self.thumbnail:
+            try:
+                img = Image.open(self.avatar)
+
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+
+                # Создаем миниатюру
+                output_size_thumbnail = (100, 100)  # Размер миниатюры
+                img.thumbnail(output_size_thumbnail, Image.Resampling.LANCZOS)
+
+                thumb_io_thumbnail = BytesIO()
+                img.save(thumb_io_thumbnail, format='JPEG', quality=95)
+
+                thumbnail_filename = f'thumbnail_{self.avatar.name.split("/")[-1]}'
+
+                file_path_thumbnail = default_storage.save(
+                    f'user_thumbnails/{thumbnail_filename}',
+                    ContentFile(thumb_io_thumbnail.getvalue())
+                )
+
+                self.thumbnail = file_path_thumbnail
+
+                # Создаем сжатую версию миниатюры
+                output_size_thumbnail_compressed = (100, 100)  # Размер сжатой миниатюры
+                img.thumbnail(output_size_thumbnail_compressed, Image.Resampling.LANCZOS)
+
+                thumb_io_thumbnail_compressed = BytesIO()
+                img.save(thumb_io_thumbnail_compressed, format='JPEG', quality=75)
+
+                thumbnail_compressed_filename = f'compressed_{thumbnail_filename}'
+
+                file_path_thumbnail_compressed = default_storage.save(
+                    f'user_thumbnails/compressed/{thumbnail_compressed_filename}',
+                    ContentFile(thumb_io_thumbnail_compressed.getvalue())
+                )
+
+                self.thumbnail_compressed = file_path_thumbnail_compressed
+
+                needs_save = True
+
+            except Exception as e:
+                print(f"Ошибка при обработке миниатюры: {e}")
+
+        # Сохраняем объект
         super().save(*args, **kwargs)
 
     def block(self):
         """Блокировка пользователя с удалением контента"""
         self.is_blocked = True
-        # Удаляем связанные объекты при блокировке
         self.recipes.all().delete()  # Удаляем рецепты
         self.comments.all().delete()  # Удаляем комментарии
         self.favorites.all().delete()  # Удаляем избранное
@@ -177,7 +234,6 @@ class User(AbstractBaseUser):
             return None
         today = date.today()
         age = today.year - self.date_of_birth.year
-        # Корректировка, если день рождения ещё не наступил в этом году
         if (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day):
             age -= 1
         return age
