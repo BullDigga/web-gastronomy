@@ -81,19 +81,39 @@
                         <div class="info-row">
                             <span class="recipe-description">{{ recipe.description }}</span>
                         </div>
-                        <!-- Блок с рейтингом и автором (опущен вниз) -->
-                        <div class="bottom-info">
-                            <div class="info-row">
-                                <span class="recipe-author">
-                                    <a class="author-link" href="{% url 'profile' recipe.author.id %}">{{ recipe.author.username }}</a>
-                                </span>
+
+                        <!-- Блок с автором, рейтингом и добавлениями в избранное -->
+                        <div class="author-and-stats">
+                            <!-- Автор -->
+                            <div class="author-container">
+                                <div class="avatar-container">
+                                    <a href="{% url 'profile' recipe.author.id %}" class="user-profile-link">
+                                        {% if recipe.author.avatar %}
+                                            <img src="{{ recipe.author.avatar.url }}" alt="Аватар пользователя" class="user-avatar">
+                                        {% else %}
+                                            <img src="{% static 'icons/default_avatar.png' %}" alt="Запасной аватар" class="user-avatar">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="user-info">
+                                    <a href="{% url 'profile' recipe.author.id %}" class="user-profile-link username">
+                                        {{ recipe.author.username }}
+                                    </a>
+                                    <div class="recipe-date">{{ recipe.publish_date|date:"d.m.Y H:i" }}</div>
+                                </div>
                             </div>
-                            <div class="info-row">
-                                <span class="recipe-rating">
-                                    {{ recipe.average_rating_annotation|floatformat:1 }}/5
-                                    (<span class="rating-count">{{ recipe.ratings_count }}</span>
-                                    <img src="{% static 'icons/user_icon.png' %}" alt="Пользователи" class="user-icon">)
-                                </span>
+
+                            <!-- Рейтинг и добавления в избранное -->
+                            <div class="stats-container">
+                                <div class="rating-info">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-number">{{ recipe.average_rating_annotation|floatformat:1 }}</span>
+                                    <span class="rating-count">({{ recipe.ratings_count }} <img src="{% static 'icons/user_icon.png' %}" alt="Пользователи" class="user-icon">)</span>
+                                </div>
+                                <div class="favorites-info">
+                                    <span class="favorites-count">{{ recipe.favorites_count }}</span>
+                                    <img src="{% static 'icons/favorited.png' %}" alt="Добавления в избранное" class="favorite-count-icon">
+                                </div>
                             </div>
                         </div>
                     </div>

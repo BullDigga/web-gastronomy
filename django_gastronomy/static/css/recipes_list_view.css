@@ -124,10 +124,6 @@ body {
     gap: 5px;
 }
 
-.rating-count {
-    font-size: 16px;
-    color: #888888;
-}
 
 .recipe-author {
     font-size: 14px;
@@ -384,4 +380,111 @@ button {
 /* Эффект при наведении на иконку */
 .delete-recipe-icon:hover {
     opacity: 1; /* Полная видимость */
+}
+
+/* Стили для контейнера автора и статистики */
+.author-and-stats {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Стили для контейнера автора */
+.author-container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.avatar-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.username {
+    font-size: 16px;
+    color: #444444;
+    font-weight: bold;
+}
+
+.comment-date {
+    font-size: 14px;
+    color: #444444;
+    white-space: nowrap;
+    padding-top: 5px;
+}
+
+/* Стили для контейнера статистики */
+.stats-container {
+    display: flex;
+    align-items: center;
+}
+
+.rating-info,
+.favorites-info {
+    margin-left: 15px;
+}
+
+.rating-value {
+    font-size: 18px;
+    color: #FFD700; /* Цвет звезд */
+    font-weight: bold;
+}
+
+.rating-count {
+    font-size: 16px;
+    color: #444444;
+}
+
+.favorites-count {
+    font-size: 18px;
+    color: #444444;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+.recipe-date {
+    font-size: 14px;
+    color: #444444;
+    white-space: nowrap;
+    padding-top: 5px;
+}
+
+.favorite-count-icon {
+    width: 23px; /* Размер иконки */
+    height: 23px; /* Размер иконки */
+    vertical-align: middle; /* Выравнивание по центру относительно текста */
+    margin-bottom: 5px;
+}
+
+.rating-info {
+    font-size: 16px; /* Базовый размер шрифта */
+    margin-bottom: 10px;
+}
+
+.rating-number {
+    font-size: 18px; /* Размер числа */
+    font-weight: bold; /* Жирный шрифт */
+    color: #444444; /* Цвет числа */
+}
+
+.rating-star {
+    font-size: 28px; /* Размер звезды */
+    color: #FFD700; /* Цвет звезды (золотой) */
+    vertical-align: sub;
 }

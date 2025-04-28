@@ -38,6 +38,8 @@ from django.contrib.auth.decorators import login_required
 import json
 
 
+from django.db.models import OuterRef, Subquery, Count, Avg, Value, FloatField, Case, When
+
 def recipes_list_view(request, user_id=None):
     """
     View для просмотра списка рецептов.
@@ -50,8 +52,6 @@ def recipes_list_view(request, user_id=None):
     # Фильтрация по автору
     if user_id:
         author = get_object_or_404(User, id=user_id)
-        print(f"user_id: {user_id}")
-        print(f"Author: {author}")
         recipes = Recipe.objects.filter(author=author, status='published')
     else:
         author = None
@@ -70,32 +70,48 @@ def recipes_list_view(request, user_id=None):
     if query:
         recipes = recipes.filter(title__icontains=query)
 
-    # Аннотации для рейтинга и количества оценок
+    # Подзапросы для вычисления данных
+    average_rating_subquery = Rate.objects.filter(recipe=OuterRef('pk')).values('recipe').annotate(
+        avg_rating=Avg('value')
+    ).values('avg_rating')
+
+    ratings_count_subquery = Rate.objects.filter(recipe=OuterRef('pk')).values('recipe').annotate(
+        count=Count('id')
+    ).values('count')
+
+    favorites_count_subquery = Favorite.objects.filter(recipe=OuterRef('pk')).values('recipe').annotate(
+        count=Count('id')
+    ).values('count')
+
+    # Применяем подзапросы к основному запросу
     recipes = recipes.annotate(
         average_rating_annotation=Case(
-            When(rates__isnull=False, then=Avg('rates__value')),
+            When(rates__isnull=False, then=Subquery(average_rating_subquery, output_field=FloatField())),
             default=Value(0.0),
-            output_field=models.FloatField()
+            output_field=FloatField()
         ),
-        ratings_count=Count('rates')
-    )
+        ratings_count=Case(
+            When(rates__isnull=False, then=Subquery(ratings_count_subquery, output_field=models.IntegerField())),
+            default=Value(0),
+            output_field=models.IntegerField()
+        ),
+        favorites_count=Case(
+            When(favorited_by__isnull=False, then=Subquery(favorites_count_subquery, output_field=models.IntegerField())),
+            default=Value(0),
+            output_field=models.IntegerField()
+        )
+    ).distinct()
 
     # Сортировка
     sort_by = request.GET.get('sort_by', 'publish_date')  # По умолчанию дата добавления
     order = request.GET.get('order', 'desc')  # По умолчанию убывание
 
-    # Аннотации для сортировки
-    if sort_by == 'rating':
-        recipes = recipes.annotate(average_rating=Avg('rates__value'))
-    elif sort_by == 'favorites_count':
-        recipes = recipes.annotate(favorites_count=Count('favorited_by'))
-
     # Формируем параметр сортировки
     order_prefix = '-' if order == 'desc' else ''
     if sort_by == 'rating':
         recipes = recipes.order_by(
+            f'{order_prefix}average_rating_annotation',
             f'{order_prefix}ratings_count',
-            f'{order_prefix}average_rating',
             '-id'
         )
     elif sort_by == 'favorites_count':
