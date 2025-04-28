@@ -47,6 +47,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     img.src = "/static/icons/add_to_favorited.png";
                     button.classList.remove('favorited');
                 }
+
+                // Находим элемент с количеством добавлений в избранное
+                const favoritesCountElement = document.querySelector(`.recipe-card[data-recipe-id="${recipeId}"] .favorites-count`);
+                if (favoritesCountElement) {
+                    // Обновляем текстовое значение
+                    favoritesCountElement.textContent = data.favorites_count;
+                    console.log("Поменял");
+
+                } else {
+                    console.log("Не нашёл");
+                }
             }
         } catch (error) {
             console.error('Ошибка:', error.message);
@@ -180,13 +191,9 @@ document.addEventListener('DOMContentLoaded', function () {
             url += '&favorites=true'; // Добавляем параметр для избранных рецептов
         }
 
-        console.log('Формируемый URL:', url);
-
         if (searchQuery) {
             url += `&q=${encodeURIComponent(searchQuery)}`;
         }
-
-        console.log('Формируемый URL:', url);
 
         try {
             const response = await fetch(url, {
@@ -230,10 +237,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Ошибка:', error);
             alert('Не удалось обновить список рецептов.');
         }
-        console.log('Страница избранных рецептов:', isFavoritesPage);
-        console.log('Страница рецептов автора:', isUserRecipesPage);
-        console.log('ID автора:', document.body.dataset.userId);
-        console.log('Формируемый URL:', url);
     }
 
     // Инициализация при загрузке страницы
