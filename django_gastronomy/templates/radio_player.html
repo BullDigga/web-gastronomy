@@ -118,12 +118,17 @@
 
             // Восстановление состояния из localStorage
             const savedState = JSON.parse(localStorage.getItem('radioState'));
-            if (savedState && savedState.isPlaying) {
-                isPlaying = true;
-                radioPlayer.volume = savedState.volume;
-                volumeControl.value = savedState.volume;
-                playPauseImage.src = pauseSrc;
-                radioPlayer.play();
+            if (savedState) {
+                // Восстанавливаем громкость, даже если воспроизведение не активно
+                radioPlayer.volume = savedState.volume || 1; // По умолчанию 1, если значение не сохранено
+                volumeControl.value = savedState.volume || 1;
+
+                // Если воспроизведение было активным, возобновляем его
+                if (savedState.isPlaying) {
+                    isPlaying = true;
+                    playPauseImage.src = pauseSrc;
+                    radioPlayer.play();
+                }
             }
 
             // Переключение состояния кнопки (Play/Pause)
@@ -140,6 +145,7 @@
                 }
                 isPlaying = !isPlaying;
 
+                // Сохраняем состояние (включая громкость)
                 localStorage.setItem(
                     'radioState',
                     JSON.stringify({
@@ -153,6 +159,7 @@
             volumeControl.addEventListener('input', () => {
                 radioPlayer.volume = volumeControl.value;
 
+                // Сохраняем только громкость, без изменения состояния воспроизведения
                 localStorage.setItem(
                     'radioState',
                     JSON.stringify({
