@@ -162,6 +162,10 @@
     align-items: center;
 }
 
+.photo-label {
+    cursor: pointer;
+}
+
 .photo-upload:hover {
     border-color: #FFA726;
 }
