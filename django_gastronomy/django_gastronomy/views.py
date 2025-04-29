@@ -133,12 +133,6 @@ def recipes_list_view(request, user_id=None):
     else:
         favorite_recipe_ids = []
 
-    print(f"GET-параметры: {request.GET}")
-    print(f"Фильтрация избранных: {favorites}")
-    print(f"user_id: {request.GET.get('user_id')}")
-    print(f"favorites: {request.GET.get('favorites')}")
-    print(f"query: {request.GET.get('q')}")
-
     # Контекст для передачи данных в шаблон
     context = {
         'recipes': recipes,
@@ -173,6 +167,7 @@ def registration_view(request):
             gender = request.POST.get('gender', '').strip() or None
             date_of_birth = request.POST.get('date_of_birth', '').strip() or None
             country = request.POST.get('country', '').strip()
+            about = request.POST.get('about', '').strip()
 
             # Проверяем обязательные поля
             if not username or not email or not password:
@@ -199,7 +194,8 @@ def registration_view(request):
                 middle_name=middle_name,
                 gender=gender,
                 date_of_birth=date_of_birth,
-                country=country
+                country=country,
+                about=about
             )
 
             # Обработка загрузки аватара
@@ -597,6 +593,7 @@ def edit_profile(request):
         gender = request.POST.get('gender', '').strip()
         date_of_birth = request.POST.get('date_of_birth', '').strip()
         country = request.POST.get('country', '').strip()
+        about = request.POST.get('about', '').strip()
 
         # Проверяем обязательное поле username
         if not username or len(username) < 6:
@@ -656,6 +653,7 @@ def edit_profile(request):
         user.gender = gender
         user.date_of_birth = date_of_birth
         user.country = country
+        user.about = about
 
         # Сохраняем изменения
         user.save()

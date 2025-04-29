@@ -63,6 +63,12 @@
                     </span>
                 </div>
             {% endif %}
+            {% if profile_user.about %}
+                <div class="info-row">
+                    <span class="label">О себе:</span>
+                    <span class="value">{{ profile_user.about }}</span>
+                </div>
+            {% endif %}
             <!-- Пол -->
             {% if profile_user.gender %}
                 <div class="info-row">

@@ -38,7 +38,8 @@
 
 /* Стиль для всех полей ввода (input, select) */
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
     width: 100%; /* Поле занимает всю доступную ширину */
     padding: 10px;
     padding-right: 40px; /* Добавляем отступ справа для эмодзи */
@@ -48,6 +49,11 @@
     box-sizing: border-box; /* Учитываем padding в ширину */
     background-color: white; /* Фоновое цвет */
     transition: border-color 0.3s ease; /* Плавное изменение цвета границы */
+}
+
+.form-group textarea {
+    resize: vertical; /* Позволяем пользователю изменять высоту */
+    min-height: 80px; /* Минимальная высота */
 }
 
 /* Стиль для select */

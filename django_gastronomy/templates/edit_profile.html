@@ -90,6 +90,14 @@
                 <div id="country-error" class="error-message" style="display: none;"></div>
             </div>
 
+            <!-- Поле "О себе" -->
+            <div class="form-group">
+                <label for="id_about">О себе:</label>
+                <textarea id="id_about" name="about" rows="4" placeholder="Расскажите немного о себе...">{{ user.about }}</textarea>
+                <span id="about-emoji"></span>
+                <div id="about-error" class="error-message" style="display: none;"></div>
+            </div>
+
             <!-- Кнопка отправки формы -->
             <button type="submit" class="save-button">Сохранить изменения</button>
         </form>

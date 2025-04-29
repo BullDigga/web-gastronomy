@@ -118,6 +118,13 @@ class User(AbstractBaseUser):
         help_text=_('Compressed version of the thumbnail.')
     )
 
+    about = models.TextField(
+        _('about'),
+        blank=True,
+        null=True,
+        help_text=_('Brief information about the user.')
+    )
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

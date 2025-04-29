@@ -155,6 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (genderSelect.value) formData.append('gender', genderSelect.value);
         if (dateOfBirthInput.value) formData.append('date_of_birth', dateOfBirthInput.value);
         if (countryInput.value.trim()) formData.append('country', countryInput.value.trim());
+        const aboutInput = document.getElementById('about');
+        if (aboutInput && aboutInput.value.trim()) {
+            formData.append('about', aboutInput.value.trim());
+        }
 
         // Добавляем аватар, если он выбран
         if (avatarInput && avatarInput.files.length > 0) {
