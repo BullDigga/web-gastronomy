@@ -138,8 +138,8 @@ body {
 .add-to-favorites {
     background-color: #B5B8B1; /* Серый цвет фона для неавторизованных пользователей */
     border: none;
-    width: 40px; /* Фиксированная ширина */
-    height: 40px; /* Фиксированная высота */
+    width: 50px; /* Фиксированная ширина */
+    height: 50px; /* Фиксированная высота */
     border-radius: 8px; /* Скругление углов */
     cursor: pointer;
     display: flex;
@@ -158,8 +158,8 @@ body {
 
 /* Для изображения внутри кнопки */
 .favorite-icon {
-    width: 24px; /* Ширина изображения */
-    height: 24px; /* Высота изображения */
+    width: 35px; /* Ширина изображения */
+    height: 35px; /* Высота изображения */
     object-fit: cover; /* Сохранение пропорций */
 }
 
