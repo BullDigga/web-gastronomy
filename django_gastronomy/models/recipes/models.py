@@ -38,24 +38,6 @@ class Recipe(models.Model):
         help_text="Дата публикации рецепта (заполняется автоматически при статусе 'published')"
     )
 
-    main_picture = models.ImageField(
-        'основное изображение',
-        upload_to='recipe_images/main_recipe_images/',
-        max_length=500,
-        blank=True,
-        null=True,
-        help_text="Основное изображение рецепта"
-    )
-
-    main_picture_compressed = models.ImageField(
-        'сжатое основное изображение',
-        upload_to='recipe_images/main_recipe_images_compressed/',
-        max_length=500,
-        blank=True,
-        null=True,
-        help_text="Сжатая версия основного изображения рецепта"
-    )
-
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'рецепты'
@@ -65,50 +47,8 @@ class Recipe(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        """
-        Автоматическая генерация сжатой версии основного изображения.
-        """
-        # Флаг для отслеживания, нужно ли сохранять объект после обработки изображения
-        needs_save = False
-
         if self.status == 'published' and not self.publish_date:
             self.publish_date = timezone.now()
-
-        if self.main_picture and not self.main_picture_compressed:
-            try:
-                img = Image.open(self.main_picture)
-
-                if img.mode != 'RGB':
-                    img = img.convert('RGB')
-
-                # Создаем сжатую версию изображения
-                output_size = (600, 450)  # Размер миниатюры (4:3 пропорция)
-                img.thumbnail(output_size, Image.Resampling.LANCZOS)
-
-                # Сохраняем сжатое изображение
-                thumb_io = BytesIO()
-                img.save(thumb_io, format='JPEG', quality=85)
-
-                # Генерируем уникальное имя файла
-                compressed_filename = f'compressed_{self.main_picture.name.split("/")[-1]}'
-
-                # Сохраняем сжатое изображение в медиа-директорию
-                file_path = default_storage.save(
-                    f'recipe_images/main_recipe_images_compressed/{compressed_filename}',
-                    ContentFile(thumb_io.getvalue())
-                )
-
-                # Сохраняем путь к сжатому изображению
-                self.main_picture_compressed = file_path
-
-                # Устанавливаем флаг, чтобы сохранить объект после обработки изображения
-                needs_save = True
-
-            except Exception as e:
-                # Логирование ошибок, если изображение не удалось обработать
-                print(f"Ошибка при обработке изображения: {e}")
-
-        # Сначала сохраняем объект (или обновляем его, если изображение было обработано)
         super().save(*args, **kwargs)
 
     def average_rating(self):
@@ -131,3 +71,17 @@ class Recipe(models.Model):
     def get_description_lower(self):
         """Возвращает описание рецепта в нижнем регистре."""
         return self.description.lower()
+
+    @property
+    def main_picture(self):
+        """Геттер для основного изображения"""
+        if hasattr(self, 'main_image_info') and self.main_image_info.main_image:
+            return self.main_image_info.main_image
+        return None
+
+    @property
+    def main_picture_compressed(self):
+        """Геттер для сжатого изображения"""
+        if hasattr(self, 'main_image_info') and self.main_image_info.main_image_compressed:
+            return self.main_image_info.main_image_compressed
+        return None

@@ -151,23 +151,35 @@ document.addEventListener('DOMContentLoaded', () => {
         attachEnterKeyHandler(ingredient);
     });
 
-    // Главная фотография
+    // --- Главная фотография ---
     const mainPhotoInput = document.getElementById('main-photo');
     const mainPhotoPreview = document.getElementById('main-photo-preview');
     const photoPlaceholder = document.getElementById('photo-placeholder');
     const photoError = document.getElementById('photo-error');
     const mainPhotoError = document.getElementById('main-photo-error');
 
-    mainPhotoInput.addEventListener('change', (event) => {
+    mainPhotoInput.addEventListener('change', async function (event) {
         const file = event.target.files[0];
-        if (file) {
-            if (file.size > 10 * 1024 * 1024) {
-                photoError.style.display = 'block';
-                mainPhotoError.style.display = 'none';
-                return;
-            }
-            photoError.style.display = 'none';
-            mainPhotoError.style.display = 'none'; // Убираем ошибку при выборе файла
+        if (!file) {
+            mainPhotoError.style.display = 'block';
+            return;
+        }
+
+        // Скрываем ошибки
+        photoError.style.display = 'none';
+        mainPhotoError.style.display = 'none';
+
+        // Проверка размера: максимум 10 МБ
+        if (file.size > 10 * 1024 * 1024) {
+            photoError.style.display = 'block';
+            return;
+        }
+
+        try {
+            // Компрессия изображения
+            const compressedFile = await compressImage(file);
+
+            // Превью после компрессии
             const reader = new FileReader();
             reader.onload = (e) => {
                 mainPhotoPreview.src = e.target.result;
@@ -175,11 +187,74 @@ document.addEventListener('DOMContentLoaded', () => {
                 photoPlaceholder.style.display = 'none';
                 document.querySelector('.photo-label').style.border = 'none';
             };
-            reader.readAsDataURL(file);
-        } else {
-            mainPhotoError.style.display = 'block';
+            reader.readAsDataURL(compressedFile);
+
+            // Заменяем файл в input на сжатую версию
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(compressedFile);
+            mainPhotoInput.files = dataTransfer.files;
+
+        } catch (error) {
+            console.error("Ошибка при обработке изображения:", error);
+            alert("Не удалось обработать изображение.");
         }
     });
+
+    // --- Функция компрессии изображения ---
+    function compressImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    // Сохраняем пропорции, ресайзим под 900x675
+                    const MAX_WIDTH = 900;
+                    const MAX_HEIGHT = 675;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Экспортируем как JPEG
+                    canvas.toBlob(
+                        (blob) => {
+                            if (blob) {
+                                resolve(new File([blob], file.name, {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now()
+                                }));
+                            } else {
+                                reject(new Error('Не удалось сжать изображение.'));
+                            }
+                        },
+                        'image/jpeg',
+                        0.85 // Качество JPEG (от 0 до 1)
+                    );
+                };
+                img.onerror = () => reject(new Error('Не удалось загрузить изображение.'));
+                img.src = e.target.result;
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+        });
+    }
 
     // Шаги приготовления
     const stepsContainer = document.getElementById('steps-container');

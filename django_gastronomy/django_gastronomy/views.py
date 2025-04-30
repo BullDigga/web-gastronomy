@@ -15,6 +15,8 @@ from models.ratings.models import Rate
 from models.subscriptions.models import Subscription
 from models.user_avatars.models import UserAvatar
 from models.instruction_images.models import InstructionImage
+from models.recipe_main_images.models import RecipeMainImage
+
 
 from django.db.models import Avg, Count, Value, Case, When
 from django.db.models.functions import Coalesce
@@ -478,12 +480,14 @@ def confirm_delete_account(request):
     })
 
 
+
+
 @login_required
 @csrf_exempt
 def create_recipe(request):
     if request.method == 'POST':
         try:
-            # Получаем данные из запроса
+            # Получаем данные
             title = request.POST.get('title')
             description = request.POST.get('description')
             main_photo = request.FILES.get('main_photo')
@@ -493,67 +497,96 @@ def create_recipe(request):
             if not title or not description or not main_photo:
                 return JsonResponse({'success': False, 'message': 'Заполните все обязательные поля.'})
 
-            # Создаем путь для сохранения изображений
+            # Директории для изображений
             main_image_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'main_recipe_images')
+            main_compressed_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'main_recipe_images_compressed')
             instruction_image_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'instruction_recipe_images')
-            instruction_image_compressed_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'instruction_recipe_images_compressed')
+            instruction_compressed_dir = os.path.join(settings.MEDIA_ROOT, 'recipe_images', 'instruction_recipe_images_compressed')
 
-            # Создаем директории, если их нет
             os.makedirs(main_image_dir, exist_ok=True)
+            os.makedirs(main_compressed_dir, exist_ok=True)
             os.makedirs(instruction_image_dir, exist_ok=True)
-            os.makedirs(instruction_image_compressed_dir, exist_ok=True)
+            os.makedirs(instruction_compressed_dir, exist_ok=True)
 
             # Сохраняем главное изображение
             main_photo_name = f"recipe_images/main_recipe_images/{main_photo.name}"
             main_photo_path = default_storage.save(main_photo_name, main_photo)
 
-            # Создаем рецепт в транзакции
+            # Создаём рецепт
             with transaction.atomic():
                 recipe = Recipe.objects.create(
                     title=title,
                     description=description,
                     author=request.user,
-                    status='published',
-                    main_picture=main_photo_path  # Относительный путь
+                    status='published'
                 )
 
-                # Добавляем ингредиенты
+                # Создаём запись с главным изображением
+                # Компрессия
+                img = Image.open(main_photo)
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                output_size = (900, 675)  # 4:3
+                img.thumbnail(output_size, Image.Resampling.LANCZOS)
+
+                thumb_io = BytesIO()
+                img.save(thumb_io, format='JPEG', quality=85)
+
+                compressed_filename = f'compressed_{main_photo.name}'
+                compressed_photo_path = default_storage.save(
+                    f'recipe_images/main_recipe_images_compressed/{compressed_filename}',
+                    ContentFile(thumb_io.getvalue())
+                )
+
+                # Сохраняем изображения в RecipeMainImage
+                RecipeMainImage.objects.create(
+                    recipe=recipe,
+                    main_image=main_photo_path,
+                    main_image_compressed=compressed_photo_path
+                )
+
+                # Ингредиенты
                 for ingredient_data in ingredients_data:
-                    ingredient_name = ingredient_data.get('name')
-                    unit_name = ingredient_data.get('unit')
+                    name = ingredient_data.get('name')
+                    unit = ingredient_data.get('unit')
                     quantity = ingredient_data.get('quantity')
 
-                    if not all([ingredient_name, unit_name, quantity]):
-                        raise ValueError('Некорректные данные для ингредиента.')
+                    if not all([name, unit, quantity]):
+                        raise ValueError('Некорректные данные ингредиента.')
 
-                    ingredient, _ = Ingredient.objects.get_or_create(name=ingredient_name)
-                    unit, _ = Unit.objects.get_or_create(name=unit_name)
+                    db_ingredient, _ = Ingredient.objects.get_or_create(name=name)
+                    db_unit, _ = Unit.objects.get_or_create(name=unit)
                     RecipeIngredient.objects.create(
                         recipe=recipe,
-                        ingredient=ingredient,
-                        unit=unit,
+                        ingredient=db_ingredient,
+                        unit=db_unit,
                         quantity=quantity
                     )
 
-                # Добавляем шаги
+                # Шаги
                 step_index = 0
                 while True:
-                    description = request.POST.get(f'step_{step_index}_description')
-                    photo = request.FILES.get(f'step_{step_index}_photo')
+                    desc_key = f'step_{step_index}_description'
+                    photo_key = f'step_{step_index}_photo'
+
+                    description = request.POST.get(desc_key)
+                    photo = request.FILES.get(photo_key)
 
                     if not description and not photo:
                         break
 
                     if not description or not photo:
-                        raise ValueError(f'Шаг {step_index + 1} не содержит описание или изображение.')
+                        raise ValueError(f'Шаг {step_index + 1} содержит ошибки.')
 
-                    # Сохраняем основное изображение шага
+                    # Сохраняем изображение шага
                     photo_name = f"recipe_images/instruction_recipe_images/{photo.name}"
                     photo_path = default_storage.save(photo_name, photo)
 
-                    # Создаем сжатую версию изображения шага
+                    # Компрессия для шага
                     img = Image.open(photo)
-                    output_size = (600, 450)  # Размер миниатюры (4:3 пропорция)
+                    if img.mode != 'RGB':
+                        img = img.convert('RGB')
+                    output_size = (600, 450)  # 4:3
                     img.thumbnail(output_size, Image.Resampling.LANCZOS)
 
                     thumb_io = BytesIO()
@@ -565,14 +598,13 @@ def create_recipe(request):
                         ContentFile(thumb_io.getvalue())
                     )
 
-                    # Создаем объект Instruction без изображений
+                    # Создаём шаг и изображение
                     instruction = Instruction.objects.create(
                         recipe=recipe,
                         step_number=step_index + 1,
                         instruction_text=description
                     )
 
-                    # Создаем связанное изображение
                     InstructionImage.objects.create(
                         instruction=instruction,
                         image=photo_path,
@@ -581,7 +613,8 @@ def create_recipe(request):
 
                     step_index += 1
 
-            return JsonResponse({'success': True, 'message': 'Рецепт успешно создан и опубликован.'})
+            return JsonResponse({'success': True, 'message': 'Рецепт успешно опубликован!'})
+
         except Exception as e:
             return JsonResponse({'success': False, 'message': str(e)})
 
