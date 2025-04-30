@@ -140,3 +140,35 @@
 .photo-label.has-image {
     border: none; /* Убираем границу */
 }
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.emoji {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: gray;
+    pointer-events: none; /* Чтобы не мешал нажатию */
+}
+
+.emoji.valid {
+    color: green;
+}
+
+.emoji.invalid {
+    color: red;
+}
+
+/* Сообщения об ошибках */
+.error-message {
+    color: red;
+    font-size: 12px; /* То самое "чуть меньше шрифтом" */
+    margin-top: 5px;
+    display: none;
+}

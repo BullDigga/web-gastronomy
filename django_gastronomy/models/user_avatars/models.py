@@ -51,11 +51,11 @@ class UserAvatar(models.Model):
                     img = img.convert('RGB')
 
                 # Миниатюра
-                output_size_thumbnail = (100, 100)
+                output_size_thumbnail = (700, 700)
                 img.thumbnail(output_size_thumbnail, Image.Resampling.LANCZOS)
 
                 thumb_io = BytesIO()
-                img.save(thumb_io, format='JPEG', quality=90)
+                img.save(thumb_io, format='JPEG', quality=10)
 
                 thumbnail_filename = f'thumbnail_{self.avatar.name.split("/")[-1]}'
                 self.thumbnail.save(thumbnail_filename, ContentFile(thumb_io.getvalue()), save=False)

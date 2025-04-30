@@ -14,14 +14,21 @@
         <div class="avatar-upload-container">
             <div class="photo-upload">
                 <label for="id_avatar" class="photo-label">
-                    {% if user.avatar %}
-                        <img id="avatar-preview" src="{{ user.avatar.url }}" alt="Аватар пользователя" />
+                    {% if user.get_avatar_url %}
+                        <!-- Показываем аватар если он есть -->
+                        <img id="avatar-preview"
+                             src="{% if user.get_thumbnail_url %}{{ user.get_thumbnail_url }}{% else %}{% static 'icons/default_avatar.png' %}{% endif %}"
+                             alt="Аватар пользователя"
+                             style="border-radius: {% if not user.get_thumbnail_url %}50%{% else %}0{% endif %};"
+                        />
+                        <span id="avatar-placeholder" style="display: none;">+</span>
                     {% else %}
+                        <!-- Если аватара нет — показываем placeholder -->
                         <img id="avatar-preview" src="#" alt="Аватар пользователя" style="display: none;" />
+                        <span id="avatar-placeholder" style="display: block;">+</span>
                     {% endif %}
-                    <span id="avatar-placeholder" style="display: {% if user.avatar %}none{% else %}block{% endif %};">+</span>
                 </label>
-                <input type="file" id="id_avatar" name="avatar" accept="image/*" style="display: none;" />
+                <input type="file" id="id_avatar" name="avatar" accept="image/*" style="display: none;">
             </div>
             <p class="avatar-hint">Загрузите аватар (не более 10 МБ)</p>
         </div>
@@ -33,68 +40,84 @@
             <!-- Псевдоним -->
             <div class="form-group">
                 <label for="id_username">Псевдоним:</label>
-                <input type="text" id="id_username" name="username" value="{{ user.username }}" required>
-                <span id="username-emoji"></span>
+                <div class="input-wrapper">
+                    <input type="text" id="id_username" name="username" value="{{ user.username }}" required>
+                    <span id="username-emoji" class="emoji"></span>
+                </div>
                 <div id="username-error" class="error-message" style="display: none;"></div>
             </div>
 
             <!-- Имя -->
             <div class="form-group">
                 <label for="id_first_name">Имя:</label>
-                <input type="text" id="id_first_name" name="first_name" value="{{ user.first_name }}">
-                <span id="first_name-emoji"></span>
+                <div class="input-wrapper">
+                    <input type="text" id="id_first_name" name="first_name" value="{{ user.first_name }}">
+                    <span id="first_name-emoji" class="emoji"></span>
+                </div>
                 <div id="first_name-error" class="error-message" style="display: none;"></div>
             </div>
 
             <!-- Фамилия -->
             <div class="form-group">
                 <label for="id_last_name">Фамилия:</label>
-                <input type="text" id="id_last_name" name="last_name" value="{{ user.last_name }}">
-                <span id="last_name-emoji"></span>
+                <div class="input-wrapper">
+                    <input type="text" id="id_last_name" name="last_name" value="{{ user.last_name }}">
+                    <span id="last_name-emoji" class="emoji"></span>
+                </div>
                 <div id="last_name-error" class="error-message" style="display: none;"></div>
             </div>
 
             <!-- Отчество -->
             <div class="form-group">
                 <label for="id_middle_name">Отчество:</label>
-                <input type="text" id="id_middle_name" name="middle_name" value="{{ user.middle_name }}">
-                <span id="middle_name-emoji"></span>
+                <div class="input-wrapper">
+                    <input type="text" id="id_middle_name" name="middle_name" value="{{ user.middle_name }}">
+                    <span id="middle_name-emoji" class="emoji"></span>
+                </div>
                 <div id="middle_name-error" class="error-message" style="display: none;"></div>
             </div>
 
             <!-- Пол -->
             <div class="form-group">
                 <label for="id_gender">Пол:</label>
-                <select id="id_gender" name="gender">
-                    <option value="">Не указано</option>
-                    <option value="M" {% if user.gender == "M" %}selected{% endif %}>Мужчина</option>
-                    <option value="F" {% if user.gender == "F" %}selected{% endif %}>Женщина</option>
-                </select>
-                <span id="gender-emoji"></span>
+                <div class="input-wrapper">
+                    <select id="id_gender" name="gender">
+                        <option value="">Не указано</option>
+                        <option value="M" {% if user.gender == "M" %}selected{% endif %}>Мужчина</option>
+                        <option value="F" {% if user.gender == "F" %}selected{% endif %}>Женщина</option>
+                    </select>
+                    <span id="gender-emoji" class="emoji"></span>
+                </div>
                 <div id="gender-error" class="error-message" style="display: none;"></div>
             </div>
 
             <!-- Дата рождения -->
             <div class="form-group">
                 <label for="id_date_of_birth">Дата рождения:</label>
-                <input type="date" id="id_date_of_birth" name="date_of_birth" value="{{ user.date_of_birth|date:'Y-m-d' }}">
-                <span id="date_of_birth-emoji"></span>
+                <div class="input-wrapper">
+                    <input type="date" id="id_date_of_birth" name="date_of_birth" value="{{ user.date_of_birth|date:'Y-m-d' }}">
+                    <span id="date_of_birth-emoji" class="emoji"></span>
+                </div>
                 <div id="date_of_birth-error" class="error-message" style="display: none;"></div>
             </div>
 
             <!-- Страна проживания -->
             <div class="form-group">
                 <label for="id_country">Страна проживания:</label>
-                <input type="text" id="id_country" name="country" value="{{ user.country }}">
-                <span id="country-emoji"></span>
+                <div class="input-wrapper">
+                    <input type="text" id="id_country" name="country" value="{{ user.country }}">
+                    <span id="country-emoji" class="emoji"></span>
+                </div>
                 <div id="country-error" class="error-message" style="display: none;"></div>
             </div>
 
             <!-- Поле "О себе" -->
             <div class="form-group">
                 <label for="id_about">О себе:</label>
-                <textarea id="id_about" name="about" rows="4" placeholder="Расскажите немного о себе...">{{ user.about }}</textarea>
-                <span id="about-emoji"></span>
+                <div class="input-wrapper">
+                    <textarea id="id_about" name="about" rows="4" placeholder="Расскажите немного о себе...">{{ user.about }}</textarea>
+                    <span id="about-emoji" class="emoji"></span>
+                </div>
                 <div id="about-error" class="error-message" style="display: none;"></div>
             </div>
 

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const dateOfBirthInput = document.getElementById('id_date_of_birth');
     const countryInput = document.getElementById('id_country');
 
+
     // Элементы для отображения эмодзи
     const usernameEmoji = document.getElementById('username-emoji');
     const firstNameEmoji = document.getElementById('first_name-emoji');
@@ -33,81 +34,80 @@ document.addEventListener('DOMContentLoaded', function () {
     const countryError = document.getElementById('country-error');
 
     // Элементы для аватара
-    const avatarInput = document.getElementById('id_avatar'); // Поле загрузки аватара
-    const avatarPreview = document.getElementById('avatar-preview'); // Миниатюра аватара
-    const avatarPlaceholder = document.getElementById('avatar-placeholder'); // Placeholder
-    const avatarLabel = document.querySelector('label[for="id_avatar"]'); // Label для аватара
+    const avatarInput = document.getElementById('id_avatar');
+    const avatarPreview = document.getElementById('avatar-preview');
+    const avatarPlaceholder = document.getElementById('avatar-placeholder');
+    const avatarLabel = document.querySelector('label[for="id_avatar"]');
 
     let isServerError = false;
 
-    // Валидация имени пользователя
-    usernameInput.addEventListener('input', function () {
-        if (isServerError) return;
-        validateField(usernameInput, usernameEmoji, usernameError, 6, 'Псевдоним должен содержать минимум 6 символов.');
-    });
+    // Валидация обязательных и опциональных полей
+    function addValidation(input, emoji, error, minLength = 0, message = '') {
+        input.addEventListener('input', function () {
+            if (isServerError) return;
+            const value = input.value.trim();
+            if (value.length === 0) {
+                clearError(emoji, error);
+            } else if (value.length < minLength) {
+                setError(emoji, error, '❌', message);
+            } else {
+                clearError(emoji, error, '✅');
+            }
+        });
+    }
 
-    // Валидация имени (необязательное поле)
-    firstNameInput.addEventListener('input', function () {
-        if (isServerError) return;
-        validateOptionalField(firstNameInput, firstNameEmoji, firstNameError, 2, 'Имя должно содержать минимум 2 символа.');
-    });
+    // Валидация select (опциональное)
+    function addSelectValidation(select, emoji, error) {
+        select.addEventListener('change', function () {
+            if (isServerError) return;
+            if (select.value) {
+                clearError(emoji, error, '✅');
+            } else {
+                clearError(emoji, error);
+            }
+        });
+    }
 
-    // Валидация фамилии (необязательное поле)
-    lastNameInput.addEventListener('input', function () {
-        if (isServerError) return;
-        validateOptionalField(lastNameInput, lastNameEmoji, lastNameError, 2, 'Фамилия должна содержать минимум 2 символа.');
-    });
+    // Применение валидации к полям
+    addValidation(usernameInput, usernameEmoji, usernameError, 6, 'Псевдоним должен содержать минимум 6 символов.');
+    addValidation(firstNameInput, firstNameEmoji, firstNameError, 2, 'Имя должно содержать минимум 2 символа.');
+    addValidation(lastNameInput, lastNameEmoji, lastNameError, 2, 'Фамилия должна содержать минимум 2 символа.');
+    addValidation(middleNameInput, middleNameEmoji, middleNameError, 2, 'Отчество должно содержать минимум 2 символа.');
+    addValidation(countryInput, countryEmoji, countryError, 2, 'Страна должна содержать минимум 2 символа.');
 
-    // Валидация отчества (необязательное поле)
-    middleNameInput.addEventListener('input', function () {
-        if (isServerError) return;
-        validateOptionalField(middleNameInput, middleNameEmoji, middleNameError, 2, 'Отчество должно содержать минимум 2 символа.');
-    });
-
-    // Валидация пола (необязательное поле)
-    genderSelect.addEventListener('change', function () {
-        if (isServerError) return;
-        validateOptionalSelect(genderSelect, genderEmoji, genderError);
-    });
-
-    // Валидация даты рождения (необязательное поле)
     dateOfBirthInput.addEventListener('input', function () {
         if (isServerError) return;
-        validateOptionalField(dateOfBirthInput, dateOfBirthEmoji, dateOfBirthError);
+        if (dateOfBirthInput.value) {
+            clearError(dateOfBirthEmoji, dateOfBirthError, '✅');
+        } else {
+            clearError(dateOfBirthEmoji, dateOfBirthError);
+        }
     });
 
-    // Валидация страны проживания (необязательное поле)
-    countryInput.addEventListener('input', function () {
-        if (isServerError) return;
-        validateOptionalField(countryInput, countryEmoji, countryError, 2, 'Страна должна содержать минимум 2 символа.');
-    });
+    addSelectValidation(genderSelect, genderEmoji, genderError);
 
     // Обработка загрузки аватара
     if (avatarInput) {
         avatarInput.addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file) {
-                // Проверяем размер файла (не более 10 МБ)
                 if (file.size > 10 * 1024 * 1024) {
                     alert('Размер файла аватара не должен превышать 10 МБ.');
-                    avatarInput.value = ''; // Очищаем поле выбора файла
+                    avatarInput.value = '';
                     return;
                 }
-
-                // Создаем URL для предварительного просмотра изображения
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    avatarPreview.src = e.target.result; // Устанавливаем источник изображения
-                    avatarPreview.style.display = 'block'; // Показываем изображение
-                    avatarPlaceholder.style.display = 'none'; // Скрываем placeholder
-                    avatarLabel.classList.add('has-image'); // Добавляем класс для убирания границы
+                    avatarPreview.src = e.target.result;
+                    avatarPreview.style.display = 'block';
+                    avatarPlaceholder.style.display = 'none';
+                    avatarLabel.classList.add('has-image');
                 };
-                reader.readAsDataURL(file); // Читаем файл как Data URL
+                reader.readAsDataURL(file);
             } else {
-                // Если файл не выбран, возвращаем placeholder
                 avatarPreview.style.display = 'none';
                 avatarPlaceholder.style.display = 'block';
-                avatarLabel.classList.remove('has-image'); // Удаляем класс для возврата границы
+                avatarLabel.classList.remove('has-image');
             }
         });
     }
@@ -115,9 +115,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Отправка формы через AJAX
     form.addEventListener('submit', function (event) {
         event.preventDefault();
+        clearAllErrors();
 
-        // Собираем данные из формы
-        const formData = new FormData(); // Используем FormData для отправки файлов
+        const formData = new FormData();
         formData.append('username', usernameInput.value.trim());
         formData.append('first_name', firstNameInput.value.trim() || "");
         formData.append('last_name', lastNameInput.value.trim() || "");
@@ -126,26 +126,22 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('date_of_birth', dateOfBirthInput.value || "");
         formData.append('country', countryInput.value.trim() || "");
 
-        // Добавляем аватар, если он выбран
         if (avatarInput && avatarInput.files.length > 0) {
             formData.append('avatar', avatarInput.files[0]);
-            console.log("formData:", avatarInput.files[0]);
         }
 
-        // Логируем отправляемые данные
-        console.log('Отправляемые данные:', formData);
+        const aboutInput = document.getElementById('id_about');
+        if (aboutInput && aboutInput.value.trim()) {
+            formData.append('about', aboutInput.value.trim());
+        }
 
-        // Очищаем предыдущие ошибки
-        clearAllErrors();
-
-        // Отправляем данные на сервер
         fetch('/profile/edit/', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            body: formData // Отправляем FormData
+            body: formData
         })
         .then(response => {
             if (!response.ok) {
@@ -157,61 +153,24 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             if (data.success) {
-                console.log('Redirect URL from server:', data.redirect_url);
                 window.location.href = data.redirect_url;
             }
         })
         .catch(error => {
             isServerError = true;
-            console.error('Ошибка:', error.message);
-
-            const errorMessage = error.message.trim().toLowerCase();
-            console.log('Обработанная ошибка:', errorMessage);
-
+            const errorMessage = error.message.toLowerCase();
             if (errorMessage.includes('уже используется')) {
                 setError(usernameEmoji, usernameError, '❌', 'Этот псевдоним уже занят.');
             } else if (errorMessage.includes('псевдоним')) {
                 setError(usernameEmoji, usernameError, '❌', error.message);
             } else {
-                alert(error.message); // Общая ошибка
+                alert(error.message);
             }
             isServerError = false;
         });
     });
 
-    // Вспомогательная функция для валидации обязательных полей
-    function validateField(input, emojiElement, errorElement, minLength, errorMessage) {
-        const value = input.value.trim();
-        if (value.length < minLength) {
-            setError(emojiElement, errorElement, '❌', errorMessage);
-        } else {
-            clearError(emojiElement, errorElement, '✅');
-        }
-    }
-
-    // Вспомогательная функция для валидации необязательных полей
-    function validateOptionalField(input, emojiElement, errorElement, minLength = 0, errorMessage = '') {
-        const value = input.value.trim();
-        if (value && value.length < minLength) {
-            setError(emojiElement, errorElement, '❌', errorMessage);
-        } else if (value) {
-            clearError(emojiElement, errorElement, '✅');
-        } else {
-            clearError(emojiElement, errorElement);
-        }
-    }
-
-    // Вспомогательная функция для валидации необязательных select
-    function validateOptionalSelect(select, emojiElement, errorElement) {
-        const value = select.value;
-        if (value) {
-            clearError(emojiElement, errorElement, '✅');
-        } else {
-            clearError(emojiElement, errorElement);
-        }
-    }
-
-    // Вспомогательная функция для установки ошибки
+    // Установка ошибки
     function setError(emojiElement, errorElement, emoji, message = '') {
         emojiElement.textContent = emoji;
         emojiElement.classList.remove('valid');
@@ -220,17 +179,19 @@ document.addEventListener('DOMContentLoaded', function () {
         errorElement.style.display = 'block';
     }
 
-    // Вспомогательная функция для очистки ошибки
+    // Очистка ошибки
     function clearError(emojiElement, errorElement, emoji = '') {
         emojiElement.textContent = emoji;
         emojiElement.classList.remove('invalid');
         if (emoji) {
             emojiElement.classList.add('valid');
+        } else {
+            emojiElement.classList.remove('valid');
         }
         errorElement.style.display = 'none';
     }
 
-    // Функция для очистки всех ошибок
+    // Очистка всех ошибок
     function clearAllErrors() {
         clearError(usernameEmoji, usernameError);
         clearError(firstNameEmoji, firstNameError);
