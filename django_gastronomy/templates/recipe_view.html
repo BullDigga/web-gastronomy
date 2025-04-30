@@ -157,15 +157,17 @@
                             </div>
                             <!-- Изображение шага -->
                             <div class="step-photo-container">
-                                {% if step.image_compressed %}
-                                    <a href="{{ step.image.url }}" target="_blank" rel="noopener noreferrer">
-                                        <img src="{{ step.image_compressed.url }}"
-                                             alt="Изображение для шага {{ step.step_number }}"
-                                             class="step-image">
-                                    </a>
-                                {% else %}
-                                    <p class="no-image">Изображение отсутствует</p>
-                                {% endif %}
+                                {% with step.get_compressed_image_url as compressed_img %}
+                                    {% if compressed_img %}
+                                        <a href="{{ step.get_image_url }}" target="_blank" rel="noopener noreferrer">
+                                            <img src="{{ compressed_img }}"
+                                                 alt="Изображение для шага {{ step.step_number }}"
+                                                 class="step-image">
+                                        </a>
+                                    {% else %}
+                                        <p class="no-image">Изображение отсутствует</p>
+                                    {% endif %}
+                                {% endwith %}
                             </div>
                         </div>
                     </div>

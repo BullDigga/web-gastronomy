@@ -383,9 +383,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             formData.append('ingredients', JSON.stringify(ingredients));
 
-            steps.forEach((step, index) => {
-                formData.append(`step_${index}_description`, step.description);
-                formData.append(`step_${index}_photo`, step.photo);
+            // Шаги приготовления
+            const steps = [];
+            document.querySelectorAll('.step').forEach((stepElement, index) => {
+                const descriptionInput = stepElement.querySelector('.step-description');
+                const photoInput = stepElement.querySelector('.step-photo');
+                const descriptionValue = descriptionInput.value.trim();
+
+                if (descriptionValue && photoInput.files.length > 0) {
+                    formData.append(`step_${index}_description`, descriptionValue);
+                    formData.append(`step_${index}_photo`, photoInput.files[0]);
+                }
             });
 
             const response = await fetch('/create_recipe/', {
@@ -395,6 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'X-CSRFToken': getCookie('csrftoken')
                 }
             });
+
             const result = await response.json();
             if (result.success) {
                 alert('Рецепт успешно опубликован!');

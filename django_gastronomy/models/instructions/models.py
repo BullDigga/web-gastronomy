@@ -21,24 +21,6 @@ class Instruction(models.Model):
     # Текст инструкции
     instruction_text = models.TextField(verbose_name="Текст инструкции")
 
-    # Основное изображение
-    image = models.ImageField(
-        upload_to='recipe_images/instruction_recipe_images/',
-        blank=True,
-        null=True,
-        max_length=500,  # Увеличиваем лимит до 500 символов
-        verbose_name="Изображение"
-    )
-
-    # Сжатая версия изображения
-    image_compressed = models.ImageField(
-        upload_to='recipe_images/instruction_recipe_images_compressed/',
-        blank=True,
-        null=True,
-        max_length=500,  # Увеличиваем лимит до 500 символов
-        verbose_name="Сжатое изображение"
-    )
-
     def __str__(self):
         return f"Шаг {self.step_number} для рецепта {self.recipe.title}"
 
@@ -47,39 +29,30 @@ class Instruction(models.Model):
         verbose_name_plural = "Инструкции"
         ordering = ['step_number']  # Сортировка по номеру шага
         db_table = 'instructions'
+        constraints = [
+            models.UniqueConstraint(fields=['recipe', 'step_number'], name='unique_recipe_step')
+        ]
 
-    def save(self, *args, **kwargs):
+
+
+    def get_image_obj(self):
         """
-        Автоматическая генерация сжатой версии изображения.
+        Возвращает первый связанный объект InstructionImage или None.
+        Предполагается, что у инструкции должно быть 0 или 1 изображение.
         """
-        if self.image and not self.image_compressed:
-            try:
-                # Открываем оригинальное изображение
-                img = Image.open(self.image)
+        print("get_image_obj")
+        return self.images.first()  # related_name='images'
 
-                # Создаем сжатую версию изображения
-                output_size = (300, 225)  # Размер миниатюры (4:3 пропорция)
-                img.thumbnail(output_size, Image.Resampling.LANCZOS)
+    def get_image_url(self):
+        """
+        Возвращает URL оригинального изображения или None.
+        """
+        image_obj = self.get_image_obj()
+        return image_obj.image.url if image_obj and image_obj.image else None
 
-                # Сохраняем сжатое изображение
-                thumb_io = BytesIO()
-                img.save(thumb_io, format='JPEG', quality=85)  # Качество JPEG: 85%
-
-                # Генерируем уникальное имя файла
-                compressed_filename = f'compressed_{self.image.name.split("/")[-1]}'
-
-                # Сохраняем сжатое изображение в медиа-директорию
-                file_path = default_storage.save(
-                    f'recipe_images/instruction_recipe_images_compressed/{compressed_filename}',
-                    ContentFile(thumb_io.getvalue())
-                )
-
-                # Сохраняем путь к сжатому изображению
-                self.image_compressed = file_path
-
-            except Exception as e:
-                # Логирование ошибок, если изображение не удалось обработать
-                print(f"Ошибка при обработке изображения: {e}")
-
-        # Сохраняем объект
-        super().save(*args, **kwargs)
+    def get_compressed_image_url(self):
+        """
+        Возвращает URL сжатого изображения или None.
+        """
+        image_obj = self.get_image_obj()
+        return image_obj.image_compressed.url if image_obj and image_obj.image_compressed else None

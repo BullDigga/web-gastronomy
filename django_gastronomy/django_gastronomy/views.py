@@ -14,6 +14,8 @@ from models.favorites.models import Favorite
 from models.ratings.models import Rate
 from models.subscriptions.models import Subscription
 from models.user_avatars.models import UserAvatar
+from models.instruction_images.models import InstructionImage
+
 from django.db.models import Avg, Count, Value, Case, When
 from django.db.models.functions import Coalesce
 from django.db import models
@@ -563,11 +565,16 @@ def create_recipe(request):
                         ContentFile(thumb_io.getvalue())
                     )
 
-                    # Создаем объект Instruction
-                    Instruction.objects.create(
+                    # Создаем объект Instruction без изображений
+                    instruction = Instruction.objects.create(
                         recipe=recipe,
                         step_number=step_index + 1,
-                        instruction_text=description,
+                        instruction_text=description
+                    )
+
+                    # Создаем связанное изображение
+                    InstructionImage.objects.create(
+                        instruction=instruction,
                         image=photo_path,
                         image_compressed=compressed_photo_path
                     )
