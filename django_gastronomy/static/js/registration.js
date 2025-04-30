@@ -247,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Вспомогательная функция для установки ошибки
     function setError(emojiElement, errorElement, emoji, message = '') {
+        console.log("Добавил ошибку");
         emojiElement.textContent = emoji;
         emojiElement.classList.remove('valid');
         emojiElement.classList.add('invalid');

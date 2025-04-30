@@ -617,7 +617,6 @@ def edit_profile(request):
         try:
             date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date() if date_of_birth else None
         except ValueError:
-            messages.error(request, 'Некорректная дата рождения.')
             return redirect('edit_profile')
 
         # Обработка загрузки аватара

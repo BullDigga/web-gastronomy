@@ -122,6 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 addError(ingredientElement, 'Заполните все поля ингредиента.');
                 isValid = false;
             }
+            const errorContainer = ingredientElement.querySelector('.ingredient-error');
+            if (errorContainer && errorContainer.textContent.trim() !== '') {
+                isValid = false;
+            }
         });
 
         const ingredientsError = document.getElementById('ingredients-error');
@@ -353,9 +357,15 @@ document.addEventListener('DOMContentLoaded', () => {
             isValid = false;
         }
 
+        if (!validateIngredients()) {
+            isValid = false;
+        }
+
         if (!isValid) {
             return;
         }
+
+
 
         // Отправка данных на сервер
         try {
