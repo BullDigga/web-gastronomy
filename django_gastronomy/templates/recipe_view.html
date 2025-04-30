@@ -267,15 +267,18 @@
                             <div class="comment-text">{{ comment.text }}</div>
                             {% if comment.image1 or comment.image2 %}
                                 <div class="comment-images">
-                                    {% if comment.image1 %}
-                                        <a href="{{ comment.image1.url }}" target="_blank" rel="noopener noreferrer">
-                                            <img src="{{ comment.image1_compressed.url }}" alt="Изображение 1" class="comment-image">
-                                        </a>
-                                    {% endif %}
-                                    {% if comment.image2 %}
-                                        <a href="{{ comment.image2.url }}" target="_blank" rel="noopener noreferrer">
-                                            <img src="{{ comment.image2_compressed.url }}" alt="Изображение 2" class="comment-image">
-                                        </a>
+                                    {% if comment.images_info %}
+                                        {% if comment.images_info.image1 %}
+                                            <a href="{{ comment.images_info.image1.url }}" target="_blank" rel="noopener noreferrer">
+                                                <img src="{{ comment.images_info.image1_compressed.url }}" alt="Изображение 1" class="comment-image">
+                                            </a>
+                                        {% endif %}
+
+                                        {% if comment.images_info.image2 %}
+                                            <a href="{{ comment.images_info.image2.url }}" target="_blank" rel="noopener noreferrer">
+                                                <img src="{{ comment.images_info.image2_compressed.url }}" alt="Изображение 2" class="comment-image">
+                                            </a>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             {% endif %}

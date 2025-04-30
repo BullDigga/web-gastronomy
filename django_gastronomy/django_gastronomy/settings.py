@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'models.subscriptions',
     'models.user_avatars',
     'models.instruction_images',
-    'models.recipe_main_images'
+    'models.recipe_main_images',
+    'models.comment_images'
 ]
 
 MIDDLEWARE = [

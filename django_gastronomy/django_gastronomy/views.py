@@ -367,7 +367,6 @@ def profile_view(request, user_id):
     }
     return render(request, 'profile_view.html', context)
 
-from django.db.models import Avg, Count, OuterRef, Subquery
 
 def recipe_view(request, recipe_id):
     # Получаем рецепт из БД по ID, но только если его статус "published"
