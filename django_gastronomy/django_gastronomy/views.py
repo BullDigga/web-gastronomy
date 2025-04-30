@@ -13,6 +13,7 @@ from models.comments.models import Comment
 from models.favorites.models import Favorite
 from models.ratings.models import Rate
 from models.subscriptions.models import Subscription
+from models.user_avatars.models import UserAvatar
 from django.db.models import Avg, Count, Value, Case, When
 from django.db.models.functions import Coalesce
 from django.db import models
@@ -198,37 +199,45 @@ def registration_view(request):
                 about=about
             )
 
-            # Обработка загрузки аватара
+            # Обработка аватара
             avatar = request.FILES.get('avatar')
-            if avatar:
-                # Проверяем размер файла (не более 10 МБ)
+            if avatar and avatar.size > 0:
                 if avatar.size > 10 * 1024 * 1024:
-                    return JsonResponse({'error': 'Размер файла аватара не должен превышать 10 МБ.'}, status=400)
+                    messages.error(request, 'Размер файла аватара не должен превышать 10 МБ.')
+                    return redirect('edit_profile')
 
                 try:
-                    # Открываем изображение
                     img = Image.open(avatar)
                     if img.mode != 'RGB':
                         img = img.convert('RGB')
 
-                    # Создаем сжатую версию аватара
-                    output_size = (300, 300)
-                    img.thumbnail(output_size, Image.Resampling.LANCZOS)
+                    user_avatar, created = UserAvatar.objects.get_or_create(user=user)
 
-                    # Сохраняем сжатое изображение
-                    thumb_io = BytesIO()
-                    img.save(thumb_io, format='JPEG', quality=85)
+                    # Сжатый аватар (300x300)
+                    img_compressed = img.copy()
+                    img_compressed.thumbnail((300, 300), Image.Resampling.LANCZOS)
+                    thumb_io_compressed = BytesIO()
+                    img_compressed.save(thumb_io_compressed, format='JPEG', quality=85)
+                    compressed_filename = f'compressed_{uuid.uuid4()}.jpg'
+                    user_avatar.avatar_compressed.save(compressed_filename, ContentFile(thumb_io_compressed.getvalue()),
+                                                       save=False)
 
-                    # Генерируем уникальное имя файла
-                    compressed_filename = f'compressed_{user.id}_{os.path.splitext(avatar.name)[0]}.jpg'
-                    user.avatar_compressed.save(compressed_filename, ContentFile(thumb_io.getvalue()), save=False)
+                    # Миниатюра (100x100)
+                    img_thumbnail = img.copy()
+                    img_thumbnail.thumbnail((100, 100), Image.Resampling.LANCZOS)
+                    thumb_io_thumbnail = BytesIO()
+                    img_thumbnail.save(thumb_io_thumbnail, format='JPEG', quality=90)
+                    thumbnail_filename = f'thumbnail_{uuid.uuid4()}.jpg'
+                    user_avatar.thumbnail.save(thumbnail_filename, ContentFile(thumb_io_thumbnail.getvalue()),
+                                               save=False)
 
                     # Сохраняем оригинальный аватар
-                    user.avatar = avatar
+                    user_avatar.avatar = avatar
+                    user_avatar.save()
 
-                except Exception as e:
-                    print("Ошибка при обработке аватара:", e)
-                    return JsonResponse({'error': 'Ошибка при обработке аватара.'}, status=400)
+                except (UnidentifiedImageError, IOError) as e:
+                    messages.error(request, f'Ошибка при обработке аватара: {e}')
+                    return redirect('edit_profile')
 
             # Сохраняем пользователя
             user.save()
@@ -582,10 +591,9 @@ def edit_profile(request):
     View для редактирования профиля пользователя.
     Обрабатывает GET и POST запросы для редактирования данных.
     """
-    user = request.user  # Получаем текущего пользователя
+    user = request.user
 
     if request.method == 'POST':
-        # Получаем данные из POST-запроса
         username = request.POST.get('username')
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
@@ -600,7 +608,7 @@ def edit_profile(request):
             messages.error(request, 'Псевдоним должен содержать минимум 6 символов.')
             return redirect('edit_profile')
 
-        # Проверяем, что псевдоним уникален
+        # Проверяем уникальность псевдонима
         if User.objects.filter(username=username).exclude(id=user.id).exists():
             messages.error(request, 'Этот псевдоним уже занят.')
             return redirect('edit_profile')
@@ -614,32 +622,42 @@ def edit_profile(request):
 
         # Обработка загрузки аватара
         avatar = request.FILES.get('avatar')
+        print("Загружен аватар:", avatar.name if avatar else None)
+
         if avatar and avatar.size > 0:
-            # Проверяем размер файла (не более 10 МБ)
             if avatar.size > 10 * 1024 * 1024:
                 messages.error(request, 'Размер файла аватара не должен превышать 10 МБ.')
                 return redirect('edit_profile')
 
             try:
-                # Открываем изображение
                 img = Image.open(avatar)
                 if img.mode != 'RGB':
                     img = img.convert('RGB')
 
-                # Создаем сжатую версию аватара
-                output_size = (300, 300)
-                img.thumbnail(output_size, Image.Resampling.LANCZOS)
+                # Получаем или создаём запись UserAvatar
+                user_avatar, created = UserAvatar.objects.get_or_create(user=user)
 
-                # Сохраняем сжатое изображение
-                thumb_io = BytesIO()
-                img.save(thumb_io, format='JPEG', quality=85)
-
-                # Генерируем уникальное имя файла
+                # --- Сжатый аватар ---
+                img_compressed = img.copy()
+                img_compressed.thumbnail((300, 300), Image.Resampling.LANCZOS)
+                thumb_io_compressed = BytesIO()
+                img_compressed.save(thumb_io_compressed, format='JPEG', quality=85)
                 compressed_filename = f'compressed_{uuid.uuid4()}.jpg'
+                user_avatar.avatar_compressed.save(compressed_filename, ContentFile(thumb_io_compressed.getvalue()), save=False)
 
-                # Сохраняем сжатое изображение
-                user.avatar_compressed.save(compressed_filename, ContentFile(thumb_io.getvalue()), save=False)
-                user.avatar = avatar
+                # --- Миниатюра ---
+                img_thumbnail = img.copy()
+                img_thumbnail.thumbnail((100, 100), Image.Resampling.LANCZOS)
+                thumb_io_thumbnail = BytesIO()
+                img_thumbnail.save(thumb_io_thumbnail, format='JPEG', quality=90)
+                thumbnail_filename = f'thumbnail_{uuid.uuid4()}.jpg'
+                user_avatar.thumbnail.save(thumbnail_filename, ContentFile(thumb_io_thumbnail.getvalue()), save=False)
+
+                # --- Оригинальный аватар ---
+                user_avatar.avatar = avatar  # ← Сохраняем оригинал
+
+                # --- Сохраняем объект ---
+                user_avatar.save()
 
             except (UnidentifiedImageError, IOError) as e:
                 messages.error(request, f'Ошибка при обработке аватара: {e}')
@@ -654,17 +672,14 @@ def edit_profile(request):
         user.date_of_birth = date_of_birth
         user.country = country
         user.about = about
-
-        # Сохраняем изменения
         user.save()
 
-        # Перенаправляем на страницу просмотра профиля
+        # Перенаправление
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': True, 'redirect_url': reverse('profile', args=[user.id])})
         else:
             return redirect('profile', user_id=user.id)
 
-    # Если GET-запрос, отображаем страницу с текущими данными пользователя
     context = {
         'user': user,
     }

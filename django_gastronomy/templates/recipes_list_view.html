@@ -88,8 +88,8 @@
                             <div class="author-container">
                                 <div class="avatar-container">
                                     <a href="{% url 'profile' recipe.author.id %}" class="user-profile-link">
-                                        {% if recipe.author.avatar %}
-                                            <img src="{{ recipe.author.avatar.url }}" alt="Аватар пользователя" class="user-avatar">
+                                        {% if recipe.author.get_avatar_url %}
+                                            <img src="{{ recipe.author.get_avatar_url }}" alt="Аватар пользователя" class="user-avatar">
                                         {% else %}
                                             <img src="{% static 'icons/default_avatar.png' %}" alt="Запасной аватар" class="user-avatar">
                                         {% endif %}

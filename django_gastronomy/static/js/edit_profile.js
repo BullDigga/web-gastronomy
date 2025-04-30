@@ -119,16 +119,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // Собираем данные из формы
         const formData = new FormData(); // Используем FormData для отправки файлов
         formData.append('username', usernameInput.value.trim());
-        formData.append('first_name', firstNameInput.value.trim() || null);
-        formData.append('last_name', lastNameInput.value.trim() || null);
-        formData.append('middle_name', middleNameInput.value.trim() || null);
-        formData.append('gender', genderSelect.value || null);
-        formData.append('date_of_birth', dateOfBirthInput.value || null);
-        formData.append('country', countryInput.value.trim() || null);
+        formData.append('first_name', firstNameInput.value.trim() || "");
+        formData.append('last_name', lastNameInput.value.trim() || "");
+        formData.append('middle_name', middleNameInput.value.trim() || "");
+        formData.append('gender', genderSelect.value || "");
+        formData.append('date_of_birth', dateOfBirthInput.value || "");
+        formData.append('country', countryInput.value.trim() || "");
 
         // Добавляем аватар, если он выбран
         if (avatarInput && avatarInput.files.length > 0) {
             formData.append('avatar', avatarInput.files[0]);
+            console.log("formData:", avatarInput.files[0]);
         }
 
         // Логируем отправляемые данные

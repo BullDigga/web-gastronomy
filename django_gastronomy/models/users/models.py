@@ -9,6 +9,8 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
 
+from models.user_avatars.models import UserAvatar
+
 
 class UserManager(BaseUserManager):
     '''
@@ -80,44 +82,6 @@ class User(AbstractBaseUser):
         help_text=_('The country where the user resides.')
     )
 
-    # Поля для аватара
-    avatar = models.ImageField(
-        _('avatar'),
-        upload_to='user_avatars/',
-        max_length=500,
-        blank=True,
-        null=True,
-        help_text=_('User avatar image.')
-    )
-
-    avatar_compressed = models.ImageField(
-        _('compressed avatar'),
-        upload_to='user_avatars/compressed/',
-        max_length=500,
-        blank=True,
-        null=True,
-        help_text=_('Compressed version of the user avatar.')
-    )
-
-    # Поля для миниатюры
-    thumbnail = models.ImageField(
-        _('thumbnail'),
-        upload_to='user_thumbnails/',
-        max_length=500,
-        blank=True,
-        null=True,
-        help_text=_('Thumbnail version of the user avatar.')
-    )
-
-    thumbnail_compressed = models.ImageField(
-        _('compressed thumbnail'),
-        upload_to='user_thumbnails/compressed/',
-        max_length=500,
-        blank=True,
-        null=True,
-        help_text=_('Compressed version of the thumbnail.')
-    )
-
     about = models.TextField(
         _('about'),
         blank=True,
@@ -137,88 +101,6 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
-
-    def save(self, *args, **kwargs):
-        """
-        Автоматическая генерация сжатых версий аватара и миниатюры.
-        """
-        needs_save = False
-
-        # Генерация сжатого аватара
-        if self.avatar and not self.avatar_compressed:
-            try:
-                img = Image.open(self.avatar)
-
-                if img.mode != 'RGB':
-                    img = img.convert('RGB')
-
-                # Создаем сжатую версию аватара
-                output_size_avatar = (300, 300)  # Размер сжатого аватара
-                img.thumbnail(output_size_avatar, Image.Resampling.LANCZOS)
-
-                thumb_io_avatar = BytesIO()
-                img.save(thumb_io_avatar, format='JPEG', quality=85)
-
-                compressed_filename_avatar = f'compressed_{self.avatar.name.split("/")[-1]}'
-
-                file_path_avatar = default_storage.save(
-                    f'user_avatars/compressed/{compressed_filename_avatar}',
-                    ContentFile(thumb_io_avatar.getvalue())
-                )
-
-                self.avatar_compressed = file_path_avatar
-                needs_save = True
-
-            except Exception as e:
-                print(f"Ошибка при обработке аватара: {e}")
-
-        # Генерация миниатюры и её сжатой версии
-        if self.avatar and not self.thumbnail:
-            try:
-                img = Image.open(self.avatar)
-
-                if img.mode != 'RGB':
-                    img = img.convert('RGB')
-
-                # Создаем миниатюру
-                output_size_thumbnail = (100, 100)  # Размер миниатюры
-                img.thumbnail(output_size_thumbnail, Image.Resampling.LANCZOS)
-
-                thumb_io_thumbnail = BytesIO()
-                img.save(thumb_io_thumbnail, format='JPEG', quality=95)
-
-                thumbnail_filename = f'thumbnail_{self.avatar.name.split("/")[-1]}'
-
-                file_path_thumbnail = default_storage.save(
-                    f'user_thumbnails/{thumbnail_filename}',
-                    ContentFile(thumb_io_thumbnail.getvalue())
-                )
-
-                self.thumbnail = file_path_thumbnail
-
-                # Создаем сжатую версию миниатюры
-                output_size_thumbnail_compressed = (100, 100)  # Размер сжатой миниатюры
-                img.thumbnail(output_size_thumbnail_compressed, Image.Resampling.LANCZOS)
-
-                thumb_io_thumbnail_compressed = BytesIO()
-                img.save(thumb_io_thumbnail_compressed, format='JPEG', quality=75)
-
-                thumbnail_compressed_filename = f'compressed_{thumbnail_filename}'
-
-                file_path_thumbnail_compressed = default_storage.save(
-                    f'user_thumbnails/compressed/{thumbnail_compressed_filename}',
-                    ContentFile(thumb_io_thumbnail_compressed.getvalue())
-                )
-
-                self.thumbnail_compressed = file_path_thumbnail_compressed
-
-                needs_save = True
-
-            except Exception as e:
-                print(f"Ошибка при обработке миниатюры: {e}")
-
-        # Сохраняем объект
-        super().save(*args, **kwargs)
 
     def block(self):
         """Блокировка пользователя с удалением контента"""
@@ -244,3 +126,21 @@ class User(AbstractBaseUser):
         if (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day):
             age -= 1
         return age
+
+    def get_avatar_url(self):
+        try:
+            return self.user_avatar.avatar.url if self.user_avatar.avatar else None
+        except UserAvatar.DoesNotExist:
+            return None
+
+    def get_compressed_avatar_url(self):
+        try:
+            return self.user_avatar.avatar_compressed.url if self.user_avatar.avatar_compressed else None
+        except UserAvatar.DoesNotExist:
+            return None
+
+    def get_thumbnail_url(self):
+        try:
+            return self.user_avatar.thumbnail.url if self.user_avatar.thumbnail else None
+        except UserAvatar.DoesNotExist:
+            return None

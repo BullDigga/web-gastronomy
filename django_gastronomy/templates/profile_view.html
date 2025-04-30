@@ -32,9 +32,11 @@
 
         <!-- Блок аватара -->
         <div class="avatar-container">
-            {% if profile_user.avatar_compressed %}
-                <a href="{{ profile_user.avatar.url }}" target="_blank" rel="noopener noreferrer">
-                    <img src="{{ profile_user.avatar_compressed.url }}" alt="Аватар пользователя: {{ profile_user.username }}" class="profile-avatar">
+            {% if profile_user.get_avatar_url %}
+                <a href="{{ profile_user.get_avatar_url }}" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ profile_user.get_compressed_avatar_url|default:profile_user.get_thumbnail_url }}"
+                         alt="Аватар пользователя: {{ profile_user.username }}"
+                         class="profile-avatar">
                 </a>
             {% else %}
                 <img src="{% static 'icons/default_avatar.png' %}" alt="Аватар по умолчанию" class="profile-avatar">

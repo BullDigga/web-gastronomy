@@ -225,14 +225,13 @@
                     <div class="comment-container level-{{ level }}" data-comment-id="{{ comment.id }}" data-level="{{ level }}">
                         <!-- Верхняя часть комментария -->
                         <div class="comment-header">
-                            <!-- Аватар пользователя -->
                             <div class="avatar-container">
                                 <a href="{% url 'profile' comment.user.id %}" class="user-profile-link">
-                                    {% if comment.user.avatar %}
-                                        <!-- Если у пользователя есть аватар -->
-                                        <img src="{{ comment.user.avatar.url }}" alt="Аватар пользователя" class="user-avatar">
+                                    {% if comment.user.get_avatar_url %}
+                                        <!-- Используем аватар из UserAvatar -->
+                                        <img src="{{ comment.user.get_avatar_url }}" alt="Аватар пользователя" class="user-avatar">
                                     {% else %}
-                                        <!-- Если аватара нет, используем запасное изображение -->
+                                        <!-- Если аватара нет — дефолтная картинка -->
                                         <img src="{% static 'icons/default_avatar.png' %}" alt="Запасной аватар" class="user-avatar">
                                     {% endif %}
                                 </a>
