@@ -17,6 +17,8 @@ from models.user_avatars.models import UserAvatar
 from models.instruction_images.models import InstructionImage
 from models.recipe_main_images.models import RecipeMainImage
 
+from django.db.models import Subquery, OuterRef, Avg, Count, Case, When, Value, FloatField, IntegerField
+
 
 from django.db.models import Avg, Count, Value, Case, When
 from django.db.models.functions import Coalesce
@@ -324,6 +326,37 @@ def profile_view(request, user_id):
     # Подсчитываем количество рецептов пользователя
     recipe_count = Recipe.objects.filter(author=profile_user).count()
 
+    average_rating_subquery = Rate.objects.filter(recipe=OuterRef('pk')).values('recipe').annotate(
+        avg_rating=Avg('value')
+    ).values('avg_rating')
+
+    ratings_count_subquery = Rate.objects.filter(recipe=OuterRef('pk')).values('recipe').annotate(
+        count=Count('id')
+    ).values('count')
+
+    favorites_count_subquery = Favorite.objects.filter(recipe=OuterRef('pk')).values('recipe').annotate(
+        count=Count('id')
+    ).values('count')
+
+    # Получаем последние 3 рецепта с аннотациями
+    recent_recipes = Recipe.objects.filter(author=profile_user).annotate(
+        average_rating_annotation=Case(
+            When(rates__isnull=False, then=Subquery(average_rating_subquery, output_field=FloatField())),
+            default=Value(0.0),
+            output_field=FloatField()
+        ),
+        ratings_count=Case(
+            When(rates__isnull=False, then=Subquery(ratings_count_subquery, output_field=IntegerField())),
+            default=Value(0),
+            output_field=IntegerField()
+        ),
+        favorites_count=Case(
+            When(favorited_by__isnull=False, then=Subquery(favorites_count_subquery, output_field=IntegerField())),
+            default=Value(0),
+            output_field=IntegerField()
+        )
+    ).order_by('-publish_date')[:3]
+
     # Проверяем, подписан ли текущий пользователь на profile_user
     is_subscribed = False
     if request.user.is_authenticated and request.user != profile_user:
@@ -362,6 +395,7 @@ def profile_view(request, user_id):
     context = {
         'profile_user': profile_user,  # Просматриваемый пользователь
         'recipe_count': recipe_count,  # Количество рецептов
+        'recent_recipes': recent_recipes,
         'current_user': request.user,  # Текущий пользователь (может быть анонимным)
         'is_subscribed': is_subscribed,  # Статус подписки
     }

@@ -1,7 +1,7 @@
 /* Стиль контейнера профиля */
 .profile-container {
     position: relative; /* Делаем контейнер позиционируемым */
-    max-width: 600px;
+    max-width: 800px;
     margin: 50px auto;
     padding: 20px;
     background-color: #F6F6F6;
@@ -9,10 +9,18 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.profile-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    margin-top: 50px;
+}
+
 .profile-container h1 {
-    text-align: center;
-    margin-bottom: 20px;
     color: #333;
+    position: absolute;
+    top: -10px;
 }
 
 /* Контейнер для кнопки "Редактировать" или "Подписаться/Отписаться" */
@@ -106,7 +114,6 @@
 /* Стиль блока с кнопками */
 .profile-actions {
     margin-top: 20px;
-    display: flex;
     justify-content: space-between; /* Размещаем кнопки по краям */
     align-items: center; /* Выравниваем по центру */
 }
@@ -157,13 +164,21 @@
 .profile-buttons-right {
     display: flex;
     gap: 10px; /* Отступ между кнопками */
+    justify-content: flex-end;
+}
+
+.main-avatar-container {
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
 }
 
 .avatar-container {
-    display: flex;
-    justify-content: center; /* Центрируем аватар по горизонтали */
-    align-items: center; /* Центрируем аватар по вертикали */
-    margin-bottom: 20px; /* Отступ снизу */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
 }
 
 .profile-avatar {
@@ -180,6 +195,40 @@
     transition: transform 0.2s ease; /* Плавный эффект при наведении */
 }
 
+.profile-main-info {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+.main-info-row {
+    font-size: 1.1rem;
+    color: #000;
+    margin-bottom: 0.5rem;
+}
+
+.full-name {
+    font-size: 1.2rem; /* Увеличенный размер шрифта */
+    font-weight: 600; /* Полужирный */
+    display: flex;
+    align-items: center; /* Вертикальное центрирование */
+    gap: 0.5rem; /* Отступ между текстом и иконкой */
+    margin-bottom: 13px;
+}
+
+.email-icon,
+.birthdate-icon,
+.country-icon,
+.gender-icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: text-top;;
+    margin-right: 8px; /* Отступ между иконкой и текстом */
+    transition: transform 0.2s ease;
+}
+
 .profile-avatar img {
     max-width: 80%; /* Уменьшаем ширину изображения до 80% от контейнера */
     max-height: 80%; /* Уменьшаем высоту изображения до 80% от контейнера */
@@ -190,4 +239,277 @@
 /* Эффект увеличения при наведении */
 .profile-avatar:hover {
     transform: scale(1.05); /* Небольшое увеличение */
+}
+
+/* Стили для блока рецептов */
+.user-recipes-container {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.user-recipes-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Сетка для рецептов */
+.recipe-cards {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Изменили с 280px на 220px */
+    gap: 20px;
+    margin-bottom: 20px;
+    overflow-x: auto; /* Добавлено для горизонтального скролла при узком экране */
+}
+
+/* Стили для карточки рецепта */
+.recipe-card {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    height: 190px;
+}
+
+.favorites-info {
+    margin-left: 15px;
+}
+
+.author-container {
+    display: flex;
+    align-items: center;
+    margin-right: 40px;
+}
+
+/* Изображение рецепта */
+.recipe-image {
+    flex-shrink: 0;
+    width: 250px;
+    height: 187.5px;
+    margin-right: 25px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.05);
+}
+
+.recipe-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.recipe-thumbnail:hover {
+    transform: scale(1.1);
+}
+
+/* Информация о рецепте */
+.recipe-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.recipe-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #1c0600cf;
+}
+
+.recipe-title a {
+    color: #1c0600cf;
+    text-decoration: none;
+}
+
+.recipe-title a:hover {
+    text-decoration: underline;
+}
+
+.recipe-description {
+    font-size: 16px;
+    color: #4a4a4a;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Блок с автором и статистикой */
+.author-and-stats {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Статистика рецепта */
+.stats-container {
+    display: flex;
+    align-items: center;
+}
+
+.rating-info,
+.favorites-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rating-star {
+    font-size: 28px; /* Размер звезды */
+    color: #FFD700; /* Цвет звезды (золотой) */
+    transform: translateY(-4px); /* Поднимает звезду на 2px вверх */
+    display: inline-block;
+}
+
+.rating-number {
+    font-size: 18px; /* Размер числа */
+    font-weight: bold; /* Жирный шрифт */
+    color: #444444; /* Цвет числа */
+}
+
+.rating-count {
+    font-size: 16px;
+    color: #444444;
+}
+
+.user-icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    transform: translateY(-1px);
+    display: inline-block;
+}
+
+.favorite-count-icon {
+    width: 23px; /* Размер иконки */
+    height: 23px; /* Размер иконки */
+    vertical-align: middle; /* Выравнивание по центру относительно текста */
+    margin-bottom: 5px;
+    transform: translateY(1px);
+    display: inline-block;
+}
+
+.favorites-count {
+    font-size: 18px;
+    color: #444444;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+/* Кнопки */
+.buttons {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.delete-recipe-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: absolute;
+    top: 80px;
+    right: 27.5px;
+}
+
+.favorite-icon {
+    width: 35px; /* Ширина изображения */
+    height: 35px; /* Высота изображения */
+    object-fit: cover; /* Обеспечиваем сохранение пропорций (квадратное изображение) */
+    transition: transform 0.2s ease; /* Плавный эффект при наведении */
+}
+
+.delete-recipe-icon {
+    width: 35px; /* Размер иконки */
+    height: 35px;
+    opacity: 0.7; /* Полупрозрачность */
+    transition: opacity 0.3s ease; /* Плавный переход при наведении */
+}
+
+/* Стиль кнопки "Добавить в избранное" */
+.add-to-favorites {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    float: right;
+    margin-left: auto;
+    color: #ffffff;
+}
+
+.add-to-favorites:not(.authenticated) {
+    background-color: #f0f0f0;
+    border: 2px solid #e0e0e0;
+}
+
+.add-to-favorites:not(.authenticated):hover {
+    background-color: #e0e0e0;
+    border-color: #d0d0d0;
+    transform: scale(1.05);
+}
+
+.add-to-favorites.favorited {
+    background-color: #f7d3a9;
+}
+
+.add-to-favorites.favorited:hover {
+    background-color: #f4c28b;
+    transform: scale(1.05);
+}
+
+.username {
+    font-size: 16px;
+    color: #444444;
+    font-weight: bold;
+}
+
+/* Контейнер для центрирования кнопки */
+.all-recipes-button {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Стиль для кнопки */
+.all-recipes-button .profile-button {
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #66A932;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+}
+
+.all-recipes-button .profile-button:hover {
+    background-color: #528C29;
 }
