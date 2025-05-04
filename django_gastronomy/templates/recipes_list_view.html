@@ -133,10 +133,10 @@
                             {% endif %}
                         </button>
 
-                        {% if author %}
-                        <button class="delete-recipe-button" data-recipe-id="{{ recipe.id }}" data-recipe-title="{{ recipe.title }}">
-                            <img src="{% static 'icons/trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
-                        </button>
+                        {% if user.is_authenticated and recipe.author == user %}
+                            <button class="delete-recipe-button" data-recipe-id="{{ recipe.id }}" data-recipe-title="{{ recipe.title }}">
+                                <img src="{% static 'icons/trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
+                            </button>
                         {% endif %}
                     </div>
                 </div>
