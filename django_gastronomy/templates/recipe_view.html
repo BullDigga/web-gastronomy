@@ -52,6 +52,8 @@
         </button>
     </div>
 
+
+
     {% if user == recipe.author %}
     <button class="delete-recipe-button" data-recipe-id="{{ recipe.id }}" data-recipe-title="{{ recipe.title }}">
         <img src="{% static 'icons/trashbox.png' %}" alt="Удалить рецепт" class="delete-recipe-icon">
@@ -107,7 +109,12 @@
                                     margin-left: 8px;
                                     vertical-align: middle;
                                     padding-top: 0.35em;">
+                        <div id="error-rating" class="error-message" style="display: none; margin-top: 8px;"></div>
+                        <span id="error-general" class="error-message"></span>
                     </div>
+
+
+
                     <div class="rating-info">
                         <p class="average-rating">
                             <strong>Средняя оценка:</strong> {{ average_rating|floatformat:1 }}/5
@@ -288,6 +295,7 @@
                             <button class="reply-button {% if not is_authenticated %}disabled{% endif %}" data-comment-id="{{ comment.id }}">
                                 Ответить
                             </button>
+                            <span class="error-message reply-error"></span>
                         </div>
                     </div>
                 {% endwith %}
