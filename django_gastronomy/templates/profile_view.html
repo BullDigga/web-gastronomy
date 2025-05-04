@@ -72,8 +72,27 @@
                 {% if profile_user.date_of_birth %}
                     <div class="main-info-row">
                         <img src="{% static 'icons/birthdate.png' %}" alt="Дата рождения" class="birthdate-icon">
-                        {{ profile_user.date_of_birth|date:"d E Y" }} ({{ profile_user.age }} лет)
+                        {{ profile_user.date_of_birth|date:"d E Y" }} (<span id="age-value">{{ profile_user.age }}</span> <span id="age-suffix">лет</span>)
                     </div>
+
+                    <script>
+                        function getAgeSuffix(age) {
+                            const lastTwo = age % 100;
+                            const lastOne = lastTwo % 10;
+
+                            if (lastTwo >= 11 && lastTwo <= 19) return "лет";
+                            if (lastOne === 1) return "год";
+                            if (lastOne >= 2 && lastOne <= 4) return "года";
+                            return "лет";
+                        }
+
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const ageElement = document.getElementById("age-value");
+                            const suffixElement = document.getElementById("age-suffix");
+                            const age = parseInt(ageElement.textContent, 10);
+                            suffixElement.textContent = getAgeSuffix(age);
+                        });
+                    </script>
                 {% endif %}
 
                 <!-- Страна проживания с иконкой -->
