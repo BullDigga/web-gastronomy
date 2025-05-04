@@ -95,7 +95,14 @@
             <div class="form-group">
                 <label for="id_date_of_birth">Дата рождения:</label>
                 <div class="input-wrapper">
-                    <input type="date" id="id_date_of_birth" name="date_of_birth" value="{{ user.date_of_birth|date:'Y-m-d' }}">
+                    <input 
+                        type="date"
+                        id="id_date_of_birth"
+                        name="date_of_birth"
+                        value="{{ user.date_of_birth|date:'Y-m-d' }}"
+                        {% now 'Y-m-d' as today %}
+                        max="{{ today }}"
+                    >
                     <span id="date_of_birth-emoji" class="emoji"></span>
                 </div>
                 <div id="date_of_birth-error" class="error-message" style="display: none;"></div>

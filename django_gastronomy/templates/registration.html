@@ -109,7 +109,13 @@
                 <div class="form-group">
                     <label for="date_of_birth">Дата рождения:</label>
                     <div class="input-wrapper">
-                        <input type="date" id="date_of_birth" name="date_of_birth">
+                        <input
+                            type="date"
+                            id="date_of_birth"
+                            name="date_of_birth"
+                            {% now 'Y-m-d' as today %}
+                            max="{{ today }}"
+                        >
                     </div>
                 </div>
                 <div class="form-group">
