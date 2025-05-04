@@ -520,3 +520,33 @@
 .all-recipes-button .profile-button:hover {
     background-color: #528C29;
 }
+
+#custom-tooltip {
+    position: fixed;
+    color: #4a4a4a;
+    font-size: 14px;
+    font-family: sans-serif;
+    z-index: 99999;
+    pointer-events: none;
+    white-space: normal;
+    max-width: 200px;
+    word-break: break-word;
+    padding: 8px 12px;
+    background: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Стили для кнопки подписки, если пользователь НЕ авторизован */
+body:not(.authenticated) .profile-button.subscribe {
+    background-color: #f0f0f0;
+    border: 2px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+body:not(.authenticated) .profile-button.subscribe:hover {
+    background-color: #e0e0e0;
+    border-color: #d0d0d0;
+    transform: scale(1.05);
+}

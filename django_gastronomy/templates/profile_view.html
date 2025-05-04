@@ -15,14 +15,19 @@
                     <img src="{% static 'icons/edit.png' %}" alt="Редактировать профиль">
                 </a>
             {% else %}
-                <form id="subscription-form" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="profile-button {% if is_subscribed %}unsubscribe{% else %}subscribe{% endif %}">
-                        <img src="{% static 'icons/' %}{% if is_subscribed %}subscribed.png{% else %}subscribe.png{% endif %}"
-                             alt="{% if is_subscribed %}Отписаться{% else %}Подписаться{% endif %}">
-                    </button>
-                </form>
-            {% endif %}
+                <div class="subscribe-wrapper">
+                    <body class="{% if user.is_authenticated %}authenticated{% endif %}">
+                        <!-- Ваш контент -->
+                        <form id="subscription-form" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="profile-button {% if is_subscribed %}unsubscribe{% else %}subscribe{% endif %}">
+                                <img src="{% static 'icons/' %}{% if is_subscribed %}subscribed.png{% else %}subscribe.png{% endif %}"
+                                     alt="{% if is_subscribed %}Отписаться{% else %}Подписаться{% endif %}">
+                            </button>
+                        </form>
+                    </body>
+                {% endif %}
+                </div>
         </div>
 
         <!-- Блок с аватаром и основной информацией -->
@@ -223,9 +228,6 @@
                                         <img src="{% static 'icons/favorited.png' %}" alt="Убрать из избранного" class="favorite-icon">
                                     {% else %}
                                         <img src="{% static 'icons/add_to_favorited.png' %}" alt="Добавить в избранное" class="favorite-icon">
-                                    {% endif %}
-                                    {% if not user.is_authenticated %}
-                                        <span class="tooltip">Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное</span>
                                     {% endif %}
                                 </button>
 
