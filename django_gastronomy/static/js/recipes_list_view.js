@@ -1,3 +1,60 @@
+function showCustomTooltip(element, message) {
+    let tooltip = document.getElementById('custom-tooltip');
+    const isNew = !tooltip;
+
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'custom-tooltip';
+        tooltip.style.position = 'fixed';
+        tooltip.style.color = '#4a4a4a'; // Цвет текста
+        tooltip.style.fontSize = '14px';
+        tooltip.style.fontFamily = 'sans-serif';
+        tooltip.style.zIndex = '99999';
+        tooltip.style.pointerEvents = 'none';
+        tooltip.style.whiteSpace = 'normal';
+        tooltip.style.maxWidth = '200px';
+        tooltip.style.wordBreak = 'break-word';
+        tooltip.style.padding = '0';
+        tooltip.style.background = 'none';
+        tooltip.style.opacity = '0';
+        tooltip.style.transition = 'opacity 0.3s ease-out'; // Быстрое появление
+        document.body.appendChild(tooltip);
+    }
+
+    tooltip.textContent = message;
+
+    if (isNew) {
+        requestAnimationFrame(() => {
+            positionTooltip(element, tooltip);
+        });
+    } else {
+        positionTooltip(element, tooltip);
+    }
+
+    // Показываем tooltip с анимацией
+    tooltip.style.opacity = '1';
+
+    // Скрываем с более медленной анимацией
+    setTimeout(() => {
+        tooltip.style.transition = 'opacity 1s ease-in';
+        tooltip.style.opacity = '0';
+
+        // Очищаем текст после завершения анимации
+        setTimeout(() => {
+            tooltip.textContent = '';
+            tooltip.style.transition = 'opacity 0.3s ease-out'; // Возвращаем быструю анимацию для следующего показа
+        }, 1000); // Должно совпадать с длительностью transition выше
+    }, 3000); // Показываем на 3 секунды
+}
+
+// Вспомогательная функция позиционирования
+function positionTooltip(element, tooltip) {
+    const rect = element.getBoundingClientRect();
+
+    tooltip.style.top = `${rect.top + window.scrollY}px`;
+    tooltip.style.left = `${rect.left + window.scrollX - tooltip.offsetWidth - 8}px`;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const isAuthenticated = document.body.dataset.isAuthenticated === 'true';
 
@@ -8,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Проверяем, авторизован ли пользователь
         if (!isAuthenticated) {
-            alert('Войдите в аккаунт, чтобы добавить рецепт в избранное.');
+            showCustomTooltip(button, 'Войдите в аккаунт, чтобы иметь возможность добавить рецепт в избранное');
             return;
         }
 

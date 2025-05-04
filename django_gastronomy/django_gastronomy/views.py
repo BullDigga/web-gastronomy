@@ -315,7 +315,6 @@ def authorization_view(request):
     return render(request, 'authorization.html')
 
 
-@login_required(login_url='/login/')  # Защищаем view от анонимов (если нужно)
 def profile_view(request, user_id):
     User = get_user_model()
     profile_user = get_object_or_404(User, id=user_id)
