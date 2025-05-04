@@ -52,10 +52,10 @@
                 </div>
             {% else %}
                 <a href="{% url 'create_recipe' %}" class="auth-button create-recipe">✍️ Создать рецепт</a>
-                <a href="{% url 'favorites' %}?favorites=true" class="favorites-icon">
-                    <img src="{% static 'icons/favorites.png' %}" alt="Избранное" class="favorites-image">
+                <a href="{% url 'favorites' %}?favorites=true" class="favorites-icon" title="Книга рецептов">
+                    <img src="{% static 'icons/favorites.png' %}" alt="Книга рецептов" class="favorites-image">
                 </a>
-                <div class="user-profile">
+                <div class="user-profile" title="Перейти в профиль">
                     <a href="{% url 'profile' user.id %}" class="username">{{ user.username }}</a>
                 </div>
             {% endif %}
