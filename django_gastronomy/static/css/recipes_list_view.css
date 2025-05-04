@@ -389,6 +389,13 @@ button {
     margin-top: 10px;
 }
 
+.rating-info,
+.favorites-info,
+.rating-info *,
+.favorites-info * {
+    cursor: default !important;
+}
+
 /* Стили для контейнера автора */
 .author-container {
     display: flex;

@@ -118,6 +118,13 @@
     align-items: center; /* Выравниваем по центру */
 }
 
+.rating-info,
+.favorites-info,
+.rating-info *,
+.favorites-info * {
+    cursor: default !important;
+}
+
 /* Стиль кнопки "Рецепты пользователя" */
 .profile-button {
     display: inline-block;

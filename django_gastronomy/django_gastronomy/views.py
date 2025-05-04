@@ -315,17 +315,14 @@ def authorization_view(request):
     return render(request, 'authorization.html')
 
 
-
+@login_required(login_url='/login/')  # Защищаем view от анонимов (если нужно)
 def profile_view(request, user_id):
-    # Получаем модель пользователя
     User = get_user_model()
-
-    # Получаем пользователя по ID
     profile_user = get_object_or_404(User, id=user_id)
 
-    # Подсчитываем количество рецептов пользователя
     recipe_count = Recipe.objects.filter(author=profile_user).count()
 
+    # Подзапросы для аннотаций
     average_rating_subquery = Rate.objects.filter(recipe=OuterRef('pk')).values('recipe').annotate(
         avg_rating=Avg('value')
     ).values('avg_rating')
@@ -357,48 +354,55 @@ def profile_view(request, user_id):
         )
     ).order_by('-publish_date')[:3]
 
-    # Проверяем, подписан ли текущий пользователь на profile_user
+    # Проверяем подписку
     is_subscribed = False
     if request.user.is_authenticated and request.user != profile_user:
         is_subscribed = request.user.subscriptions.filter(user_author=profile_user).exists()
 
-    # Обработка POST-запроса для подписки/отписки
+    # Получаем список ID рецептов, добавленных в избранное текущим пользователем
+    favorite_recipe_ids = []
+    if request.user.is_authenticated:
+        favorite_recipe_ids = list(
+            Favorite.objects.filter(user=request.user)
+                            .values_list('recipe_id', flat=True)
+        )
+
+    context = {
+        'profile_user': profile_user,
+        'recipe_count': recipe_count,
+        'recent_recipes': recent_recipes,
+        'current_user': request.user,
+        'is_subscribed': is_subscribed,
+
+        # 🔁 Передаём список ID избранных рецептов
+        'favorite_recipe_ids': favorite_recipe_ids,
+    }
+
+    # Обработка POST-запроса (подписка/отписка)
     if request.method == 'POST':
-        # Проверяем, что пользователь авторизован
         if not request.user.is_authenticated:
             return JsonResponse({'error': 'Требуется авторизация'}, status=401)
 
-        # Проверяем, что пользователь не пытается подписаться на самого себя
         if request.user == profile_user:
             return JsonResponse({'error': 'Нельзя подписаться на самого себя'}, status=400)
 
         action = request.POST.get('action')
         if action == 'toggle_subscription':
             if is_subscribed:
-                # Отписка
                 Subscription.objects.filter(
                     user_subscriber=request.user,
                     user_author=profile_user
                 ).delete()
                 is_subscribed = False
             else:
-                # Подписка
                 Subscription.objects.create(
                     user_subscriber=request.user,
                     user_author=profile_user
                 )
                 is_subscribed = True
 
-            # Возвращаем JSON-ответ для AJAX
             return JsonResponse({'is_subscribed': is_subscribed})
 
-    context = {
-        'profile_user': profile_user,  # Просматриваемый пользователь
-        'recipe_count': recipe_count,  # Количество рецептов
-        'recent_recipes': recent_recipes,
-        'current_user': request.user,  # Текущий пользователь (может быть анонимным)
-        'is_subscribed': is_subscribed,  # Статус подписки
-    }
     return render(request, 'profile_view.html', context)
 
 
